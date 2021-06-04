@@ -4,12 +4,41 @@ class Schedule {
   /// Função retorna a data ideal dado um espaço de tempo do evento [eventRange]
   /// e as datas de disponibilidade dados [datesRange].
   /// A função sempre retorna o DateTime mais cedo do [eventRange].
-  // TODO: A função deve retorna uma lista de dadas possíveis.
-  DateTime idealDate(DateTimeRange eventRange, List<DateTimeRange> datesRange) {
-    DateTime dateTimeRes = new DateTime(0);
+  List<DateTime> idealDate(
+      DateTimeRange eventRange, List<DateTimeRange> datesRange) {
+    DateTime dtTemp = eventRange.start;
+    Map<DateTime, int> topDates = Map<DateTime, int>();
 
-    datesRange.forEach((element) {});
+    List<DateTime> avaliableDaysList = []; // Dias possíveis do evento
+    List<DateTime> invitedAvaliableDaysList =
+        []; // Dias em que os pariticpantes estarão disponívies
 
-    return dateTimeRes;
+    while (dtTemp != eventRange.end) {
+      dtTemp = dtTemp.add(const Duration(days: 1));
+      avaliableDaysList.add(dtTemp);
+      topDates.putIfAbsent(dtTemp, () => 0);
+    }
+
+    datesRange.forEach((element) {
+      dtTemp = element.start;
+      while (dtTemp != eventRange.end) {
+        dtTemp = dtTemp.add(const Duration(days: 1));
+        invitedAvaliableDaysList.add(dtTemp);
+      }
+    });
+
+    avaliableDaysList.forEach((avaliableDay) => {
+          invitedAvaliableDaysList.forEach((invitedDay) => {
+                if (avaliableDay == invitedDay)
+                  {
+                    topDates.update(
+                        avaliableDay, (int) => topDates[avaliableDay] + 1,
+                        ifAbsent: () => 0)
+                  }
+              })
+        });
+
+    print(topDates);
+    return avaliableDaysList;
   }
 }

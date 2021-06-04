@@ -6,8 +6,8 @@ class User {
   final DateTime bthDate;
 
   User({
-    required this.name,
-    required this.email,
-    required this.bthDate,
+    @required this.name,
+    @required this.email,
+    @required this.bthDate,
   });
 }

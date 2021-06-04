@@ -5,7 +5,7 @@ class Schedule {
   final List<DateTimeRange> schedule;
 
   Schedule({
-    required this.userId,
-    required this.schedule,
+    @required this.userId,
+    @required this.schedule,
   });
 }
