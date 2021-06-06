@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Schedule {
+class Schedules {
   /// Função retorna a data ideal dado um espaço de tempo do evento [eventRange]
   /// e as datas de disponibilidade dados [datesRange].
   /// A função sempre retorna o DateTime mais cedo do [eventRange].

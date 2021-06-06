@@ -1,6 +1,9 @@
 import 'dart:math';
 
+import 'package:boramarcarapp/models/http_exception.dart';
+import 'package:boramarcarapp/providers/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -20,8 +23,8 @@ class AuthScreen extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color.fromRGBO(215, 117, 255, 1).withOpacity(0.5),
-                  Color.fromRGBO(255, 188, 117, 1).withOpacity(0.9),
+                  Color.fromRGBO(238, 174, 202, 1).withOpacity(0.5),
+                  Color.fromRGBO(148, 187, 233, 1).withOpacity(0.9),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -41,13 +44,13 @@ class AuthScreen extends StatelessWidget {
                     child: Container(
                       margin: EdgeInsets.only(bottom: 20.0),
                       padding:
-                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 54.0),
                       transform: Matrix4.rotationZ(-8 * pi / 180)
-                        ..translate(-10.0),
+                        ..translate(-6.0),
                       // ..translate(-10.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Colors.deepOrange.shade900,
+                        color: Theme.of(context).primaryColor,
                         boxShadow: [
                           BoxShadow(
                             blurRadius: 8,
@@ -57,7 +60,7 @@ class AuthScreen extends StatelessWidget {
                         ],
                       ),
                       child: Text(
-                        'Bora Marcar',
+                        'BoraMarcar',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 40,
@@ -100,7 +103,24 @@ class _AuthCardState extends State<AuthCard> {
   var _isLoading = false;
   final _passwordController = TextEditingController();
 
-  void _submit() {
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text("ERRO!"),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+              child: Text("Ok"))
+        ],
+      ),
+    );
+  }
+
+  Future<void> _submit() async {
     if (!_formKey.currentState.validate()) {
       // Invalid!
       return;
@@ -109,10 +129,30 @@ class _AuthCardState extends State<AuthCard> {
     setState(() {
       _isLoading = true;
     });
-    if (_authMode == AuthMode.Login) {
-      // Log user in
-    } else {
-      // Sign user up
+    try {
+      if (_authMode == AuthMode.Login) {
+        await Provider.of<Auth>(context, listen: false)
+            .login(_authData['email'], _authData['password']);
+      } else {
+        await Provider.of<Auth>(context, listen: false)
+            .signUp(_authData['email'], _authData['password']);
+      }
+    } on HttpException catch (e) {
+      var errMessage = "Falha na autenticação.";
+      if (e.toString().contains('EMAIL_EXISTS'))
+        errMessage = "Este e-mail já está em uso";
+      else if (e.toString().contains('INVALID_EMAIL'))
+        errMessage = "E-mail inválido.";
+      else if (e.toString().contains('WEAK_PASSWORD'))
+        errMessage = "Senha muito fraca.";
+      else if (e.toString().contains('EMAIL_NOT_FOUND'))
+        errMessage = "E-mail não encontrado.";
+      else if (e.toString().contains('INVALID_PASSWORD'))
+        errMessage = "Senha inválida.";
+      _showErrorDialog(errMessage);
+    } catch (e) {
+      const errMessage = "Falha na autenticação. Tente novamente mais tarde.";
+      _showErrorDialog(errMessage);
     }
     setState(() {
       _isLoading = false;
@@ -186,7 +226,7 @@ class _AuthCardState extends State<AuthCard> {
                 if (_authMode == AuthMode.Signup)
                   TextFormField(
                     enabled: _authMode == AuthMode.Signup,
-                    decoration: InputDecoration(labelText: 'Confirm Password'),
+                    decoration: InputDecoration(labelText: 'Confirmar Senha'),
                     obscureText: true,
                     validator: _authMode == AuthMode.Signup
                         // ignore: missing_return
@@ -197,9 +237,40 @@ class _AuthCardState extends State<AuthCard> {
                           }
                         : null,
                   ),
-                SizedBox(
-                  height: 20,
-                ),
+                if (_authMode == AuthMode.Signup)
+                  /*TextFormField(
+                    enabled: _authMode == AuthMode.Signup,
+                    decoration: InputDecoration(labelText: 'Nome'),
+                    keyboardType: TextInputType.name,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Campo Obrigatório.';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _authData['email'] = value;
+                    },
+                  ),
+                if (_authMode == AuthMode.Signup)
+                  TextFormField(
+                    enabled: _authMode == AuthMode.Signup,
+                    decoration:
+                        InputDecoration(labelText: 'Data de Nascimento'),
+                    keyboardType: TextInputType.datetime,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Campo Obrigatório.';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _authData['email'] = value;
+                    },
+                  ),*/
+                  SizedBox(
+                    height: 20,
+                  ),
                 if (_isLoading)
                   CircularProgressIndicator()
                 else

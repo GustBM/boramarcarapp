@@ -1,5 +1,5 @@
-import 'package:boramarcarapp/providers/schedule.dart';
-import 'package:boramarcarapp/widgets/date_range_selector.dart';
+import 'package:boramarcarapp/providers/schedules.dart';
+import 'package:boramarcarapp/widgets/date_range/date_range_selector.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -31,7 +31,7 @@ class _DateRangeFormState extends State<DateRangeForm> {
 
   @override
   Widget build(BuildContext context) {
-    final Schedule sch = new Schedule();
+    final Schedules sch = new Schedules();
     datesRange.add(eventRange1);
     datesRange.add(eventRange2);
     datesRange.add(eventRange3);

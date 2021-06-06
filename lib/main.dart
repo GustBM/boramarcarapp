@@ -1,9 +1,11 @@
+import 'package:boramarcarapp/providers/events.dart';
 import 'package:boramarcarapp/screens/auth_screen.dart';
+import 'package:boramarcarapp/screens/event_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
-import 'package:boramarcarapp/models/auth.dart';
+import 'package:boramarcarapp/providers/auth.dart';
 import 'package:boramarcarapp/screens/home_screen.dart';
 import 'package:boramarcarapp/screens/splash_screen.dart';
 
@@ -22,26 +24,6 @@ Map<int, Color> colorCodes = {
   900: Color.fromRGBO(147, 205, 72, 1),
 };
 
-/*class BoraMarcarApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'BoraMarcar',
-      supportedLocales: [const Locale('pt', 'BR')],
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate
-      ],
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("Exemplo"),
-        ),
-        body: DateRangeForm(),
-      ),
-    );
-  }
-}*/
-
 class BoraMarcarApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -50,14 +32,11 @@ class BoraMarcarApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: Auth(),
         ),
-        /*ChangeNotifierProxyProvider<Auth, Attainments>(
+        ChangeNotifierProxyProvider<Auth, Events>(
           create: null,
-          update: (ctx, auth, previousAttainments) => Attainments(
-              auth.token,
-              previousAttainments == null
-                  ? []
-                  : previousAttainments.attainmentList),
-        ),*/
+          update: (ctx, auth, previousEvents) => Events(auth.token,
+              previousEvents == null ? [] : previousEvents.eventsList),
+        ),
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(
@@ -68,11 +47,25 @@ class BoraMarcarApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate
             ],
             theme: ThemeData(
+              brightness: Brightness.light,
+              primaryColor: Colors.lightBlue[800],
+              accentColor: Colors.cyan[600],
+              fontFamily: 'Lato',
+              /*textTheme: TextTheme(
+                headline1:
+                    TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+                headline6:
+                    TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+                bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
+              ),*/
+            ),
+            /*theme: ThemeData(
               primarySwatch: MaterialColor(0xFF990000, colorCodes),
+              // primaryColor: Color(0x81d4fa),
               accentColor: Colors.blueGrey[200],
               fontFamily: 'Lato',
               canvasColor: Colors.white,
-            ),
+            ),*/
             home: auth.isAuth
                 ? HomeScreen()
                 : FutureBuilder(
@@ -81,10 +74,11 @@ class BoraMarcarApp extends StatelessWidget {
                         authResultSnapshot.connectionState ==
                                 ConnectionState.waiting
                             ? SplashScreen()
-                            : AuthScreen(),
-                  ),
+                            // : AuthScreen(),
+                            : HomeScreen()),
             routes: {
               HomeScreen.routeName: (ctx) => HomeScreen(),
+              EventDetailScreen.routeName: (ctx) => EventDetailScreen(),
             }),
       ),
     );
