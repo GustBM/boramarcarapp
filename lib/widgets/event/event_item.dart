@@ -6,9 +6,13 @@ import 'package:boramarcarapp/providers/events.dart';
 import 'package:boramarcarapp/screens/event_detail_screen.dart';
 
 class EventItem extends StatelessWidget {
+  /*final Event _event;
+
+  EventItem(this._event);*/
+
   @override
   Widget build(BuildContext context) {
-    final event = Provider.of<Event>(context, listen: false);
+    final _event = Provider.of<Event>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
@@ -16,30 +20,30 @@ class EventItem extends StatelessWidget {
           onTap: () {
             Navigator.of(context).pushNamed(
               EventDetailScreen.routeName,
-              arguments: event.eventId,
+              arguments: _event.eventId,
             );
           },
-          child: event.imageUrl == ''
+          child: _event.imageUrl == ''
               ? Image.asset(
                   'assets/images/baloes.jpg',
                   fit: BoxFit.cover,
                 )
               : Image.network(
-                  event.imageUrl,
+                  _event.imageUrl,
                   fit: BoxFit.cover,
                 ),
         ),
         footer: GridTileBar(
           backgroundColor: Colors.black87,
           title: Text(
-            event.name,
+            _event.name,
             textAlign: TextAlign.left,
           ),
-          subtitle: Text(event.date.day.toString() +
+          subtitle: Text(_event.date.day.toString() +
               '/' +
-              event.date.month.toString() +
+              _event.date.month.toString() +
               '/' +
-              event.date.year.toString()),
+              _event.date.year.toString()),
         ),
       ),
     );

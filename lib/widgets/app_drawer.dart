@@ -15,8 +15,8 @@ class AppDrawer extends StatelessWidget {
           ),
           Divider(),
           ListTile(
-            leading: Icon(Icons.shop),
-            title: Text('Shop'),
+            leading: Icon(Icons.home_filled),
+            title: Text('Tela Inicial'),
             onTap: () {
               Navigator.of(context).pushReplacementNamed('/');
             },

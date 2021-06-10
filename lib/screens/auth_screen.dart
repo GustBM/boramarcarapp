@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:boramarcarapp/providers/auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -138,17 +139,7 @@ class _AuthCardState extends State<AuthCard> {
             .signUp(_authData['email'], _authData['password']);
       }
     } on HttpException catch (e) {
-      var errMessage = "Falha na autenticação.";
-      if (e.toString().contains('EMAIL_EXISTS'))
-        errMessage = "Este e-mail já está em uso";
-      else if (e.toString().contains('INVALID_EMAIL'))
-        errMessage = "E-mail inválido.";
-      else if (e.toString().contains('WEAK_PASSWORD'))
-        errMessage = "Senha muito fraca.";
-      else if (e.toString().contains('EMAIL_NOT_FOUND'))
-        errMessage = "E-mail não encontrado.";
-      else if (e.toString().contains('INVALID_PASSWORD'))
-        errMessage = "Senha inválida.";
+      var errMessage = "Erro na autenticação\n${e.toString()}";
       _showErrorDialog(errMessage);
     } catch (e) {
       const errMessage = "Falha na autenticação. Tente novamente mais tarde.";
@@ -186,7 +177,7 @@ class _AuthCardState extends State<AuthCard> {
       ),
       elevation: 8.0,
       child: Container(
-        height: _authMode == AuthMode.Signup ? 320 : 260,
+        height: _authMode == AuthMode.Signup ? 340 : 300,
         constraints:
             BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
         width: deviceSize.width * 0.75,
@@ -237,8 +228,8 @@ class _AuthCardState extends State<AuthCard> {
                           }
                         : null,
                   ),
-                if (_authMode == AuthMode.Signup)
-                  /*TextFormField(
+                /* if (_authMode == AuthMode.Signup)
+                  TextFormField(
                     enabled: _authMode == AuthMode.Signup,
                     decoration: InputDecoration(labelText: 'Nome'),
                     keyboardType: TextInputType.name,
@@ -268,9 +259,9 @@ class _AuthCardState extends State<AuthCard> {
                       _authData['email'] = value;
                     },
                   ),*/
-                  SizedBox(
-                    height: 20,
-                  ),
+                SizedBox(
+                  height: 20,
+                ),
                 if (_isLoading)
                   CircularProgressIndicator()
                 else

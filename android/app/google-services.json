@@ -1,15 +1,16 @@
 {
   "project_info": {
     "project_number": "912730616948",
+    "firebase_url": "https://boramarcarapp-default-rtdb.firebaseio.com",
     "project_id": "boramarcarapp",
     "storage_bucket": "boramarcarapp.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:912730616948:android:7aef470182c86ad5ddcd21",
+        "mobilesdk_app_id": "1:912730616948:android:16ffdcf49e6a8504ddcd21",
         "android_client_info": {
-          "package_name": "com.flutterflow.tutorial"
+          "package_name": "com.prjct.boramarcarapp"
         }
       },
       "oauth_client": [
@@ -29,6 +30,13 @@
             {
               "client_id": "912730616948-lrhu2vjvvdkqq7egu7rll7cl3uhcor0g.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "912730616948-3j4jincgfr5tob70ch3li341g7bonbhf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.flutterflow.tutorial"
+              }
             }
           ]
         }

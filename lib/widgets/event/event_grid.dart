@@ -8,7 +8,6 @@ class EventGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final eventsData = Provider.of<Events>(context).eventsList;
-
     return Expanded(
       child: GridView.builder(
         padding: const EdgeInsets.all(10.0),

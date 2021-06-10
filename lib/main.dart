@@ -1,6 +1,4 @@
-import 'package:boramarcarapp/providers/events.dart';
-import 'package:boramarcarapp/screens/auth_screen.dart';
-import 'package:boramarcarapp/screens/event_detail_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -8,8 +6,15 @@ import 'package:provider/provider.dart';
 import 'package:boramarcarapp/providers/auth.dart';
 import 'package:boramarcarapp/screens/home_screen.dart';
 import 'package:boramarcarapp/screens/splash_screen.dart';
+import 'package:boramarcarapp/providers/events.dart';
+import 'package:boramarcarapp/screens/auth_screen.dart';
+import 'package:boramarcarapp/screens/event_detail_screen.dart';
 
-void main() => runApp(BoraMarcarApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(BoraMarcarApp());
+}
 
 Map<int, Color> colorCodes = {
   50: Color.fromRGBO(147, 205, 72, .1),
@@ -25,6 +30,8 @@ Map<int, Color> colorCodes = {
 };
 
 class BoraMarcarApp extends StatelessWidget {
+  final Future<FirebaseApp> _fbApp = Firebase.initializeApp();
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -66,16 +73,27 @@ class BoraMarcarApp extends StatelessWidget {
               fontFamily: 'Lato',
               canvasColor: Colors.white,
             ),*/
-            home: auth.isAuth
-                ? HomeScreen()
-                : FutureBuilder(
-                    future: auth.tryAutoAuth(),
-                    builder: (ctx, authResultSnapshot) =>
-                        authResultSnapshot.connectionState ==
-                                ConnectionState.waiting
-                            ? SplashScreen()
-                            // : AuthScreen(),
-                            : HomeScreen()),
+            home: FutureBuilder(
+                future: _fbApp,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    print('Erro! ${snapshot.error.toString()}');
+                    return Text("Houve um erro!");
+                  } else if (snapshot.hasData) {
+                    return HomeScreen();
+                    /*auth.isAuth
+                        ? HomeScreen()
+                        : FutureBuilder(
+                            future: auth.tryAutoAuth(),
+                            builder: (ctx, authResultSnapshot) =>
+                                authResultSnapshot.connectionState ==
+                                        ConnectionState.waiting
+                                    ? SplashScreen()
+                                    : AuthScreen());*/
+                  } else {
+                    return SplashScreen();
+                  }
+                }),
             routes: {
               HomeScreen.routeName: (ctx) => HomeScreen(),
               EventDetailScreen.routeName: (ctx) => EventDetailScreen(),
