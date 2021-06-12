@@ -1,3 +1,3 @@
 # BoraMarcar
 
-Um aplciativo feito para otimizar encontros e reuniões.
+Um aplicativo feito para otimizar encontros e reuniões!
