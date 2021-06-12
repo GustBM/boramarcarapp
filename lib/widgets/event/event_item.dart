@@ -2,14 +2,9 @@ import 'package:boramarcarapp/models/event.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:boramarcarapp/providers/events.dart';
 import 'package:boramarcarapp/screens/event_detail_screen.dart';
 
 class EventItem extends StatelessWidget {
-  /*final Event _event;
-
-  EventItem(this._event);*/
-
   @override
   Widget build(BuildContext context) {
     final _event = Provider.of<Event>(context, listen: false);

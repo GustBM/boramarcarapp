@@ -24,7 +24,7 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bem-Vindo ${_user == null ? '' : _user.email}'),
+        title: Text('Tela Inicial'),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.notifications_outlined),

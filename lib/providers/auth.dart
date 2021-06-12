@@ -1,22 +1,27 @@
 import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:boramarcarapp/models/http_exception.dart';
-// import 'package:boramarcarapp/models/user.dart';
-import 'package:flutter/widgets.dart';
+import 'package:boramarcarapp/models/user.dart';
 
 enum authProblems { UserNotFound, PasswordNotValid, NetworkError }
 
 class Auth with ChangeNotifier {
   String _token;
-  String _refreshToken;
-  // AuthCredential _authCredential;
   User _userData;
+  AppUser _userInfo;
 
   bool get isAuth {
-    return _token != null;
+    if (FirebaseAuth.instance.currentUser != null) {
+      setUserInfo(FirebaseAuth.instance.currentUser.uid);
+      return true;
+    }
+    return false;
   }
 
   String get token {
@@ -28,104 +33,69 @@ class Auth with ChangeNotifier {
     return _userData;
   }
 
-  Future<void> _authenticate(String email, String password) async {
-    // ignore: unused_local_variable
-    UserCredential user;
+  AppUser get getUserInfo {
+    return _userInfo;
+  }
 
+  Future<void> _authenticate(String email, String password) async {
     try {
-      user = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-    } catch (e) {
-      // authProblems errorType;
-      switch (e.message) {
-        case 'There is no user record corresponding to this identifier. The user may have been deleted.':
-          // errorType = authProblems.UserNotFound;
-          throw HttpException('E-mail não encontrado.');
+    } catch (error) {
+      switch (error.code) {
+        case "invalid-email":
+          throw HttpException("E-mail inválido.");
           break;
-        case 'The password is invalid or the user does not have a password.':
-          // errorType = authProblems.PasswordNotValid;
-          throw HttpException('Senha Inválida.');
+        case "wrong-password":
+          throw HttpException("Senha Incorreta");
           break;
-        case 'A network error (such as timeout, interrupted connection or unreachable host) has occurred.':
-          // errorType = authProblems.NetworkError;
-          throw HttpException(
-              'Erro de Conexão. Verifique sua conexão e tente novamente.');
+        case "user-not-found":
+          throw HttpException("E-mail não encontrado.");
           break;
-        case 'The custom token format is incorrect.':
+        case "user-disabled":
+          throw HttpException("Usuário desabilitado.");
           break;
         default:
-          throw HttpException(e.message);
+          throw HttpException("Houve um erro!\n" + error.code.toString());
       }
     }
     _userData = FirebaseAuth.instance.currentUser;
-    // _authCredential = user.credential;
-    _refreshToken = _userData.refreshToken;
-    _token = await _userData.getIdToken();
-
-    final prefs = await SharedPreferences.getInstance();
-    final userData = json.encode(
-      {'token': _token, 'refreshToken': _refreshToken},
-    );
-    prefs.setString('userData', userData);
+    setUserInfo(_userData.uid);
     notifyListeners();
   }
 
-  Future<void> _authenticateWIthToken(String token) async {
-    // ignore: unused_local_variable
+  Future<void> signUp(String email, String password, String name,
+      String lastname, String date) async {
     UserCredential user;
-
     try {
-      // FirebaseAuth.instance.si
-      if (token != null)
-        user = await FirebaseAuth.instance.signInWithCustomToken(_refreshToken);
-    } catch (e) {
-      // authProblems errorType;
-      switch (e.message) {
-        case 'There is no user record corresponding to this identifier. The user may have been deleted.':
-          // errorType = authProblems.UserNotFound;
-          throw HttpException('E-mail não encontrado.');
-          break;
-        case 'The password is invalid or the user does not have a password.':
-          // errorType = authProblems.PasswordNotValid;
-          throw HttpException('Senha Inválida.');
-          break;
-        case 'A network error (such as timeout, interrupted connection or unreachable host) has occurred.':
-          // errorType = authProblems.NetworkError;
-          throw HttpException(
-              'Erro de Conexão. Verifique sua conexão e tente novamente.');
-          break;
-        case 'The custom token format is incorrect.':
-          break;
-        default:
-          throw HttpException(e.message);
-      }
-    }
-    _userData = FirebaseAuth.instance.currentUser;
-    // _authCredential = user.credential;
-    _token = await _userData.getIdToken();
-    _refreshToken = _userData.refreshToken;
-
-    final prefs = await SharedPreferences.getInstance();
-    final userData = json.encode(
-      {'token': _token, 'refreshToken': _refreshToken},
-    );
-    prefs.setString('userData', userData);
-    notifyListeners();
-  }
-
-  Future<void> signUp(String email, String password) async {
-    UserCredential userCredential;
-
-    try {
-      userCredential = await FirebaseAuth.instance
+      user = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
-      throw HttpException(e.message);
+      if (e.code == 'weak-password') {
+        throw HttpException(
+            "Senha muito considerada fraca. Tente novamente com outra.");
+      } else if (e.code == 'email-already-in-use') {
+        throw HttpException("Já existe um usuário com este e-mail.");
+      }
     } catch (e) {
-      throw HttpException(e.message);
+      throw HttpException("Houve um Erro!" + e.code.toString());
     }
+
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(user.user.uid)
+        .set({
+          'firstName': name,
+          'lastName': lastname,
+          'bthDate': date,
+          'email': email,
+          'schedule': null,
+        })
+        .then((value) => _authenticate(email, password))
+        .catchError(
+            (e) => throw HttpException("Houve um Erro!" + e.code.toString()));
   }
 
   Future<void> login(String email, String password) async {
@@ -134,43 +104,32 @@ class Auth with ChangeNotifier {
 
   Future<void> logout() async {
     _token = null;
+    _userInfo = null;
+    await FirebaseAuth.instance.signOut();
     notifyListeners();
-    final prefs = await SharedPreferences.getInstance();
-    prefs.clear();
   }
 
-  /*Future<bool> tryAutoAuth() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey('userData')) {
+  Future<bool> setUserInfo(String uid) async {
+    try {
+      var snapshot =
+          await FirebaseFirestore.instance.collection('user').doc(uid).get();
+      var data = snapshot.data();
+      _userInfo = new AppUser(
+        firstName: data['firstName'],
+        lastName: data['lastName'],
+        email: data['email'],
+        bthDate: data['bthDate'],
+      );
+    } catch (e) {
       return false;
     }
-    print(FirebaseAuth.instance.currentUser);
-    final extractedUserData =
-        json.decode(prefs.getString('userData')) as Map<String, Object>;
-    _token = extractedUserData['token'];
-    _authCredential = extractedUserData['userEmail'];
-
-    if (_token == null || _authCredential == null) return false;
-
-    _authenticateWIthToken(_authCredential);
-    if (_userData != null) return true;
-    return false;
-  }*/
+    return true;
+  }
 
   Future<bool> tryAutoAuth() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey('userData')) {
+    if (FirebaseAuth.instance.currentUser != null) {
+      return true;
+    } else
       return false;
-    }
-    final extractedUserData =
-        json.decode(prefs.getString('userData')) as Map<String, Object>;
-    _token = extractedUserData['token'];
-    _refreshToken = extractedUserData['refreshToken'];
-
-    if (_refreshToken != null) return false;
-
-    _authenticateWIthToken(_refreshToken);
-    if (_userData != null) return true;
-    return false;
   }
 }

@@ -1,10 +1,11 @@
 import 'dart:math';
 
-import 'package:boramarcarapp/models/http_exception.dart';
-import 'package:boramarcarapp/providers/auth.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:boramarcarapp/models/http_exception.dart';
+import 'package:boramarcarapp/providers/auth.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -100,6 +101,8 @@ class _AuthCardState extends State<AuthCard> {
   Map<String, String> _authData = {
     'email': '',
     'password': '',
+    'name': '',
+    'date': '',
   };
   var _isLoading = false;
   final _passwordController = TextEditingController();
@@ -135,14 +138,19 @@ class _AuthCardState extends State<AuthCard> {
         await Provider.of<Auth>(context, listen: false)
             .login(_authData['email'], _authData['password']);
       } else {
-        await Provider.of<Auth>(context, listen: false)
-            .signUp(_authData['email'], _authData['password']);
+        await Provider.of<Auth>(context, listen: false).signUp(
+          _authData['email'],
+          _authData['password'],
+          _authData['firstName'],
+          _authData['lastName'],
+          _authData['date'],
+        );
       }
     } on HttpException catch (e) {
       var errMessage = "Erro na autenticação\n${e.toString()}";
       _showErrorDialog(errMessage);
     } catch (e) {
-      const errMessage = "Falha na autenticação. Tente novamente mais tarde.";
+      var errMessage = "Falha na autenticação.\n" + e.toString();
       _showErrorDialog(errMessage);
     }
     setState(() {
@@ -167,6 +175,9 @@ class _AuthCardState extends State<AuthCard> {
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
         .hasMatch(email);
   }
+
+  var maskFormatter = new MaskTextInputFormatter(
+      mask: '##/##/####', filter: {"#": RegExp(r'[0-9]')});
 
   @override
   Widget build(BuildContext context) {
@@ -228,37 +239,57 @@ class _AuthCardState extends State<AuthCard> {
                           }
                         : null,
                   ),
-                /* if (_authMode == AuthMode.Signup)
+                if (_authMode == AuthMode.Signup)
                   TextFormField(
                     enabled: _authMode == AuthMode.Signup,
                     decoration: InputDecoration(labelText: 'Nome'),
-                    keyboardType: TextInputType.name,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Campo Obrigatório.';
-                      }
-                      return null;
-                    },
+                    validator: _authMode == AuthMode.Signup
+                        // ignore: missing_return
+                        ? (value) {
+                            if (value.isEmpty) {
+                              return 'Nome é Obrigatório';
+                            }
+                          }
+                        : null,
                     onSaved: (value) {
-                      _authData['email'] = value;
+                      _authData['firstName'] = value;
                     },
                   ),
                 if (_authMode == AuthMode.Signup)
                   TextFormField(
                     enabled: _authMode == AuthMode.Signup,
+                    decoration: InputDecoration(labelText: 'Sobrenome'),
+                    validator: _authMode == AuthMode.Signup
+                        // ignore: missing_return
+                        ? (value) {
+                            if (value.isEmpty) {
+                              return 'Sobrenome é Obrigatório';
+                            }
+                          }
+                        : null,
+                    onSaved: (value) {
+                      _authData['lastName'] = value;
+                    },
+                  ),
+                if (_authMode == AuthMode.Signup)
+                  TextFormField(
+                    enabled: _authMode == AuthMode.Signup,
+                    keyboardType: TextInputType.datetime,
+                    inputFormatters: [maskFormatter],
                     decoration:
                         InputDecoration(labelText: 'Data de Nascimento'),
-                    keyboardType: TextInputType.datetime,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Campo Obrigatório.';
-                      }
-                      return null;
-                    },
+                    validator: _authMode == AuthMode.Signup
+                        // ignore: missing_return
+                        ? (value) {
+                            if (value.isEmpty) {
+                              return 'Data de Nascimento é Obrigatório';
+                            }
+                          }
+                        : null,
                     onSaved: (value) {
-                      _authData['email'] = value;
+                      _authData['date'] = value;
                     },
-                  ),*/
+                  ),
                 SizedBox(
                   height: 20,
                 ),

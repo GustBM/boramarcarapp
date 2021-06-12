@@ -1,3 +1,4 @@
+import 'package:boramarcarapp/screens/settings_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -80,16 +81,16 @@ class BoraMarcarApp extends StatelessWidget {
                     print('Erro! ${snapshot.error.toString()}');
                     return Text("Houve um erro!");
                   } else if (snapshot.hasData) {
-                    return HomeScreen();
-                    /*auth.isAuth
-                        ? HomeScreen()
-                        : FutureBuilder(
-                            future: auth.tryAutoAuth(),
-                            builder: (ctx, authResultSnapshot) =>
-                                authResultSnapshot.connectionState ==
-                                        ConnectionState.waiting
-                                    ? SplashScreen()
-                                    : AuthScreen());*/
+                    return // HomeScreen();
+                        auth.isAuth
+                            ? HomeScreen()
+                            : FutureBuilder(
+                                future: auth.tryAutoAuth(),
+                                builder: (ctx, authResultSnapshot) =>
+                                    authResultSnapshot.connectionState ==
+                                            ConnectionState.waiting
+                                        ? SplashScreen()
+                                        : AuthScreen());
                   } else {
                     return SplashScreen();
                   }
@@ -97,6 +98,7 @@ class BoraMarcarApp extends StatelessWidget {
             routes: {
               HomeScreen.routeName: (ctx) => HomeScreen(),
               EventDetailScreen.routeName: (ctx) => EventDetailScreen(),
+              SettingsScreen.routeName: (ctx) => SettingsScreen(),
             }),
       ),
     );

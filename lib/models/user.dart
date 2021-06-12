@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
-class User {
-  final String name;
+class AppUser {
+  final String firstName;
+  final String lastName;
   final String email;
-  final DateTime bthDate;
+  final String bthDate;
 
-  User({
-    @required this.name,
+  AppUser({
+    @required this.firstName,
+    @required this.lastName,
     @required this.email,
     @required this.bthDate,
   });

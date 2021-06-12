@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:boramarcarapp/models/event.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -82,7 +80,6 @@ class Events extends ChangeNotifier {
           manager: event['manager'],
           managerId: event['managerId'],
           date: event['date'].toDate(),
-          // date: DateTime.now(),
           location: 'teste',
           description: event['description']);
       loadedEvents.add(newEvent);
