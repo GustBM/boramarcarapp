@@ -56,24 +56,17 @@ class BoraMarcarApp extends StatelessWidget {
             ],
             theme: ThemeData(
               brightness: Brightness.light,
-              primaryColor: Colors.lightBlue[800],
-              accentColor: Colors.cyan[600],
+              primaryColor: Colors.amber[400],
+              accentColor: Color.fromRGBO(82, 104, 143, 1),
               fontFamily: 'Lato',
-              /*textTheme: TextTheme(
+              textTheme: TextTheme(
                 headline1:
                     TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
                 headline6:
                     TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
                 bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
-              ),*/
+              ),
             ),
-            /*theme: ThemeData(
-              primarySwatch: MaterialColor(0xFF990000, colorCodes),
-              // primaryColor: Color(0x81d4fa),
-              accentColor: Colors.blueGrey[200],
-              fontFamily: 'Lato',
-              canvasColor: Colors.white,
-            ),*/
             home: FutureBuilder(
                 future: _fbApp,
                 builder: (context, snapshot) {

@@ -25,8 +25,8 @@ class AuthScreen extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color.fromRGBO(238, 174, 202, 1).withOpacity(0.5),
-                  Color.fromRGBO(148, 187, 233, 1).withOpacity(0.9),
+                  Color.fromRGBO(255, 191, 0, 1).withOpacity(0.5),
+                  Color.fromRGBO(154, 206, 235, 1).withOpacity(0.9),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -317,11 +317,11 @@ class _AuthCardState extends State<AuthCard> {
                       '${_authMode == AuthMode.Login ? 'NOVO USUÁRIO' : 'LOGIN'}'),
                   onPressed: _switchAuthMode,
                   style: TextButton.styleFrom(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      textStyle:
-                          TextStyle(color: Theme.of(context).primaryColor)),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    textStyle: TextStyle(color: Theme.of(context).accentColor),
+                  ),
                 ),
               ],
             ),

@@ -1,3 +1,4 @@
+import 'package:boramarcarapp/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +25,20 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tela Inicial'),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'BoraMarcar',
+              style: TextStyle(
+                color: Theme.of(context).accentColor,
+                fontFamily: 'Klavika',
+                fontSize: 24,
+                fontWeight: FontWeight.w900,
+              ),
+            )
+          ],
+        ),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
