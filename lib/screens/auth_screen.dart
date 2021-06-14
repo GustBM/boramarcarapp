@@ -299,18 +299,21 @@ class _AuthCardState extends State<AuthCard> {
                   ElevatedButton(
                     child: Text(
                         _authMode == AuthMode.Login ? 'LOGIN' : 'NOVO USUÁRIO'),
-                    onPressed: _submit,
+                    onPressed: () {
+                      _submit();
+                      FocusScope.of(context).unfocus();
+                    },
                     style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 30.0, vertical: 8.0),
-                        primary: Theme.of(context).primaryColor,
-                        textStyle: TextStyle(
-                          color:
-                              Theme.of(context).primaryTextTheme.button.color,
-                        )),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
+                      primary: Theme.of(context).primaryColor,
+                      textStyle: TextStyle(
+                        color: Theme.of(context).primaryTextTheme.button.color,
+                      ),
+                    ),
                   ),
                 TextButton(
                   child: Text(

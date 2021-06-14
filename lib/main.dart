@@ -1,4 +1,3 @@
-import 'package:boramarcarapp/screens/settings_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -10,6 +9,7 @@ import 'package:boramarcarapp/screens/splash_screen.dart';
 import 'package:boramarcarapp/providers/events.dart';
 import 'package:boramarcarapp/screens/auth_screen.dart';
 import 'package:boramarcarapp/screens/event_detail_screen.dart';
+import 'package:boramarcarapp/screens/settings_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,51 +48,50 @@ class BoraMarcarApp extends StatelessWidget {
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(
-            title: 'BoraMarcar',
-            supportedLocales: [const Locale('pt', 'BR')],
-            localizationsDelegates: [
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate
-            ],
-            theme: ThemeData(
-              brightness: Brightness.light,
-              primaryColor: Colors.amber[400],
-              accentColor: Color.fromRGBO(82, 104, 143, 1),
-              fontFamily: 'Lato',
-              textTheme: TextTheme(
-                headline1:
-                    TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-                headline6:
-                    TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
-                bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
-              ),
+          title: 'BoraMarcar',
+          supportedLocales: [const Locale('pt', 'BR')],
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate
+          ],
+          theme: ThemeData(
+            brightness: Brightness.light,
+            primaryColor: Colors.amber[400],
+            accentColor: Color.fromRGBO(82, 104, 143, 1),
+            fontFamily: 'Lato',
+            textTheme: TextTheme(
+              headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+              headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+              bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
             ),
-            home: FutureBuilder(
-                future: _fbApp,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    print('Erro! ${snapshot.error.toString()}');
-                    return Text("Houve um erro!");
-                  } else if (snapshot.hasData) {
-                    return // HomeScreen();
-                        auth.isAuth
-                            ? HomeScreen()
-                            : FutureBuilder(
-                                future: auth.tryAutoAuth(),
-                                builder: (ctx, authResultSnapshot) =>
-                                    authResultSnapshot.connectionState ==
-                                            ConnectionState.waiting
-                                        ? SplashScreen()
-                                        : AuthScreen());
-                  } else {
-                    return SplashScreen();
-                  }
-                }),
-            routes: {
-              HomeScreen.routeName: (ctx) => HomeScreen(),
-              EventDetailScreen.routeName: (ctx) => EventDetailScreen(),
-              SettingsScreen.routeName: (ctx) => SettingsScreen(),
-            }),
+          ),
+          home: FutureBuilder(
+              future: _fbApp,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  print('Erro! ${snapshot.error.toString()}');
+                  return Text("Houve um erro!");
+                } else if (snapshot.hasData) {
+                  return // HomeScreen();
+                      auth.isAuth
+                          ? HomeScreen()
+                          : FutureBuilder(
+                              future: auth.tryAutoAuth(),
+                              builder: (ctx, authResultSnapshot) =>
+                                  authResultSnapshot.connectionState ==
+                                          ConnectionState.waiting
+                                      ? SplashScreen()
+                                      : AuthScreen());
+                } else {
+                  return SplashScreen();
+                }
+              }),
+          routes: {
+            HomeScreen.routeName: (ctx) => HomeScreen(),
+            EventDetailScreen.routeName: (ctx) => EventDetailScreen(),
+            SettingsScreen.routeName: (ctx) => SettingsScreen(),
+          },
+        ),
       ),
     );
   }
