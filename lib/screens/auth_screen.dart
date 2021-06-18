@@ -88,7 +88,7 @@ class AuthScreen extends StatelessWidget {
 
 class AuthCard extends StatefulWidget {
   const AuthCard({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -125,25 +125,25 @@ class _AuthCardState extends State<AuthCard> {
   }
 
   Future<void> _submit() async {
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState!.validate()) {
       // Invalid!
       return;
     }
-    _formKey.currentState.save();
+    _formKey.currentState!.save();
     setState(() {
       _isLoading = true;
     });
     try {
       if (_authMode == AuthMode.Login) {
         await Provider.of<Auth>(context, listen: false)
-            .login(_authData['email'], _authData['password']);
+            .login(_authData['email']!, _authData['password']!);
       } else {
         await Provider.of<Auth>(context, listen: false).signUp(
-          _authData['email'],
-          _authData['password'],
-          _authData['firstName'],
-          _authData['lastName'],
-          _authData['date'],
+          _authData['email']!,
+          _authData['password']!,
+          _authData['firstName']!,
+          _authData['lastName']!,
+          _authData['date']!,
         );
       }
     } on HttpException catch (e) {
@@ -202,13 +202,13 @@ class _AuthCardState extends State<AuthCard> {
                   decoration: InputDecoration(labelText: 'E-Mail'),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
-                    if (value.isEmpty || !_isValidEmail(value)) {
+                    if (value!.isEmpty || !_isValidEmail(value)) {
                       return 'Email inválido!';
                     }
                     return null;
                   },
                   onSaved: (value) {
-                    _authData['email'] = value;
+                    _authData['email'] = value!;
                   },
                 ),
                 TextFormField(
@@ -217,12 +217,12 @@ class _AuthCardState extends State<AuthCard> {
                   controller: _passwordController,
                   // ignore: missing_return
                   validator: (value) {
-                    if (value.isEmpty || value.length < 6) {
+                    if (value!.isEmpty || value.length < 6) {
                       return 'Senha muito curta. Minimo 6 letras!';
                     }
                   },
                   onSaved: (value) {
-                    _authData['password'] = value;
+                    _authData['password'] = value!;
                   },
                 ),
                 if (_authMode == AuthMode.Signup)
@@ -246,13 +246,13 @@ class _AuthCardState extends State<AuthCard> {
                     validator: _authMode == AuthMode.Signup
                         // ignore: missing_return
                         ? (value) {
-                            if (value.isEmpty) {
+                            if (value!.isEmpty) {
                               return 'Nome é Obrigatório';
                             }
                           }
                         : null,
                     onSaved: (value) {
-                      _authData['firstName'] = value;
+                      _authData['firstName'] = value!;
                     },
                   ),
                 if (_authMode == AuthMode.Signup)
@@ -262,13 +262,13 @@ class _AuthCardState extends State<AuthCard> {
                     validator: _authMode == AuthMode.Signup
                         // ignore: missing_return
                         ? (value) {
-                            if (value.isEmpty) {
+                            if (value!.isEmpty) {
                               return 'Sobrenome é Obrigatório';
                             }
                           }
                         : null,
                     onSaved: (value) {
-                      _authData['lastName'] = value;
+                      _authData['lastName'] = value!;
                     },
                   ),
                 if (_authMode == AuthMode.Signup)
@@ -281,13 +281,13 @@ class _AuthCardState extends State<AuthCard> {
                     validator: _authMode == AuthMode.Signup
                         // ignore: missing_return
                         ? (value) {
-                            if (value.isEmpty) {
+                            if (value!.isEmpty) {
                               return 'Data de Nascimento é Obrigatório';
                             }
                           }
                         : null,
                     onSaved: (value) {
-                      _authData['date'] = value;
+                      _authData['date'] = value!;
                     },
                   ),
                 SizedBox(
@@ -311,7 +311,7 @@ class _AuthCardState extends State<AuthCard> {
                           EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
                       primary: Theme.of(context).primaryColor,
                       textStyle: TextStyle(
-                        color: Theme.of(context).primaryTextTheme.button.color,
+                        color: Theme.of(context).primaryTextTheme.button?.color,
                       ),
                     ),
                   ),

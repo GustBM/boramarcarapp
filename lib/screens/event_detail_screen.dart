@@ -8,7 +8,7 @@ class EventDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final eventId = ModalRoute.of(context).settings.arguments as String;
+    final eventId = ModalRoute.of(context)!.settings.arguments as String;
     final loadedEvent =
         Provider.of<Events>(context, listen: false).findById(eventId);
 

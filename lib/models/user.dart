@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class AppUser {
   final String firstName;
   final String lastName;
@@ -7,9 +5,9 @@ class AppUser {
   final String bthDate;
 
   AppUser({
-    @required this.firstName,
-    @required this.lastName,
-    @required this.email,
-    @required this.bthDate,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    required this.bthDate,
   });
 }

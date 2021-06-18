@@ -36,7 +36,7 @@ class _DateRangeFormState extends State<DateRangeForm> {
     datesRange.add(eventRange2);
     datesRange.add(eventRange3);
     void _submitForm() {
-      final FormState form = myFormKey.currentState;
+      final FormState form = myFormKey.currentState!;
       form.save();
       setState(() {});
       print(eventRange);

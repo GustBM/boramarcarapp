@@ -40,10 +40,9 @@ class BoraMarcarApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: Auth(),
         ),
-        ChangeNotifierProxyProvider<Auth, Events>(
-          create: null,
-          update: (ctx, auth, previousEvents) => Events(auth.token,
-              previousEvents == null ? [] : previousEvents.eventsList),
+        ChangeNotifierProvider<Events>(
+          create: (_) => Events(),
+          // update: (ctx, auth, previousEvents) => previousEvents!..update(),
         ),
       ],
       child: Consumer<Auth>(

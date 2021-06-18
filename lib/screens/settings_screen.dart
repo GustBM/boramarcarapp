@@ -7,8 +7,8 @@ import '../widgets/app_drawer.dart';
 class SettingsScreen extends StatelessWidget {
   static const routeName = '/settings';
 
-  Widget buildListTile(
-      String title, IconData icon, Function linkHandler, BuildContext context) {
+  Widget buildListTile(String title, IconData icon, Function? linkHandler,
+      BuildContext context) {
     return Column(
       children: [
         ListTile(

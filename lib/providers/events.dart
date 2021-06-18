@@ -4,41 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 class Events extends ChangeNotifier {
-  final String authToken;
-  List<Event> _previousEvents = [];
+  late final String? authToken;
+  // List<Event>? _previousEvents = [];
   CollectionReference events = FirebaseFirestore.instance.collection('event');
 
-  Events(this.authToken, this._previousEvents);
+  // Events(this.authToken, this._previousEvents);
 
   List<Event> _eventList = [];
-  /*Event(
-      eventId: 'asdf',
-      name: 'Mega churras pós pandemia',
-      manager: 'User 1',
-      managerId: '1234',
-      date: DateTime.now(),
-      location: 'Av. da Rua',
-      description: 'asdfasfasfd',
-    ),
-    Event(
-      eventId: 'zxcv',
-      name: 'Reunião importante pacas',
-      manager: 'User 1',
-      managerId: '1234',
-      date: DateTime.now(),
-      location: 'Av. da Rua',
-      description: 'asdfasfasfd',
-    ),
-    Event(
-      eventId: 'rtyu',
-      name: 'Provided to YouTube by RCA Records Label',
-      manager: 'User 1',
-      managerId: '1234',
-      date: DateTime.now(),
-      location: 'Av. da Rua',
-      description: 'asdfasfasfd',
-    ),
-  ];*/
 
   List<Event> get eventsList {
     return [..._eventList];
@@ -48,10 +20,9 @@ class Events extends ChangeNotifier {
     return _eventList.firstWhere((element) => element.eventId == eventId);
   }
 
-  /*Future<void> getAndFetchEvents() async {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    firestore.collection('event').snapshots()
-  }*/
+  Future<void> update() async {
+    notifyListeners();
+  }
 
   Future<void> addEvent(Event event) {
     return events
@@ -70,18 +41,21 @@ class Events extends ChangeNotifier {
 
   Future<void> getAndFetchEvents() async {
     var snapshot = await FirebaseFirestore.instance.collection('event').get();
-    var dataAll = snapshot.docs.map((doc) => doc.data()).toList();
+    var dataAll = snapshot.docs.toList();
     final List<Event> loadedEvents = [];
 
-    dataAll.forEach((event) async {
-      var newEvent = new Event(
-          eventId: event['eventId'],
-          name: event['name'],
-          manager: event['manager'],
-          managerId: event['managerId'],
-          date: event['date'].toDate(),
-          location: 'teste',
-          description: event['description']);
+    dataAll.forEach((ev) async {
+      var eventId = ev.id;
+      var event = ev.data();
+      Event newEvent = new Event(
+        eventId: eventId,
+        name: event['name'],
+        manager: event['manager'],
+        managerId: event['managerId'],
+        date: event['date'].toDate(),
+        location: 'teste',
+        description: event['description'],
+      );
       loadedEvents.add(newEvent);
     });
 

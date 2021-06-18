@@ -8,8 +8,8 @@ import '../providers/auth.dart';
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final AppUser _userData = Provider.of<Auth>(context).getUserInfo;
-    final User _userInfo = Provider.of<Auth>(context).getUser;
+    final AppUser? _userData = Provider.of<Auth>(context).getUserInfo;
+    final User? _userInfo = Provider.of<Auth>(context).getUser;
     return Drawer(
       child: Column(
         children: <Widget>[
@@ -23,18 +23,18 @@ class AppDrawer extends StatelessWidget {
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(30.0),
-                    child: _userInfo.photoURL == null
+                    child: _userInfo!.photoURL == null
                         ? Image.asset(
                             'assets/images/standard_user_photo.png',
                             width: 40,
                           )
-                        : Image.network(_userInfo.photoURL),
+                        : Image.network(_userInfo.photoURL!),
                   ),
                 ),
                 SizedBox(
                   width: 20,
                 ),
-                Text(_userData.firstName != null ? _userData.firstName : ''),
+                Text(_userData!.firstName),
               ],
             ),
             automaticallyImplyLeading: false,
@@ -45,6 +45,14 @@ class AppDrawer extends StatelessWidget {
             title: Text('Tela Inicial'),
             onTap: () {
               Navigator.of(context).pushReplacementNamed('/');
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.event),
+            title: Text('Novo Evento'),
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed('/new_event');
             },
           ),
           Divider(),

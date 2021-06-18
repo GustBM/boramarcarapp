@@ -29,7 +29,7 @@ class _DateRangeSelector extends State<DateRangeSelector> {
             border: OutlineInputBorder(),
           ),
           validator: (value) {
-            if (value.start.isBefore(DateTime.now())) {
+            if (value!.start.isBefore(DateTime.now())) {
               return 'Please enter a later start date';
             }
             return null;

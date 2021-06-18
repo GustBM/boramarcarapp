@@ -11,13 +11,13 @@ class Event with ChangeNotifier {
   final String description;
 
   Event({
-    @required this.eventId,
-    @required this.name,
-    @required this.manager,
-    @required this.managerId,
-    @required this.date,
-    @required this.location,
-    @required this.description,
+    required this.eventId,
+    required this.name,
+    required this.manager,
+    required this.managerId,
+    required this.date,
+    required this.location,
+    required this.description,
     this.imageUrl = '',
   });
 }

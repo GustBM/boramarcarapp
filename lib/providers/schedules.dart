@@ -32,7 +32,7 @@ class Schedules {
                 if (avaliableDay == invitedDay)
                   {
                     topDates.update(
-                        avaliableDay, (int) => topDates[avaliableDay] + 1,
+                        avaliableDay, (int) => topDates[avaliableDay]! + 1,
                         ifAbsent: () => 0)
                   }
               })

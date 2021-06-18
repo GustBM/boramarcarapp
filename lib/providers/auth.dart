@@ -8,28 +8,28 @@ import 'package:boramarcarapp/models/user.dart';
 enum authProblems { UserNotFound, PasswordNotValid, NetworkError }
 
 class Auth with ChangeNotifier {
-  String _token;
-  User _userData;
-  AppUser _userInfo;
+  late String? _token;
+  late User? _userData;
+  late AppUser? _userInfo;
 
   bool get isAuth {
     if (FirebaseAuth.instance.currentUser != null) {
-      setUserInfo(FirebaseAuth.instance.currentUser.uid);
+      setUserInfo(FirebaseAuth.instance.currentUser!.uid);
+      _userData = FirebaseAuth.instance.currentUser!;
       return true;
     }
     return false;
   }
 
-  String get token {
-    if (_token != null) return _token;
-    return null;
+  String? get token {
+    return _token;
   }
 
-  User get getUser {
+  User? get getUser {
     return _userData;
   }
 
-  AppUser get getUserInfo {
+  AppUser? get getUserInfo {
     return _userInfo;
   }
 
@@ -39,32 +39,32 @@ class Auth with ChangeNotifier {
         email: email,
         password: password,
       );
-    } catch (error) {
+    } on FirebaseAuthException catch (error) {
       switch (error.code) {
         case "invalid-email":
           throw HttpException("E-mail inválido.");
-          break;
+
         case "wrong-password":
           throw HttpException("Senha Incorreta");
-          break;
+
         case "user-not-found":
           throw HttpException("E-mail não encontrado.");
-          break;
+
         case "user-disabled":
           throw HttpException("Usuário desabilitado.");
-          break;
+
         default:
-          throw HttpException("Houve um erro!\n" + error.code.toString());
+          throw HttpException("Houve um erro!\n" + error.toString());
       }
     }
-    _userData = FirebaseAuth.instance.currentUser;
-    setUserInfo(_userData.uid);
+    _userData = FirebaseAuth.instance.currentUser!;
+    setUserInfo(_userData!.uid);
     notifyListeners();
   }
 
   Future<void> signUp(String email, String password, String name,
       String lastname, String date) async {
-    UserCredential user;
+    UserCredential? user;
     try {
       user = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
@@ -76,12 +76,12 @@ class Auth with ChangeNotifier {
         throw HttpException("Já existe um usuário com este e-mail.");
       }
     } catch (e) {
-      throw HttpException("Houve um Erro!" + e.code.toString());
+      throw HttpException("Houve um Erro!" + e.toString());
     }
 
     await FirebaseFirestore.instance
         .collection('user')
-        .doc(user.user.uid)
+        .doc(user!.user!.uid)
         .set({
           'firstName': name,
           'lastName': lastname,
@@ -111,7 +111,7 @@ class Auth with ChangeNotifier {
           await FirebaseFirestore.instance.collection('user').doc(uid).get();
       var data = snapshot.data();
       _userInfo = new AppUser(
-        firstName: data['firstName'],
+        firstName: data!['firstName'],
         lastName: data['lastName'],
         email: data['email'],
         bthDate: data['bthDate'],

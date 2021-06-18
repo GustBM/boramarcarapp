@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final User _user = Provider.of<Auth>(context, listen: false).getUser;
+    // final User? _user = Provider.of<Auth>(context, listen: false).getUser;
 
     Future<void> _refresh(BuildContext context) async {
       try {
@@ -84,7 +84,7 @@ class HomeScreen extends StatelessWidget {
                         primary: Theme.of(context).primaryColor,
                         textStyle: TextStyle(
                           color:
-                              Theme.of(context).primaryTextTheme.button.color,
+                              Theme.of(context).primaryTextTheme.button!.color,
                         )),
                   ),
                 ],
