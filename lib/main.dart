@@ -1,3 +1,4 @@
+import 'package:boramarcarapp/screens/schduele_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -8,7 +9,8 @@ import 'package:boramarcarapp/screens/home_screen.dart';
 import 'package:boramarcarapp/screens/splash_screen.dart';
 import 'package:boramarcarapp/providers/events.dart';
 import 'package:boramarcarapp/screens/auth_screen.dart';
-import 'package:boramarcarapp/screens/event_detail_screen.dart';
+import 'package:boramarcarapp/screens/event/event_detail_screen.dart';
+import 'package:boramarcarapp/screens/event/event_new_screen.dart';
 import 'package:boramarcarapp/screens/settings_screen.dart';
 
 Future<void> main() async {
@@ -55,8 +57,10 @@ class BoraMarcarApp extends StatelessWidget {
           ],
           theme: ThemeData(
             brightness: Brightness.light,
-            primaryColor: Colors.amber[400],
-            accentColor: Color.fromRGBO(82, 104, 143, 1),
+            // primaryColor: Colors.amber[400],
+            primaryColor: Color(0xFF5f65d3),
+            // accentColor: Color.fromRGBO(82, 104, 143, 1),
+            accentColor: Colors.amber[400],
             fontFamily: 'Lato',
             textTheme: TextTheme(
               headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
@@ -71,8 +75,8 @@ class BoraMarcarApp extends StatelessWidget {
                   print('Erro! ${snapshot.error.toString()}');
                   return Text("Houve um erro!");
                 } else if (snapshot.hasData) {
-                  return // HomeScreen();
-                      auth.isAuth
+                  return
+                      /*auth.isAuth
                           ? HomeScreen()
                           : FutureBuilder(
                               future: auth.tryAutoAuth(),
@@ -80,7 +84,15 @@ class BoraMarcarApp extends StatelessWidget {
                                   authResultSnapshot.connectionState ==
                                           ConnectionState.waiting
                                       ? SplashScreen()
-                                      : AuthScreen());
+                                      : AuthScreen());*/
+                      auth.isAuth
+                          ? FutureBuilder(
+                              builder: (ctx, authResultSnapshot) =>
+                                  authResultSnapshot.connectionState ==
+                                          ConnectionState.waiting
+                                      ? SplashScreen()
+                                      : HomeScreen())
+                          : AuthScreen();
                 } else {
                   return SplashScreen();
                 }
@@ -89,6 +101,8 @@ class BoraMarcarApp extends StatelessWidget {
             HomeScreen.routeName: (ctx) => HomeScreen(),
             EventDetailScreen.routeName: (ctx) => EventDetailScreen(),
             SettingsScreen.routeName: (ctx) => SettingsScreen(),
+            EventFormScreen.routeName: (ctx) => EventFormScreen(),
+            SchedueleScreen.routeName: (ctx) => SchedueleScreen(),
           },
         ),
       ),

@@ -1,7 +1,8 @@
-import 'package:boramarcarapp/models/event.dart';
+import 'package:boramarcarapp/screens/event/event_detail_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
+
+import 'package:boramarcarapp/models/event.dart';
 
 class Events extends ChangeNotifier {
   late final String? authToken;
@@ -24,19 +25,34 @@ class Events extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addEvent(Event event) {
+  Future<void> addEvent(
+      String name,
+      String manager,
+      String managerId,
+      DateTime date,
+      String location,
+      String description,
+      BuildContext context,
+      String? imageUrl) {
     return events
         .add({
-          'name': event.name,
-          'manager': event.manager,
-          'managerId': event.manager,
-          'date': event.date,
-          'location': event.location,
-          'imageUrl': event.imageUrl,
-          'description': event.description,
+          'name': name,
+          'manager': manager,
+          'managerId': manager,
+          'date': date,
+          'location': location,
+          'imageUrl': imageUrl,
+          'description': description,
         })
-        .then((value) => print("Event Added"))
-        .catchError((error) => print("Failed to add event: $error"));
+        .then((value) => goToEvent(context, value.id))
+        .catchError((error) => print('Failed to add event: $error'));
+  }
+
+  void goToEvent(BuildContext context, String id) {
+    Navigator.of(context).pushNamed(
+      EventDetailScreen.routeName,
+      arguments: id,
+    );
   }
 
   Future<void> getAndFetchEvents() async {

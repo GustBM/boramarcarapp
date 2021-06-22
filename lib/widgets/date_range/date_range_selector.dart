@@ -4,9 +4,8 @@ import 'package:intl/intl.dart';
 
 class DateRangeSelector extends StatefulWidget {
   final Function notifyParent;
-  final String title;
 
-  DateRangeSelector(this.title, this.notifyParent);
+  DateRangeSelector(this.notifyParent);
 
   @override
   _DateRangeSelector createState() => _DateRangeSelector();
@@ -23,7 +22,7 @@ class _DateRangeSelector extends State<DateRangeSelector> {
               start: DateTime.now(),
               end: DateTime.now().add(Duration(days: 5))),
           decoration: InputDecoration(
-            labelText: widget.title,
+            labelText: 'Datas Possíveis do Evento',
             prefixIcon: Icon(Icons.date_range),
             hintText: 'Selecione o período',
             border: OutlineInputBorder(),
@@ -35,7 +34,9 @@ class _DateRangeSelector extends State<DateRangeSelector> {
             return null;
           },
           onSaved: (value) {
+            print(value.toString());
             setState(() {
+              print(value.toString());
               widget.notifyParent(value);
             });
           }),

@@ -1,6 +1,6 @@
+import 'package:boramarcarapp/widgets/event/event_invited_chip.dart';
 import 'package:flutter/material.dart';
 
-// Define a custom Form widget.
 class EventForm extends StatefulWidget {
   final Function addEvent;
 
@@ -14,15 +14,10 @@ class EventFormState extends State<EventForm> {
 
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
-  DateTimeRange _dateRange = new DateTimeRange(
-    start: DateTime.now(),
-    end: DateTime.now().add(
-      Duration(days: 5),
-    ),
-  );
+  // final _locationController =
 
-  final _nameFocus = FocusNode();
-  final _descriptionFocus = FocusNode();
+  // final _nameFocus = FocusNode();
+  // final _descriptionFocus = FocusNode();
 
   @override
   void dispose() {
@@ -33,28 +28,63 @@ class EventFormState extends State<EventForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: <Widget>[
-          TextFormField(
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text('Processing Data')));
-              }
-            },
-            child: Text('Submit'),
-          ),
-        ],
+    return Padding(
+      padding: const EdgeInsets.all(32.0),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: 200,
+              width: double.infinity,
+              child: Image.asset(
+                'assets/images/baloes.jpg',
+                fit: BoxFit.cover,
+              ),
+            ),
+            TextFormField(
+              decoration: InputDecoration(labelText: 'Nome do Evento'),
+              controller: _nameController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Nome Obrigatório';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              decoration: InputDecoration(labelText: 'Descrição'),
+              controller: _descriptionController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Descrição Obrigatória';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 10),
+            TextFormField(
+              decoration: InputDecoration(labelText: 'Endereço'),
+              controller: _descriptionController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Endereço Obrigatório';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text('Processing Data')));
+                } else {}
+              },
+              child: Text('Criar Evento'),
+            ),
+          ],
+        ),
       ),
     );
   }

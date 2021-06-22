@@ -48,9 +48,7 @@ class _DateRangeFormState extends State<DateRangeForm> {
         key: myFormKey,
         child: Column(
           children: [
-            SafeArea(
-                child: DateRangeSelector(
-                    "Datas Possíveis do Evento", refreshEventRange)),
+            SafeArea(child: DateRangeSelector(refreshEventRange)),
             ElevatedButton(
               child: Text('Enviar'),
               onPressed: _submitForm,

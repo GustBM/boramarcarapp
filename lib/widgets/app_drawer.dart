@@ -8,8 +8,10 @@ import '../providers/auth.dart';
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final AppUser? _userData = Provider.of<Auth>(context).getUserInfo;
-    final User? _userInfo = Provider.of<Auth>(context).getUser;
+    // final AppUser _userData = Provider.of<Auth>(context).getUserInfo;
+    // final User _userInfo = Provider.of<Auth>(context).getUser;
+    var _userData = null;
+    var _userInfo = null;
     return Drawer(
       child: Column(
         children: <Widget>[
@@ -23,7 +25,7 @@ class AppDrawer extends StatelessWidget {
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(30.0),
-                    child: _userInfo!.photoURL == null
+                    child: _userInfo == null
                         ? Image.asset(
                             'assets/images/standard_user_photo.png',
                             width: 40,
@@ -34,7 +36,7 @@ class AppDrawer extends StatelessWidget {
                 SizedBox(
                   width: 20,
                 ),
-                Text(_userData!.firstName),
+                Text('_userData.firstName'),
               ],
             ),
             automaticallyImplyLeading: false,
@@ -52,7 +54,15 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.event),
             title: Text('Novo Evento'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed('/new_event');
+              Navigator.of(context).pushReplacementNamed('/new-event');
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.access_time_rounded),
+            title: Text('Meu Horário'),
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed('/schedule');
             },
           ),
           Divider(),
@@ -70,9 +80,6 @@ class AppDrawer extends StatelessWidget {
             onTap: () {
               Navigator.of(context).pop();
               Navigator.of(context).pushReplacementNamed('/');
-
-              // Navigator.of(context)
-              //     .pushReplacementNamed(UserProductsScreen.routeName);
               Provider.of<Auth>(context, listen: false).logout();
             },
           ),

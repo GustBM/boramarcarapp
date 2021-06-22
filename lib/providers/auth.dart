@@ -9,13 +9,11 @@ enum authProblems { UserNotFound, PasswordNotValid, NetworkError }
 
 class Auth with ChangeNotifier {
   late String? _token;
-  late User? _userData;
-  late AppUser? _userInfo;
+  late User _userData;
+  late AppUser _userInfo;
 
   bool get isAuth {
     if (FirebaseAuth.instance.currentUser != null) {
-      setUserInfo(FirebaseAuth.instance.currentUser!.uid);
-      _userData = FirebaseAuth.instance.currentUser!;
       return true;
     }
     return false;
@@ -25,11 +23,11 @@ class Auth with ChangeNotifier {
     return _token;
   }
 
-  User? get getUser {
+  User get getUser {
     return _userData;
   }
 
-  AppUser? get getUserInfo {
+  AppUser get getUserInfo {
     return _userInfo;
   }
 
@@ -58,7 +56,7 @@ class Auth with ChangeNotifier {
       }
     }
     _userData = FirebaseAuth.instance.currentUser!;
-    setUserInfo(_userData!.uid);
+    setUserInfo(_userData.uid);
     notifyListeners();
   }
 
@@ -99,8 +97,6 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> logout() async {
-    _token = null;
-    _userInfo = null;
     await FirebaseAuth.instance.signOut();
     notifyListeners();
   }
@@ -123,9 +119,10 @@ class Auth with ChangeNotifier {
   }
 
   Future<bool> tryAutoAuth() async {
-    if (FirebaseAuth.instance.currentUser != null) {
-      return true;
-    } else
-      return false;
+    _userData = FirebaseAuth.instance.currentUser!;
+    await setUserInfo(_userData.uid);
+
+    // ignore: unnecessary_null_comparison
+    return _userData != null && _userInfo != null;
   }
 }
