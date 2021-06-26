@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class Schedule {
+class Schedule with ChangeNotifier {
   final int userId;
-  final List<DateTimeRange> schedule;
+  final DateTimeRange schedule;
 
   Schedule({
     required this.userId,

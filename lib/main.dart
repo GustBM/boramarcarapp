@@ -1,4 +1,3 @@
-import 'package:boramarcarapp/screens/schduele_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -8,10 +7,12 @@ import 'package:boramarcarapp/providers/auth.dart';
 import 'package:boramarcarapp/screens/home_screen.dart';
 import 'package:boramarcarapp/screens/splash_screen.dart';
 import 'package:boramarcarapp/providers/events.dart';
+import 'package:boramarcarapp/providers/schedules.dart';
 import 'package:boramarcarapp/screens/auth_screen.dart';
 import 'package:boramarcarapp/screens/event/event_detail_screen.dart';
 import 'package:boramarcarapp/screens/event/event_new_screen.dart';
 import 'package:boramarcarapp/screens/settings_screen.dart';
+import 'package:boramarcarapp/screens/schduele_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,6 +45,10 @@ class BoraMarcarApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<Events>(
           create: (_) => Events(),
+          // update: (ctx, auth, previousEvents) => previousEvents!..update(),
+        ),
+        ChangeNotifierProvider<Schedules>(
+          create: (_) => Schedules(),
           // update: (ctx, auth, previousEvents) => previousEvents!..update(),
         ),
       ],

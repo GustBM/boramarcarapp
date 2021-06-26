@@ -1,4 +1,3 @@
-import 'package:boramarcarapp/widgets/event/event_invited_chip.dart';
 import 'package:flutter/material.dart';
 
 class EventForm extends StatefulWidget {
@@ -77,8 +76,8 @@ class EventFormState extends State<EventForm> {
             ElevatedButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text('Processing Data')));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Processando Informações...')));
                 } else {}
               },
               child: Text('Criar Evento'),

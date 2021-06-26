@@ -106,114 +106,132 @@ class _EventFormState extends State<EventFormScreen> {
       appBar: AppBar(title: Text('Novo Evento')),
       drawer: AppDrawer(),
       body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            FormBuilder(
-              key: _formKey,
-              autovalidateMode: AutovalidateMode.disabled,
-              child: Column(
-                children: <Widget>[
-                  FormBuilderTextField(
-                    name: 'name',
-                    decoration: InputDecoration(
-                      labelText: 'Nome do Evento',
-                    ),
-                    validator: FormBuilderValidators.required(context,
-                        errorText: 'Campo Obrigatório'),
-                  ),
-                  FormBuilderTextField(
-                    name: 'local',
-                    decoration: InputDecoration(
-                      labelText: 'Endereço',
-                    ),
-                    validator: FormBuilderValidators.required(context,
-                        errorText: 'Campo Obrigatório'),
-                  ),
-                  FormBuilderTextField(
-                    name: 'description',
-                    decoration: InputDecoration(
-                      labelText: 'Descrição',
-                    ),
-                    onChanged: _onChanged,
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(context,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: <Widget>[
+              FormBuilder(
+                key: _formKey,
+                autovalidateMode: AutovalidateMode.disabled,
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(height: 10),
+                    FormBuilderTextField(
+                      name: 'name',
+                      decoration: InputDecoration(
+                        labelText: 'Nome do Evento',
+                        prefixIcon: Icon(Icons.short_text_outlined),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: FormBuilderValidators.required(context,
                           errorText: 'Campo Obrigatório'),
-                      FormBuilderValidators.max(context, 500,
-                          errorText: 'Máximo de 500 caracteres'),
-                    ]),
-                    keyboardType: TextInputType.text,
-                  ),
-                  FormBuilderDateRangePicker(
-                    name: 'date_range',
-                    firstDate: DateTime.now(),
-                    lastDate: DateTime(DateTime.now().year + 1),
-                    format: DateFormat('dd-MM-yyyy'),
-                    onChanged: _onChanged,
-                    decoration: InputDecoration(
-                      labelText: 'Intervalo de Data',
-                      helperText: '*Intervalo máximo de 6 meses',
                     ),
-                    validator: FormBuilderValidators.required(context,
-                        errorText: 'Campo Obrigatório'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      /*showModalBottomSheet(
-                          context: context,
-                          builder: (context) {
-                            return EventInviteModal(invitedList, addChip);
-                          });*/
-                    },
-                    child: Text(
-                      '+ Adicionar Convidado',
-                      style: TextStyle(
-                          decoration: TextDecoration.underline, fontSize: 22),
+                    SizedBox(height: 10),
+                    FormBuilderTextField(
+                      name: 'local',
+                      decoration: InputDecoration(
+                        labelText: 'Endereço',
+                        prefixIcon: Icon(Icons.location_on_sharp),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: FormBuilderValidators.required(context,
+                          errorText: 'Campo Obrigatório'),
                     ),
-                  ),
-                ],
+                    SizedBox(height: 10),
+                    FormBuilderTextField(
+                      name: 'description',
+                      decoration: InputDecoration(
+                        labelText: 'Descrição',
+                        prefixIcon: Icon(Icons.short_text_outlined),
+                        border: OutlineInputBorder(),
+                      ),
+                      onChanged: _onChanged,
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.required(context,
+                            errorText: 'Campo Obrigatório'),
+                        FormBuilderValidators.max(context, 500,
+                            errorText: 'Máximo de 500 caracteres'),
+                      ]),
+                      keyboardType: TextInputType.text,
+                    ),
+                    SizedBox(height: 10),
+                    SafeArea(
+                      child: FormBuilderDateRangePicker(
+                        name: 'date_range',
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime(DateTime.now().year + 1),
+                        format: DateFormat('dd-MM-yyyy'),
+                        onChanged: _onChanged,
+                        decoration: InputDecoration(
+                          labelText: 'Intervalo de Data',
+                          helperText: '*Intervalo máximo de 6 meses',
+                          prefixIcon: Icon(Icons.date_range),
+                          hintText: 'Selecione o período',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: FormBuilderValidators.required(context,
+                            errorText: 'Campo Obrigatório'),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        /*showModalBottomSheet(
+                            context: context,
+                            builder: (context) {
+                              return EventInviteModal(invitedList, addChip);
+                            });*/
+                      },
+                      child: Text(
+                        '+ Adicionar Convidado',
+                        style: TextStyle(
+                            decoration: TextDecoration.underline, fontSize: 22),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 20),
-            if (_isLoading)
-              CircularProgressIndicator()
-            else
-              Row(
-                children: <Widget>[
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: MaterialButton(
-                      color: Theme.of(context).accentColor,
-                      child: Text(
-                        "Enviar",
-                        style: TextStyle(color: Colors.white),
+              SizedBox(height: 20),
+              if (_isLoading)
+                CircularProgressIndicator()
+              else
+                Row(
+                  children: <Widget>[
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: MaterialButton(
+                        color: Theme.of(context).accentColor,
+                        child: Text(
+                          "Enviar",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: () {
+                          _formKey.currentState!.save();
+                          if (_formKey.currentState!.validate()) {
+                            _submit();
+                          } else {
+                            print("validation failed");
+                          }
+                        },
                       ),
-                      onPressed: () {
-                        _formKey.currentState!.save();
-                        if (_formKey.currentState!.validate()) {
-                          _submit();
-                        } else {
-                          print("validation failed");
-                        }
-                      },
                     ),
-                  ),
-                  SizedBox(width: 20),
-                  Expanded(
-                    child: MaterialButton(
-                      color: Theme.of(context).accentColor,
-                      child: Text(
-                        "Limpar",
-                        style: TextStyle(color: Colors.white),
+                    SizedBox(width: 20),
+                    Expanded(
+                      child: MaterialButton(
+                        color: Theme.of(context).accentColor,
+                        child: Text(
+                          "Limpar",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: () {
+                          _formKey.currentState!.reset();
+                        },
                       ),
-                      onPressed: () {
-                        _formKey.currentState!.reset();
-                      },
                     ),
-                  ),
-                  SizedBox(width: 10),
-                ],
-              )
-          ],
+                    SizedBox(width: 10),
+                  ],
+                )
+            ],
+          ),
         ),
       ),
     );

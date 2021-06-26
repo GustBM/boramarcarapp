@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/auth.dart';
 
+// TODO: Checar ValueListenableBuilder pros dados de usuário
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,7 @@
-import 'package:boramarcarapp/screens/event/event_detail_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
+import 'package:boramarcarapp/screens/event/event_detail_screen.dart';
 import 'package:boramarcarapp/models/event.dart';
 
 class Events extends ChangeNotifier {
@@ -17,8 +17,32 @@ class Events extends ChangeNotifier {
     return [..._eventList];
   }
 
-  Event findById(String eventId) {
-    return _eventList.firstWhere((element) => element.eventId == eventId);
+  Future<Event>? setDatatoEvent(DocumentSnapshot<Object?> value) async {
+    return new Event(
+        eventId: value['eventId'],
+        name: value['name'],
+        manager: value['manager'],
+        managerId: value['managerId'],
+        date: value['date'],
+        location: value['location'],
+        description: value['description']);
+  }
+
+  /*Future<Event?>? findById(String eventId) async {
+    Future<Event?>? resp;
+
+    events.doc(eventId).get().then((value) {
+      resp = setDatatoEvent(value);
+    }).catchError((error) {
+      print('Failed to add event: $error');
+      return null;
+    }).whenComplete(() {
+      return resp;
+    });
+  }*/
+
+  Future<DocumentSnapshot<Object?>>? findById(String eventId) async {
+    return events.doc(eventId).get();
   }
 
   Future<void> update() async {
