@@ -18,20 +18,20 @@ class Schedules extends ChangeNotifier {
 
   Future<void> newAddSchedule(
       String userId,
-      String sundayIni,
-      String sundayEnd,
-      String mondayIni,
-      String mondayEnd,
-      String tuesdayIni,
-      String tuesdayEnd,
-      String wednesdayIni,
-      String wednesdayEnd,
-      String thursdayIni,
-      String thursdayEnd,
-      String fridayIni,
-      String fridayEnd,
-      String saturdayIni,
-      String saturdayEnd) async {
+      int sundayIni,
+      int sundayEnd,
+      int mondayIni,
+      int mondayEnd,
+      int tuesdayIni,
+      int tuesdayEnd,
+      int wednesdayIni,
+      int wednesdayEnd,
+      int thursdayIni,
+      int thursdayEnd,
+      int fridayIni,
+      int fridayEnd,
+      int saturdayIni,
+      int saturdayEnd) async {
     var schedules =
         FirebaseFirestore.instance.collection('schedule').doc(userId);
     schedules
@@ -66,6 +66,60 @@ class Schedules extends ChangeNotifier {
         })
         .then((value) => print('Novo schedule'))
         .catchError((error) => print('Failed to add event: $error'));
+  }
+
+  List<int> _iniList() {
+    return [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ];
+  }
+
+  void getIdealDate(DateTimeRange dateTimeRange, Schedule schedule) {
+    List<int> sundayList = _iniList();
+    List<int> mondayList = _iniList();
+    List<int> tuesdayList = _iniList();
+    List<int> wednesdayList = _iniList();
+    List<int> thursdayList = _iniList();
+    List<int> fridayList = _iniList();
+    List<int> saturdayList = _iniList();
+
+    for (var i = schedule.sundayIni; i <= schedule.sundayEnd; i++)
+      sundayList[i]++;
+    for (var i = schedule.mondayIni; i <= schedule.mondayEnd; i++)
+      mondayList[i]++;
+    for (var i = schedule.tuesdayIni; i <= schedule.tuesdayEnd; i++)
+      tuesdayList[i]++;
+    for (var i = schedule.wednesdayIni; i <= schedule.wednesdayEnd; i++)
+      wednesdayList[i]++;
+    for (var i = schedule.thursdayIni; i <= schedule.thursdayEnd; i++)
+      thursdayList[i]++;
+    for (var i = schedule.fridayIni; i <= schedule.fridayEnd; i++)
+      fridayList[i]++;
+    for (var i = schedule.saturdayIni; i <= schedule.saturdayEnd; i++)
+      saturdayList[i]++;
   }
 
   /// Função retorna a data ideal dado um espaço de tempo do evento [eventRange]

@@ -6,6 +6,8 @@ class Event with ChangeNotifier {
   final String manager;
   final String managerId;
   final DateTime date;
+  final DateTime dateIni;
+  final DateTime dateEnd;
   final String location;
   final String imageUrl;
   final String description;
@@ -16,6 +18,8 @@ class Event with ChangeNotifier {
     required this.manager,
     required this.managerId,
     required this.date,
+    required this.dateIni,
+    required this.dateEnd,
     required this.location,
     required this.description,
     this.imageUrl = '',

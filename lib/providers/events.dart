@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:boramarcarapp/screens/event/event_detail_screen.dart';
 import 'package:boramarcarapp/models/event.dart';
+import 'package:boramarcarapp/models/http_exception.dart';
 
 class Events extends ChangeNotifier {
   late final String? authToken;
@@ -24,6 +25,8 @@ class Events extends ChangeNotifier {
         manager: value['manager'],
         managerId: value['managerId'],
         date: value['date'],
+        dateIni: value['dateIni'],
+        dateEnd: value['dateEnd'],
         location: value['location'],
         description: value['description']);
   }
@@ -54,25 +57,50 @@ class Events extends ChangeNotifier {
       String manager,
       String managerId,
       DateTime date,
+      DateTime dateIni,
+      DateTime dateEnd,
       String location,
       String description,
       BuildContext context,
       String? imageUrl) {
+    List<String> invited = [];
+    invited.add(managerId);
     return events
         .add({
           'name': name,
           'manager': manager,
-          'managerId': manager,
+          'managerId': managerId,
           'date': date,
+          'dateIni': dateIni,
+          'dateEnd': dateEnd,
           'location': location,
           'imageUrl': imageUrl,
           'description': description,
+          'invited': invited,
         })
-        .then((value) => goToEvent(context, value.id))
-        .catchError((error) => print('Failed to add event: $error'));
+        .then((value) => goToEvent(context, value.id, managerId, invited))
+        .catchError(
+            (e) => throw HttpException("Houve um Erro!" + e.code.toString()));
   }
 
-  void goToEvent(BuildContext context, String id) {
+  Future<void> updateEventUserList(String userId, String id) async {
+    var snapshot =
+        await FirebaseFirestore.instance.collection('user').doc(userId).get();
+    var data = snapshot.data();
+
+    List<String> invitedList = new List<String>.from(data!['invited']);
+
+    invitedList.add(id);
+
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(userId)
+        .update({'invited': invitedList});
+  }
+
+  void goToEvent(
+      BuildContext context, String id, String userId, List<String> invited) {
+    updateEventUserList(userId, id);
     Navigator.of(context).pushNamed(
       EventDetailScreen.routeName,
       arguments: id,
@@ -93,6 +121,8 @@ class Events extends ChangeNotifier {
         manager: event['manager'],
         managerId: event['managerId'],
         date: event['date'].toDate(),
+        dateIni: event['dateIni'].toDate(),
+        dateEnd: event['dateEnd'].toDate(),
         location: 'teste',
         description: event['description'],
       );

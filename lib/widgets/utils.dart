@@ -19,6 +19,28 @@ class UtilFunctions {
   }
 }
 
+class SnapshotEmptyMsg extends StatelessWidget {
+  final String msg;
+  SnapshotEmptyMsg(this.msg);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            msg,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class SnapshotErroMsg extends StatelessWidget {
   final String msg;
   SnapshotErroMsg(this.msg);

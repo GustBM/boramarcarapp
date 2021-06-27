@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -18,10 +19,12 @@ class EventFormScreen extends StatefulWidget {
 
 class _EventFormState extends State<EventFormScreen> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
-
+  final User? _userInfo = FirebaseAuth.instance.currentUser;
   final invitedList = ['Teste 1', 'Teste 2'];
 
   var _isLoading = false;
+
+  final userEmailController = TextEditingController();
 
   void _showErrorDialog(String message) {
     showDialog(
@@ -41,10 +44,6 @@ class _EventFormState extends State<EventFormScreen> {
   }
 
   void _onChanged(dynamic value) {}
-
-  void _refreshEventRange(dynamic value) {
-    print(value);
-  }
 
   void removeChip(String label) {
     setState(() {
@@ -72,12 +71,15 @@ class _EventFormState extends State<EventFormScreen> {
     final String eventDescription = _formKey.currentState!.value['description'];
     final DateTimeRange eventDaterange =
         _formKey.currentState!.value['date_range'];
+    var userId = _userInfo!.uid;
     try {
       await Provider.of<Events>(context, listen: false).addEvent(
           eventName,
-          'manager',
-          'managerId',
+          'Gustavo',
+          userId,
           eventDaterange.start,
+          eventDaterange.start,
+          eventDaterange.end,
           eventLocal,
           eventDescription,
           context,
@@ -85,15 +87,17 @@ class _EventFormState extends State<EventFormScreen> {
     } on HttpException catch (e) {
       var errMessage = "Erro no novo evento.\n${e.toString()}";
       _showErrorDialog(errMessage);
-    } catch (e) {
-      var errMessage = "Falha no novo evento.\n" + e.toString();
-      _showErrorDialog(errMessage);
-    } finally {
-      _formKey.currentState!.reset();
-      Navigator.of(context).pushReplacementNamed('/');
       setState(() {
         _isLoading = false;
       });
+      return;
+    } catch (e) {
+      var errMessage = "Falha no novo evento.\n" + e.toString();
+      _showErrorDialog(errMessage);
+      setState(() {
+        _isLoading = false;
+      });
+      return;
     }
     setState(() {
       _isLoading = false;
@@ -138,23 +142,6 @@ class _EventFormState extends State<EventFormScreen> {
                           errorText: 'Campo Obrigatório'),
                     ),
                     SizedBox(height: 10),
-                    FormBuilderTextField(
-                      name: 'description',
-                      decoration: InputDecoration(
-                        labelText: 'Descrição',
-                        prefixIcon: Icon(Icons.short_text_outlined),
-                        border: OutlineInputBorder(),
-                      ),
-                      onChanged: _onChanged,
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(context,
-                            errorText: 'Campo Obrigatório'),
-                        FormBuilderValidators.max(context, 500,
-                            errorText: 'Máximo de 500 caracteres'),
-                      ]),
-                      keyboardType: TextInputType.text,
-                    ),
-                    SizedBox(height: 10),
                     SafeArea(
                       child: FormBuilderDateRangePicker(
                         name: 'date_range',
@@ -173,6 +160,23 @@ class _EventFormState extends State<EventFormScreen> {
                             errorText: 'Campo Obrigatório'),
                       ),
                     ),
+                    SizedBox(height: 10),
+                    FormBuilderTextField(
+                      name: 'description',
+                      decoration: InputDecoration(
+                        labelText: 'Descrição',
+                        prefixIcon: Icon(Icons.short_text_outlined),
+                        border: OutlineInputBorder(),
+                      ),
+                      onChanged: _onChanged,
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.required(context,
+                            errorText: 'Campo Obrigatório'),
+                        FormBuilderValidators.max(context, 500,
+                            errorText: 'Máximo de 500 caracteres'),
+                      ]),
+                      keyboardType: TextInputType.text,
+                    ),
                     TextButton(
                       onPressed: () {
                         /*showModalBottomSheet(
@@ -180,6 +184,7 @@ class _EventFormState extends State<EventFormScreen> {
                             builder: (context) {
                               return EventInviteModal(invitedList, addChip);
                             });*/
+                        Navigator.of(context).restorablePush(_dialogBuilder);
                       },
                       child: Text(
                         '+ Adicionar Convidado',
@@ -236,4 +241,35 @@ class _EventFormState extends State<EventFormScreen> {
       ),
     );
   }
+}
+
+Route<Object?> _dialogBuilder(BuildContext context, Object? arguments) {
+  final userEmailController = TextEditingController();
+  return DialogRoute<void>(
+    context: context,
+    builder: (BuildContext context) => SimpleDialog(
+      title: Text(
+        'Insira o e-mail do convidado',
+        style: TextStyle(fontSize: 20),
+      ),
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(5),
+          child: TextField(
+            decoration: InputDecoration(hintText: 'Enter a search term'),
+            controller: userEmailController,
+          ),
+        ),
+        TextButton(
+            child: Text(
+              'Adicionar Convidado',
+              style:
+                  TextStyle(decoration: TextDecoration.underline, fontSize: 22),
+            ),
+            onPressed: () {
+              print(userEmailController.value);
+            }),
+      ],
+    ),
+  );
 }

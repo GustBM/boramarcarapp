@@ -11,8 +11,7 @@ class AppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     // final AppUser _userData = Provider.of<Auth>(context).getUserInfo;
     // final User _userInfo = Provider.of<Auth>(context).getUser;
-    var _userData = null;
-    var _userInfo = null;
+    var _user = FirebaseAuth.instance.currentUser;
     return Drawer(
       child: Column(
         children: <Widget>[
@@ -26,18 +25,20 @@ class AppDrawer extends StatelessWidget {
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(30.0),
-                    child: _userInfo == null
+                    child: (_user == null || _user.photoURL == null)
                         ? Image.asset(
                             'assets/images/standard_user_photo.png',
                             width: 40,
                           )
-                        : Image.network(_userInfo.photoURL!),
+                        : Image.network(_user.photoURL!),
                   ),
                 ),
                 SizedBox(
                   width: 20,
                 ),
-                Text('_userData.firstName'),
+                Text((_user == null || _user.displayName == null
+                    ? 'Bem-Vindo'
+                    : _user.displayName)!),
               ],
             ),
             automaticallyImplyLeading: false,

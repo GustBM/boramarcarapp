@@ -77,15 +77,18 @@ class Auth with ChangeNotifier {
       throw HttpException("Houve um Erro!" + e.toString());
     }
 
+    User userResult = user!.user!;
+    await userResult.updateDisplayName(name);
+
     await FirebaseFirestore.instance
         .collection('user')
-        .doc(user!.user!.uid)
+        .doc(userResult.uid)
         .set({
           'firstName': name,
           'lastName': lastname,
           'bthDate': date,
           'email': email,
-          'schedule': null,
+          'invited': null
         })
         .then((value) => _authenticate(email, password))
         .catchError(

@@ -1,4 +1,5 @@
 import 'package:boramarcarapp/models/http_exception.dart';
+import 'package:boramarcarapp/models/schedule.dart';
 import 'package:boramarcarapp/models/user.dart';
 import 'package:boramarcarapp/providers/auth.dart';
 import 'package:boramarcarapp/providers/schedules.dart';
@@ -44,6 +45,10 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
       );
     }
 
+    int _parseFormInput(String formInput) {
+      return int.parse(formInput.substring(0, 2));
+    }
+
     Future<void> _submit() async {
       if (!_schedueleFormKey.currentState!.validate()) {
         return;
@@ -54,25 +59,74 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
         _isLoading = true;
       });
 
+      var sch = new Schedule(
+        userId: _userInfo!.uid,
+        sundayIni: _parseFormInput(
+            _schedueleFormKey.currentState!.value['sunday_hour_ini'] as String),
+        sundayEnd: _parseFormInput(
+            _schedueleFormKey.currentState!.value['sunday_hour_end'] as String),
+        mondayIni: _parseFormInput(
+            _schedueleFormKey.currentState!.value['monday_hour_ini'] as String),
+        mondayEnd: _parseFormInput(
+            _schedueleFormKey.currentState!.value['monday_hour_end'] as String),
+        tuesdayIni: _parseFormInput(_schedueleFormKey
+            .currentState!.value['tuesday_hour_ini'] as String),
+        tuesdayEnd: _parseFormInput(_schedueleFormKey
+            .currentState!.value['tuesday_hour_end'] as String),
+        wednesdayIni: _parseFormInput(_schedueleFormKey
+            .currentState!.value['wednesday_hour_ini'] as String),
+        wednesdayEnd: _parseFormInput(_schedueleFormKey
+            .currentState!.value['wednesday_hour_end'] as String),
+        thursdayIni: _parseFormInput(_schedueleFormKey
+            .currentState!.value['thursday_hour_ini'] as String),
+        thursdayEnd: _parseFormInput(_schedueleFormKey
+            .currentState!.value['thursday_hour_end'] as String),
+        fridayIni: _parseFormInput(
+            _schedueleFormKey.currentState!.value['friday_hour_ini'] as String),
+        fridayEnd: _parseFormInput(
+            _schedueleFormKey.currentState!.value['friday_hour_end'] as String),
+        saturdayIni: _parseFormInput(
+            _schedueleFormKey.currentState!.value['sunday_hour_ini'] as String),
+        saturdayEnd: _parseFormInput(
+            _schedueleFormKey.currentState!.value['sunday_hour_end'] as String),
+      );
+
       try {
-        /*await Provider.of<Schedules>(context, listen: false).addSchedule(
-            _userInfo!.uid, userDaterange.start, userDaterange.end);*/
+        Provider.of<Schedules>(context, listen: false).getIdealDate(
+            new DateTimeRange(
+                start: new DateTime.now(),
+                end: DateTime.now()..add(Duration(days: 7))),
+            sch);
         await Provider.of<Schedules>(context, listen: false).newAddSchedule(
-          _userInfo!.uid,
-          _schedueleFormKey.currentState!.value['sunday_hour_ini'],
-          _schedueleFormKey.currentState!.value['sunday_hour_end'],
-          _schedueleFormKey.currentState!.value['monday_hour_ini'],
-          _schedueleFormKey.currentState!.value['monday_hour_end'],
-          _schedueleFormKey.currentState!.value['tuesday_hour_ini'],
-          _schedueleFormKey.currentState!.value['tuesday_hour_end'],
-          _schedueleFormKey.currentState!.value['wednesday_hour_ini'],
-          _schedueleFormKey.currentState!.value['wednesday_hour_end'],
-          _schedueleFormKey.currentState!.value['thursday_hour_ini'],
-          _schedueleFormKey.currentState!.value['thursday_hour_end'],
-          _schedueleFormKey.currentState!.value['friday_hour_ini'],
-          _schedueleFormKey.currentState!.value['friday_hour_end'],
-          _schedueleFormKey.currentState!.value['sunday_hour_ini'],
-          _schedueleFormKey.currentState!.value['sunday_hour_end'],
+          _userInfo.uid,
+          _parseFormInput(_schedueleFormKey
+              .currentState!.value['sunday_hour_ini'] as String),
+          _parseFormInput(_schedueleFormKey
+              .currentState!.value['sunday_hour_end'] as String),
+          _parseFormInput(_schedueleFormKey
+              .currentState!.value['monday_hour_ini'] as String),
+          _parseFormInput(_schedueleFormKey
+              .currentState!.value['monday_hour_end'] as String),
+          _parseFormInput(_schedueleFormKey
+              .currentState!.value['tuesday_hour_ini'] as String),
+          _parseFormInput(_schedueleFormKey
+              .currentState!.value['tuesday_hour_end'] as String),
+          _parseFormInput(_schedueleFormKey
+              .currentState!.value['wednesday_hour_ini'] as String),
+          _parseFormInput(_schedueleFormKey
+              .currentState!.value['wednesday_hour_end'] as String),
+          _parseFormInput(_schedueleFormKey
+              .currentState!.value['thursday_hour_ini'] as String),
+          _parseFormInput(_schedueleFormKey
+              .currentState!.value['thursday_hour_end'] as String),
+          _parseFormInput(_schedueleFormKey
+              .currentState!.value['friday_hour_ini'] as String),
+          _parseFormInput(_schedueleFormKey
+              .currentState!.value['friday_hour_end'] as String),
+          _parseFormInput(_schedueleFormKey
+              .currentState!.value['saturday_hour_ini'] as String),
+          _parseFormInput(_schedueleFormKey
+              .currentState!.value['saturday_hour_end'] as String),
         );
       } on HttpException catch (e) {
         var errMessage = "Erro no novo evento.\n${e.toString()}";
@@ -94,6 +148,12 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
     }
 
     var hourOptionsIni = [
+      "00:00",
+      "01:00",
+      "02:00",
+      "03:00",
+      "04:00",
+      "05:00",
       "06:00",
       "07:00",
       "08:00",
@@ -111,10 +171,17 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
       "20:00",
       "21:00",
       "22:00",
-      "23:00",
+      "23:00"
     ];
 
     var hourOptionsEnd = [
+      "00:00",
+      "01:00",
+      "02:00",
+      "03:00",
+      "04:00",
+      "05:00",
+      "06:00",
       "07:00",
       "08:00",
       "09:00",
@@ -131,8 +198,7 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
       "20:00",
       "21:00",
       "22:00",
-      "23:00",
-      "00:00"
+      "23:00"
     ];
 
     var disableDay = [true, true, true, true, true, true, true];
@@ -179,8 +245,8 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
                               name: 'sunday_hour_ini',
                               hint: Text('Hora Inicial'),
                               initialValue: data.isNotEmpty
-                                  ? data['sundayIni']
-                                  : hourOptionsIni[0],
+                                  ? hourOptionsIni[data['sundayIni']]
+                                  : hourOptionsIni[6],
                               validator: FormBuilderValidators.compose(
                                   [FormBuilderValidators.required(context)]),
                               items: hourOptionsIni
@@ -198,8 +264,8 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
                               name: 'sunday_hour_end',
                               hint: Text('Hora Final'),
                               initialValue: data.isNotEmpty
-                                  ? data['sundayEnd']
-                                  : hourOptionsEnd[0],
+                                  ? hourOptionsEnd[data['sundayEnd']]
+                                  : hourOptionsEnd[18],
                               validator: FormBuilderValidators.compose(
                                   [FormBuilderValidators.required(context)]),
                               items: hourOptionsEnd
@@ -227,8 +293,8 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
                               name: 'monday_hour_ini',
                               hint: Text('Hora Inicial'),
                               initialValue: data.isNotEmpty
-                                  ? data['mondayIni']
-                                  : hourOptionsIni[0],
+                                  ? hourOptionsIni[data['mondayIni']]
+                                  : hourOptionsIni[6],
                               validator: FormBuilderValidators.compose(
                                   [FormBuilderValidators.required(context)]),
                               items: hourOptionsIni
@@ -245,8 +311,8 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
                               name: 'monday_hour_end',
                               hint: Text('Hora Final'),
                               initialValue: data.isNotEmpty
-                                  ? data['mondayEnd']
-                                  : hourOptionsEnd[0],
+                                  ? hourOptionsEnd[data['mondayEnd']]
+                                  : hourOptionsEnd[18],
                               validator: FormBuilderValidators.compose(
                                   [FormBuilderValidators.required(context)]),
                               items: hourOptionsEnd
@@ -273,8 +339,8 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
                               name: 'tuesday_hour_ini',
                               hint: Text('Hora Inicial'),
                               initialValue: data.isNotEmpty
-                                  ? data['tuesdayIni']
-                                  : hourOptionsIni[0],
+                                  ? hourOptionsEnd[data['tuesdayIni']]
+                                  : hourOptionsEnd[18],
                               validator: FormBuilderValidators.compose(
                                   [FormBuilderValidators.required(context)]),
                               items: hourOptionsIni
@@ -291,8 +357,8 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
                               name: 'tuesday_hour_end',
                               hint: Text('Hora Final'),
                               initialValue: data.isNotEmpty
-                                  ? data['tuesdayEnd']
-                                  : hourOptionsEnd[0],
+                                  ? hourOptionsEnd[data['tuesdayEnd']]
+                                  : hourOptionsEnd[18],
                               validator: FormBuilderValidators.compose(
                                   [FormBuilderValidators.required(context)]),
                               items: hourOptionsEnd
@@ -319,8 +385,8 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
                               name: 'wednesday_hour_ini',
                               hint: Text('Hora Inicial'),
                               initialValue: data.isNotEmpty
-                                  ? data['wednesdayIni']
-                                  : hourOptionsIni[0],
+                                  ? hourOptionsIni[data['wednesdayIni']]
+                                  : hourOptionsIni[6],
                               validator: FormBuilderValidators.compose(
                                   [FormBuilderValidators.required(context)]),
                               items: hourOptionsIni
@@ -337,8 +403,8 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
                               name: 'wednesday_hour_end',
                               hint: Text('Hora Final'),
                               initialValue: data.isNotEmpty
-                                  ? data['wednesdayEnd']
-                                  : hourOptionsEnd[0],
+                                  ? hourOptionsEnd[data['wednesdayEnd']]
+                                  : hourOptionsEnd[18],
                               validator: FormBuilderValidators.compose(
                                   [FormBuilderValidators.required(context)]),
                               items: hourOptionsIni
@@ -365,8 +431,8 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
                               name: 'thursday_hour_ini',
                               hint: Text('Hora Inicial'),
                               initialValue: data.isNotEmpty
-                                  ? data['thursdayIni']
-                                  : hourOptionsIni[0],
+                                  ? hourOptionsIni[data['thursdayIni']]
+                                  : hourOptionsIni[6],
                               validator: FormBuilderValidators.compose(
                                   [FormBuilderValidators.required(context)]),
                               items: hourOptionsIni
@@ -383,8 +449,8 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
                               name: 'thursday_hour_end',
                               hint: Text('Hora Final'),
                               initialValue: data.isNotEmpty
-                                  ? data['thursdayEnd']
-                                  : hourOptionsEnd[0],
+                                  ? hourOptionsEnd[data['thursdayEnd']]
+                                  : hourOptionsEnd[18],
                               validator: FormBuilderValidators.compose(
                                   [FormBuilderValidators.required(context)]),
                               items: hourOptionsEnd
@@ -411,8 +477,8 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
                               name: 'friday_hour_ini',
                               hint: Text('Hora Inicial'),
                               initialValue: data.isNotEmpty
-                                  ? data['fridayIni']
-                                  : hourOptionsIni[0],
+                                  ? hourOptionsIni[data['fridayIni']]
+                                  : hourOptionsIni[6],
                               validator: FormBuilderValidators.compose(
                                   [FormBuilderValidators.required(context)]),
                               items: hourOptionsIni
@@ -429,8 +495,8 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
                               name: 'friday_hour_end',
                               hint: Text('Hora Final'),
                               initialValue: data.isNotEmpty
-                                  ? data['fridayEnd']
-                                  : hourOptionsEnd[0],
+                                  ? hourOptionsEnd[data['fridayEnd']]
+                                  : hourOptionsEnd[18],
                               validator: FormBuilderValidators.compose(
                                   [FormBuilderValidators.required(context)]),
                               items: hourOptionsEnd
@@ -457,8 +523,8 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
                               name: 'saturday_hour_ini',
                               hint: Text('Hora Inicial'),
                               initialValue: data.isNotEmpty
-                                  ? data['saturdayIni']
-                                  : hourOptionsIni[0],
+                                  ? hourOptionsIni[data['saturdayIni']]
+                                  : hourOptionsIni[6],
                               validator: FormBuilderValidators.compose(
                                   [FormBuilderValidators.required(context)]),
                               items: hourOptionsIni
@@ -475,8 +541,8 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
                               name: 'saturday_hour_end',
                               hint: Text('Hora Final'),
                               initialValue: data.isNotEmpty
-                                  ? data['saturdayEnd']
-                                  : hourOptionsEnd[0],
+                                  ? hourOptionsEnd[data['saturdayEnd']]
+                                  : hourOptionsEnd[18],
                               validator: FormBuilderValidators.compose(
                                   [FormBuilderValidators.required(context)]),
                               items: hourOptionsEnd

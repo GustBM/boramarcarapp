@@ -42,6 +42,8 @@ class EventDetailScreen extends StatelessWidget {
               manager: data['manager'],
               managerId: data['managerId'],
               date: DateTime.parse(data['date'].toDate().toString()),
+              dateIni: DateTime.parse(data['dateIni'].toDate().toString()),
+              dateEnd: DateTime.parse(data['dateEnd'].toDate().toString()),
               location: data['location'],
               description: data['description'],
             );
