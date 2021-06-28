@@ -11,35 +11,53 @@ class AppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     // final AppUser _userData = Provider.of<Auth>(context).getUserInfo;
     // final User _userInfo = Provider.of<Auth>(context).getUser;
-    var _user = FirebaseAuth.instance.currentUser;
+    var _user = null;
+
+    Future<void> getUser() async {
+      _user = await FirebaseAuth.instance.currentUser;
+    }
+
     return Drawer(
       child: Column(
         children: <Widget>[
           AppBar(
-            title: Row(
-              children: [
-                InkWell(
-                  radius: 20.0,
-                  onTap: () {
-                    print('Click Profile Pic');
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30.0),
-                    child: (_user == null || _user.photoURL == null)
-                        ? Image.asset(
-                            'assets/images/standard_user_photo.png',
-                            width: 40,
-                          )
-                        : Image.network(_user.photoURL!),
-                  ),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-                Text((_user == null || _user.displayName == null
-                    ? 'Bem-Vindo'
-                    : _user.displayName)!),
-              ],
+            title: FutureBuilder(
+              future: getUser(),
+              builder: (ctx, dataSnapshot) {
+                if (dataSnapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (dataSnapshot.error != null) {
+                  return Center(
+                    child: Text('Houve um Erro'),
+                  );
+                } else {
+                  return Row(
+                    children: [
+                      InkWell(
+                        radius: 20.0,
+                        onTap: () {
+                          print('Click Profile Pic');
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(30.0),
+                          child: (_user == null || _user.photoURL == null)
+                              ? Image.asset(
+                                  'assets/images/standard_user_photo.png',
+                                  width: 40,
+                                )
+                              : Image.network(_user.photoURL!),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Text((_user == null || _user.displayName == null
+                          ? 'Bem-Vindo'
+                          : _user.displayName)!),
+                    ],
+                  );
+                }
+              },
             ),
             automaticallyImplyLeading: false,
           ),

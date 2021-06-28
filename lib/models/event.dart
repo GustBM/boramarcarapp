@@ -11,6 +11,7 @@ class Event with ChangeNotifier {
   final String location;
   final String imageUrl;
   final String description;
+  final List<String> invited;
 
   Event({
     required this.eventId,
@@ -22,6 +23,7 @@ class Event with ChangeNotifier {
     required this.dateEnd,
     required this.location,
     required this.description,
+    this.invited = const [],
     this.imageUrl = '',
   });
 }

@@ -87,8 +87,10 @@ class Events extends ChangeNotifier {
     var snapshot =
         await FirebaseFirestore.instance.collection('user').doc(userId).get();
     var data = snapshot.data();
+    List<String> invitedList = [];
 
-    List<String> invitedList = new List<String>.from(data!['invited']);
+    if (data!['invited'] != null)
+      invitedList = new List<String>.from(data['invited']);
 
     invitedList.add(id);
 
@@ -107,8 +109,10 @@ class Events extends ChangeNotifier {
     );
   }
 
-  Future<void> getAndFetchEvents() async {
-    var snapshot = await FirebaseFirestore.instance.collection('event').get();
+  Future<void> getAndFetchEvents(String uid) async {
+    var snapshot = await FirebaseFirestore.instance
+        .collection('event')
+        .where('invited', arrayContainsAny: [uid]).get();
     var dataAll = snapshot.docs.toList();
     final List<Event> loadedEvents = [];
 

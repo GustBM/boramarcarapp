@@ -1,3 +1,5 @@
+import 'package:boramarcarapp/models/http_exception.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class InvitedChipList extends StatelessWidget {
@@ -5,6 +7,22 @@ class InvitedChipList extends StatelessWidget {
   final Function setState;
 
   InvitedChipList(this.invitedList, this.setState);
+
+  final List<String> invitedName = [];
+  Future<void> getUserById() async {
+    invitedList.forEach((element) async {
+      try {
+        var snapshot = await FirebaseFirestore.instance
+            .collection('user')
+            .doc(element)
+            .get();
+        var data = snapshot.data();
+        invitedName.add(data!['firstName']);
+      } catch (e) {
+        throw HttpException("Houve um ao buscar os convidados!" + e.toString());
+      }
+    });
+  }
 
   Widget _buildChip(String label) {
     return Chip(
@@ -34,7 +52,7 @@ class InvitedChipList extends StatelessWidget {
   List<Widget> listChips() {
     List<Widget> chips = [];
 
-    invitedList.forEach((element) {
+    invitedName.forEach((element) {
       var chip = _buildChip(element);
       chips.add(chip);
     });
@@ -44,10 +62,27 @@ class InvitedChipList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 6.0,
-      runSpacing: 6.0,
-      children: listChips(),
+    return FutureBuilder<void>(
+      future: getUserById(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasError) {
+          return Text("Houve um Erro ao buscar os convidados.");
+        }
+
+        if (snapshot.hasData && !snapshot.data!.exists) {
+          return Text("Document does not exist");
+        }
+
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Wrap(
+            spacing: 6.0,
+            runSpacing: 6.0,
+            children: listChips(),
+          );
+        }
+
+        return Text("Buscando Convidados...");
+      },
     );
   }
 }

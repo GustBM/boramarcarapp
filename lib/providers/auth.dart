@@ -128,4 +128,22 @@ class Auth with ChangeNotifier {
     // ignore: unnecessary_null_comparison
     return _userData != null && _userInfo != null;
   }
+
+  Future<AppUser> getUserById(String uid) async {
+    AppUser userInfo;
+    try {
+      var snapshot =
+          await FirebaseFirestore.instance.collection('user').doc(uid).get();
+      var data = snapshot.data();
+      userInfo = new AppUser(
+        firstName: data!['firstName'],
+        lastName: data['lastName'],
+        email: data['email'],
+        bthDate: data['bthDate'],
+      );
+    } catch (e) {
+      throw HttpException("Houve um ao buscar os convidados!" + e.toString());
+    }
+    return userInfo;
+  }
 }

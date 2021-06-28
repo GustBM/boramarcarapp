@@ -16,8 +16,10 @@ class HomeScreen extends StatelessWidget {
     // final User? _user = Provider.of<Auth>(context, listen: false).getUser;
 
     Future<void> _refresh(BuildContext context) async {
+      String userId = await FirebaseAuth.instance.currentUser!.uid;
       try {
-        await Provider.of<Events>(context, listen: false).getAndFetchEvents();
+        await Provider.of<Events>(context, listen: false)
+            .getAndFetchEvents(userId);
       } catch (e) {
         // print(e);
       }

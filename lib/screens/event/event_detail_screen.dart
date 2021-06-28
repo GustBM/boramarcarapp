@@ -1,5 +1,3 @@
-import 'package:boramarcarapp/models/event.dart';
-import 'package:boramarcarapp/widgets/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +5,14 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 import 'package:boramarcarapp/providers/events.dart';
+import 'package:boramarcarapp/models/event.dart';
+import 'package:boramarcarapp/widgets/utils.dart';
+import 'package:boramarcarapp/widgets/event/event_invited_chip.dart';
 
 class EventDetailScreen extends StatelessWidget {
   static const routeName = '/event-detail';
+
+  void setInvitedList(Future<DocumentSnapshot<Object?>>? loadedEvent) {}
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +47,7 @@ class EventDetailScreen extends StatelessWidget {
               date: DateTime.parse(data['date'].toDate().toString()),
               dateIni: DateTime.parse(data['dateIni'].toDate().toString()),
               dateEnd: DateTime.parse(data['dateEnd'].toDate().toString()),
+              invited: new List<String>.from(data['invited']),
               location: data['location'],
               description: data['description'],
             );
@@ -52,7 +56,7 @@ class EventDetailScreen extends StatelessWidget {
                 title: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Text(thisEvent.name),
+                    Text('Evento'),
                   ],
                 ),
                 actions: <Widget>[
@@ -166,6 +170,8 @@ class EventDetailScreen extends StatelessWidget {
                         ],
                       ),
                     ),
+                    Text("Convidados", textScaleFactor: 1.5),
+                    InvitedChipList(thisEvent.invited, () {}),
                   ],
                 ),
               ),
