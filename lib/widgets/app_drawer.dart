@@ -1,4 +1,3 @@
-import 'package:boramarcarapp/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,9 +10,11 @@ class AppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     // final AppUser _userData = Provider.of<Auth>(context).getUserInfo;
     // final User _userInfo = Provider.of<Auth>(context).getUser;
+    // ignore: avoid_init_to_null
     var _user = null;
 
     Future<void> getUser() async {
+      // ignore: await_only_futures
       _user = await FirebaseAuth.instance.currentUser;
     }
 

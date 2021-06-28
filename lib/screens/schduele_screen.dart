@@ -1,15 +1,13 @@
-import 'package:boramarcarapp/models/http_exception.dart';
-import 'package:boramarcarapp/models/schedule.dart';
-import 'package:boramarcarapp/models/user.dart';
-import 'package:boramarcarapp/providers/auth.dart';
-import 'package:boramarcarapp/providers/schedules.dart';
-import 'package:boramarcarapp/widgets/app_drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:boramarcarapp/models/http_exception.dart';
+import 'package:boramarcarapp/models/schedule.dart';
+import 'package:boramarcarapp/providers/schedules.dart';
+import 'package:boramarcarapp/widgets/app_drawer.dart';
 
 class SchedueleScreen extends StatefulWidget {
   static const routeName = '/schedule';
@@ -59,46 +57,14 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
         _isLoading = true;
       });
 
-      var sch = new Schedule(
-        userId: _userInfo!.uid,
-        sundayIni: _parseFormInput(
-            _schedueleFormKey.currentState!.value['sunday_hour_ini'] as String),
-        sundayEnd: _parseFormInput(
-            _schedueleFormKey.currentState!.value['sunday_hour_end'] as String),
-        mondayIni: _parseFormInput(
-            _schedueleFormKey.currentState!.value['monday_hour_ini'] as String),
-        mondayEnd: _parseFormInput(
-            _schedueleFormKey.currentState!.value['monday_hour_end'] as String),
-        tuesdayIni: _parseFormInput(_schedueleFormKey
-            .currentState!.value['tuesday_hour_ini'] as String),
-        tuesdayEnd: _parseFormInput(_schedueleFormKey
-            .currentState!.value['tuesday_hour_end'] as String),
-        wednesdayIni: _parseFormInput(_schedueleFormKey
-            .currentState!.value['wednesday_hour_ini'] as String),
-        wednesdayEnd: _parseFormInput(_schedueleFormKey
-            .currentState!.value['wednesday_hour_end'] as String),
-        thursdayIni: _parseFormInput(_schedueleFormKey
-            .currentState!.value['thursday_hour_ini'] as String),
-        thursdayEnd: _parseFormInput(_schedueleFormKey
-            .currentState!.value['thursday_hour_end'] as String),
-        fridayIni: _parseFormInput(
-            _schedueleFormKey.currentState!.value['friday_hour_ini'] as String),
-        fridayEnd: _parseFormInput(
-            _schedueleFormKey.currentState!.value['friday_hour_end'] as String),
-        saturdayIni: _parseFormInput(
-            _schedueleFormKey.currentState!.value['sunday_hour_ini'] as String),
-        saturdayEnd: _parseFormInput(
-            _schedueleFormKey.currentState!.value['sunday_hour_end'] as String),
-      );
-
       try {
-        Provider.of<Schedules>(context, listen: false).getIdealDate(
+        /*Provider.of<Schedules>(context, listen: false).getIdealDate(
             new DateTimeRange(
                 start: new DateTime.now(),
-                end: DateTime.now()..add(Duration(days: 7))),
-            sch);
+                end: new DateTime.now().add(Duration(days: 7))),
+            ['X0jLZhdQcaTuVO6kIklJZ62NGa63', 'fuxDKNkI1NPPiLG2vZ6ar9u7Xlw1']);*/
         await Provider.of<Schedules>(context, listen: false).newAddSchedule(
-          _userInfo.uid,
+          _userInfo!.uid,
           _parseFormInput(_schedueleFormKey
               .currentState!.value['sunday_hour_ini'] as String),
           _parseFormInput(_schedueleFormKey
@@ -129,10 +95,10 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
               .currentState!.value['saturday_hour_end'] as String),
         );
       } on HttpException catch (e) {
-        var errMessage = "Erro no novo evento.\n${e.toString()}";
+        var errMessage = "Erro no novo horário.\n${e.toString()}";
         _showErrorDialog(errMessage);
       } catch (e) {
-        var errMessage = "Falha no novo evento.\n" + e.toString();
+        var errMessage = "Falha no novo horário.\n" + e.toString();
         _showErrorDialog(errMessage);
       } finally {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -211,15 +177,16 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
             .getUserSchedule(_userInfo!.uid),
         builder:
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-          if (snapshot.hasError ||
-              (snapshot.hasData && !snapshot.data!.exists)) {
+          if (snapshot.hasError) {
             return Text(
                 "Erro ao recuperar o horário. Tente novamente mais tarde.");
           }
-
+          Map<String, dynamic> data = {};
           if (snapshot.connectionState == ConnectionState.done) {
-            Map<String, dynamic> data =
-                snapshot.data!.data() as Map<String, dynamic>;
+            if (!(snapshot.hasData && !snapshot.data!.exists)) {
+              data = snapshot.data!.data() as Map<String, dynamic>;
+            }
+
             return SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),

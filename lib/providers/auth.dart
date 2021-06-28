@@ -121,6 +121,47 @@ class Auth with ChangeNotifier {
     return true;
   }
 
+  Future<AppUser?> getAppUserInfo(String uid) async {
+    try {
+      var snapshot =
+          await FirebaseFirestore.instance.collection('user').doc(uid).get();
+      var data = snapshot.data();
+      _userInfo = new AppUser(
+        firstName: data!['firstName'],
+        lastName: data['lastName'],
+        email: data['email'],
+        bthDate: data['bthDate'],
+      );
+    } catch (e) {
+      return null;
+    }
+    return _userInfo;
+  }
+
+  Future<void> validateEmails(List<String> emails) async {
+    var snapshot = await FirebaseFirestore.instance
+        .collection('user')
+        .where('email', arrayContainsAny: emails)
+        .get();
+    var dataAll = snapshot.docs.toList();
+    final List<String> loadedUsersEmails = [];
+    // print(dataAll);
+    dataAll.forEach((ev) async {
+      // var eventId = ev.id;
+      var event = ev.data();
+      String userEmail = event['email'];
+      loadedUsersEmails.add(userEmail);
+    });
+
+    // print(loadedUsersEmails);
+
+    //var output = loadedUsersEmails.where((element) => !emails.contains(element));
+
+    // print(output);
+
+    notifyListeners();
+  }
+
   Future<bool> tryAutoAuth() async {
     _userData = FirebaseAuth.instance.currentUser!;
     await setUserInfo(_userData.uid);

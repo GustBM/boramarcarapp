@@ -1,3 +1,4 @@
+import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:boramarcarapp/models/schedule.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -6,14 +7,31 @@ class Schedules extends ChangeNotifier {
   CollectionReference _schedules =
       FirebaseFirestore.instance.collection('schedule');
 
-  late Schedule _schedule;
-
-  Schedule get getSchedule {
-    return _schedule;
-  }
-
   Future<DocumentSnapshot> getUserSchedule(String userId) {
     return _schedules.doc(userId).get();
+  }
+
+  Future<Schedule?> getAndSetUserSchedule(String userId) async {
+    await _schedules.doc(userId).get().then((value) {
+      return new Schedule(
+        userId: userId,
+        sundayIni: value['sundayIni'],
+        sundayEnd: value['sundayEnd'],
+        mondayIni: value['mondayIni'],
+        mondayEnd: value['mondayEnd'],
+        tuesdayIni: value['tuesdayIni'],
+        tuesdayEnd: value['tuesdayEnd'],
+        wednesdayIni: value['wednesdayIni'],
+        wednesdayEnd: value['wednesdayEnd'],
+        thursdayIni: value['thursdayIni'],
+        thursdayEnd: value['thursdayEnd'],
+        fridayIni: value['fridayIni'],
+        fridayEnd: value['fridayEnd'],
+        saturdayIni: value['saturdayIni'],
+        saturdayEnd: value['saturdayEnd'],
+      );
+    }).catchError(
+        (e) => throw HttpException("Houve um Erro!" + e.code.toString()));
   }
 
   Future<void> newAddSchedule(
@@ -97,7 +115,27 @@ class Schedules extends ChangeNotifier {
     ];
   }
 
-  void getIdealDate(DateTimeRange dateTimeRange, Schedule schedule) {
+  int _indexOfMax(List<int> arr) {
+    var max = arr[0];
+    var maxIndex = 0;
+
+    for (var i = 1; i < arr.length; i++) {
+      if (arr[i] > max) {
+        maxIndex = i;
+        max = arr[i];
+      }
+    }
+
+    return maxIndex;
+  }
+
+  Future<List<DateTime>> getIdealDate(
+      DateTimeRange dateTimeRange, List<String> usersId) async {
+    // Map<DateTime, int> topDates = Map<DateTime, int>();
+    List<DateTime> avaliableDaysList = [];
+    List<Schedule> userSchedules = [];
+    List<DateTime> bsetDate = [];
+
     List<int> sundayList = _iniList();
     List<int> mondayList = _iniList();
     List<int> tuesdayList = _iniList();
@@ -106,20 +144,89 @@ class Schedules extends ChangeNotifier {
     List<int> fridayList = _iniList();
     List<int> saturdayList = _iniList();
 
-    for (var i = schedule.sundayIni; i <= schedule.sundayEnd; i++)
-      sundayList[i]++;
-    for (var i = schedule.mondayIni; i <= schedule.mondayEnd; i++)
-      mondayList[i]++;
-    for (var i = schedule.tuesdayIni; i <= schedule.tuesdayEnd; i++)
-      tuesdayList[i]++;
-    for (var i = schedule.wednesdayIni; i <= schedule.wednesdayEnd; i++)
-      wednesdayList[i]++;
-    for (var i = schedule.thursdayIni; i <= schedule.thursdayEnd; i++)
-      thursdayList[i]++;
-    for (var i = schedule.fridayIni; i <= schedule.fridayEnd; i++)
-      fridayList[i]++;
-    for (var i = schedule.saturdayIni; i <= schedule.saturdayEnd; i++)
-      saturdayList[i]++;
+    List<int> bestHours = [0, 0, 0, 0, 0, 0, 0];
+    int bestDay = 0;
+
+    await Future.forEach(usersId, (element) async {
+      await _schedules.doc(element as String).get().then((value) {
+        return new Schedule(
+          userId: element,
+          sundayIni: value['sundayIni'],
+          sundayEnd: value['sundayEnd'],
+          mondayIni: value['mondayIni'],
+          mondayEnd: value['mondayEnd'],
+          tuesdayIni: value['tuesdayIni'],
+          tuesdayEnd: value['tuesdayEnd'],
+          wednesdayIni: value['wednesdayIni'],
+          wednesdayEnd: value['wednesdayEnd'],
+          thursdayIni: value['thursdayIni'],
+          thursdayEnd: value['thursdayEnd'],
+          fridayIni: value['fridayIni'],
+          fridayEnd: value['fridayEnd'],
+          saturdayIni: value['saturdayIni'],
+          saturdayEnd: value['saturdayEnd'],
+        );
+      }).then((schedule) {
+        for (var i = schedule.sundayIni; i <= schedule.sundayEnd; i++)
+          sundayList[i]++;
+        for (var i = schedule.mondayIni; i <= schedule.mondayEnd; i++)
+          mondayList[i]++;
+        for (var i = schedule.tuesdayIni; i <= schedule.tuesdayEnd; i++)
+          tuesdayList[i]++;
+        for (var i = schedule.wednesdayIni; i <= schedule.wednesdayEnd; i++)
+          wednesdayList[i]++;
+        for (var i = schedule.thursdayIni; i <= schedule.thursdayEnd; i++)
+          thursdayList[i]++;
+        for (var i = schedule.fridayIni; i <= schedule.fridayEnd; i++)
+          fridayList[i]++;
+        for (var i = schedule.saturdayIni; i <= schedule.saturdayEnd; i++)
+          saturdayList[i]++;
+
+        sundayList.forEach((element) {
+          if (bestHours[0] < element) bestHours[0] = element;
+        });
+        mondayList.forEach((element) {
+          if (bestHours[1] < element) bestHours[1] = element;
+        });
+        tuesdayList.forEach((element) {
+          if (bestHours[2] < element) bestHours[2] = element;
+        });
+        wednesdayList.forEach((element) {
+          if (bestHours[3] < element) bestHours[3] = element;
+        });
+        thursdayList.forEach((element) {
+          if (bestHours[4] < element) bestHours[4] = element;
+        });
+        fridayList.forEach((element) {
+          if (bestHours[5] < element) bestHours[5] = element;
+        });
+        saturdayList.forEach((element) {
+          if (bestHours[6] < element) bestHours[6] = element;
+        });
+
+        bestDay = _indexOfMax(bestHours);
+      });
+    }).whenComplete(() {
+      avaliableDaysList = calculateDaysInterval(dateTimeRange);
+      avaliableDaysList.forEach((element) {
+        var tmpVal = bestDay;
+        if (bestDay == 0) tmpVal = 7;
+        if (element.weekday == tmpVal) bsetDate.add(element);
+      });
+    });
+    // print(bestHours);
+    bsetDate.add(dateTimeRange.start);
+    return bsetDate;
+  }
+
+  List<DateTime> calculateDaysInterval(DateTimeRange dateTimeRange) {
+    DateTime startDate = dateTimeRange.start;
+    DateTime endDate = dateTimeRange.end;
+    List<DateTime> days = [];
+    for (int i = 0; i <= endDate.difference(startDate).inDays; i++) {
+      days.add(startDate.add(Duration(days: i)));
+    }
+    return days;
   }
 
   /// Função retorna a data ideal dado um espaço de tempo do evento [eventRange]
@@ -142,7 +249,7 @@ class Schedules extends ChangeNotifier {
 
     datesRange.forEach((element) {
       dtTemp = element.start;
-      while (dtTemp != eventRange.end) {
+      while (dtTemp.day != eventRange.end.day) {
         dtTemp = dtTemp.add(const Duration(days: 1));
         invitedAvaliableDaysList.add(dtTemp);
       }

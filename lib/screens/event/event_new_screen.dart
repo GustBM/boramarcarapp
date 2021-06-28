@@ -1,14 +1,13 @@
+import 'package:boramarcarapp/providers/schedules.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:boramarcarapp/providers/events.dart';
 import 'package:boramarcarapp/widgets/app_drawer.dart';
-import 'package:boramarcarapp/widgets/date_range/date_range_selector.dart';
-import 'package:boramarcarapp/widgets/event/event_invited_chip.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class EventFormScreen extends StatefulWidget {
   static const routeName = '/new-event';
@@ -20,11 +19,13 @@ class EventFormScreen extends StatefulWidget {
 class _EventFormState extends State<EventFormScreen> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   final User? _userInfo = FirebaseAuth.instance.currentUser;
-  final invitedList = ['Teste 1', 'Teste 2'];
+  final List<String> invitedList = [];
 
   var _isLoading = false;
 
   final userEmailController = TextEditingController();
+
+  var errorText = '';
 
   void _showErrorDialog(String message) {
     showDialog(
@@ -43,17 +44,42 @@ class _EventFormState extends State<EventFormScreen> {
     );
   }
 
+  Widget _buildChip(String label) {
+    return Chip(
+      labelPadding: EdgeInsets.all(2.0),
+      avatar: CircleAvatar(
+        backgroundImage: Image.asset(
+          'assets/images/standard_user_photo.png',
+        ).image,
+      ),
+      label: Text(
+        label,
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+      backgroundColor: Color(0xFF5f65d3),
+      elevation: 6.0,
+      shadowColor: Colors.grey[60],
+      padding: EdgeInsets.all(8.0),
+      deleteIcon: Icon(Icons.cancel),
+      onDeleted: () {
+        removeChip(label);
+      },
+    );
+  }
+
   void _onChanged(dynamic value) {}
+
+  bool _isValidEmail(String email) {
+    return RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(email);
+  }
 
   void removeChip(String label) {
     setState(() {
       invitedList.removeWhere((element) => element == label);
-    });
-  }
-
-  void addChip(String label) {
-    setState(() {
-      invitedList.add(label);
     });
   }
 
@@ -72,10 +98,15 @@ class _EventFormState extends State<EventFormScreen> {
     final DateTimeRange eventDaterange =
         _formKey.currentState!.value['date_range'];
     var userId = _userInfo!.uid;
+    var userEmail = _userInfo!.email;
+    var userName = _userInfo!.displayName;
     try {
+      /*await Provider.of<Auth>(context, listen: false)
+          .validateEmails(invitedList);*/
+      invitedList.add(userEmail!);
       await Provider.of<Events>(context, listen: false).addEvent(
           eventName,
-          'Gustavo',
+          userName!,
           userId,
           eventDaterange.start,
           eventDaterange.start,
@@ -83,6 +114,7 @@ class _EventFormState extends State<EventFormScreen> {
           eventLocal,
           eventDescription,
           context,
+          invitedList,
           null);
     } on HttpException catch (e) {
       var errMessage = "Erro no novo evento.\n${e.toString()}";
@@ -179,12 +211,58 @@ class _EventFormState extends State<EventFormScreen> {
                     ),
                     TextButton(
                       onPressed: () {
-                        /*showModalBottomSheet(
+                        showDialog(
                             context: context,
-                            builder: (context) {
-                              return EventInviteModal(invitedList, addChip);
-                            });*/
-                        Navigator.of(context).restorablePush(_dialogBuilder);
+                            builder: (_) => new AlertDialog(
+                                  title: Text(
+                                    'Insira o e-mail do convidado',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  content: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(5),
+                                        child: TextField(
+                                          decoration: InputDecoration(
+                                              hintText: 'Insira o e-mail'),
+                                          controller: userEmailController,
+                                        ),
+                                      ),
+                                      Text(
+                                        errorText,
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text('Fechar',
+                                          style: TextStyle(fontSize: 16)),
+                                      onPressed: () {
+                                        setState(() {});
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                    TextButton(
+                                        child: Text(
+                                          'Adicionar Convidado',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                        onPressed: () {
+                                          if (_isValidEmail(
+                                              userEmailController.value.text)) {
+                                            invitedList.add(
+                                                userEmailController.value.text);
+                                            setState(() {});
+                                            Navigator.of(context).pop();
+                                          }
+                                        }),
+                                  ],
+                                ));
+                        // Navigator.of(context).restorablePush(_dialogBuilder);
                       },
                       child: Text(
                         '+ Adicionar Convidado',
@@ -192,6 +270,12 @@ class _EventFormState extends State<EventFormScreen> {
                             decoration: TextDecoration.underline, fontSize: 22),
                       ),
                     ),
+                    Column(
+                      children: invitedList.map((e) {
+                        return _buildChip(e);
+                      }).toList(),
+                    )
+                    // InvitedChipList([], () {}),
                   ],
                 ),
               ),
@@ -241,35 +325,4 @@ class _EventFormState extends State<EventFormScreen> {
       ),
     );
   }
-}
-
-Route<Object?> _dialogBuilder(BuildContext context, Object? arguments) {
-  final userEmailController = TextEditingController();
-  return DialogRoute<void>(
-    context: context,
-    builder: (BuildContext context) => SimpleDialog(
-      title: Text(
-        'Insira o e-mail do convidado',
-        style: TextStyle(fontSize: 20),
-      ),
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(5),
-          child: TextField(
-            decoration: InputDecoration(hintText: 'Enter a search term'),
-            controller: userEmailController,
-          ),
-        ),
-        TextButton(
-            child: Text(
-              'Adicionar Convidado',
-              style:
-                  TextStyle(decoration: TextDecoration.underline, fontSize: 22),
-            ),
-            onPressed: () {
-              print(userEmailController.value);
-            }),
-      ],
-    ),
-  );
 }

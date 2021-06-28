@@ -1,9 +1,12 @@
+import 'package:boramarcarapp/providers/schedules.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:boramarcarapp/screens/event/event_detail_screen.dart';
 import 'package:boramarcarapp/models/event.dart';
 import 'package:boramarcarapp/models/http_exception.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Events extends ChangeNotifier {
   late final String? authToken;
@@ -31,19 +34,6 @@ class Events extends ChangeNotifier {
         description: value['description']);
   }
 
-  /*Future<Event?>? findById(String eventId) async {
-    Future<Event?>? resp;
-
-    events.doc(eventId).get().then((value) {
-      resp = setDatatoEvent(value);
-    }).catchError((error) {
-      print('Failed to add event: $error');
-      return null;
-    }).whenComplete(() {
-      return resp;
-    });
-  }*/
-
   Future<DocumentSnapshot<Object?>>? findById(String eventId) async {
     return events.doc(eventId).get();
   }
@@ -62,25 +52,41 @@ class Events extends ChangeNotifier {
       String location,
       String description,
       BuildContext context,
-      String? imageUrl) {
-    List<String> invited = [];
-    invited.add(managerId);
-    return events
-        .add({
-          'name': name,
-          'manager': manager,
-          'managerId': managerId,
-          'date': date,
-          'dateIni': dateIni,
-          'dateEnd': dateEnd,
-          'location': location,
-          'imageUrl': imageUrl,
-          'description': description,
-          'invited': invited,
-        })
-        .then((value) => goToEvent(context, value.id, managerId, invited))
-        .catchError(
-            (e) => throw HttpException("Houve um Erro!" + e.code.toString()));
+      List<String> invited,
+      String? imageUrl) async {
+    List<String> usersId = [];
+    List<DateTime> bestDates = [];
+
+    Future.forEach(invited, (element) async {
+      var snapshot = await FirebaseFirestore.instance
+          .collection('user')
+          .where('email', isEqualTo: element)
+          .get();
+      var user = snapshot.docs[0].id;
+      print(user);
+      usersId.add(user);
+    }).then((value) async {
+      var dateRange = new DateTimeRange(start: dateIni, end: dateEnd);
+      bestDates = await Provider.of<Schedules>(context, listen: false)
+          .getIdealDate(dateRange, usersId);
+    }).then((dates) {
+      return events
+          .add({
+            'name': name,
+            'manager': manager,
+            'managerId': managerId,
+            'date': bestDates[0],
+            'dateIni': dateIni,
+            'dateEnd': dateEnd,
+            'location': location,
+            'imageUrl': imageUrl,
+            'description': description,
+            'invited': usersId,
+          })
+          .then((value) => goToEvent(context, value.id, managerId, invited))
+          .catchError(
+              (e) => throw HttpException("Houve um Erro!" + e.code.toString()));
+    });
   }
 
   Future<void> updateEventUserList(String userId, String id) async {
