@@ -133,7 +133,7 @@ class Schedules extends ChangeNotifier {
       DateTimeRange dateTimeRange, List<String> usersId) async {
     // Map<DateTime, int> topDates = Map<DateTime, int>();
     List<DateTime> avaliableDaysList = [];
-    List<Schedule> userSchedules = [];
+    // List<Schedule> userSchedules = [];
     List<DateTime> bsetDate = [];
 
     List<int> sundayList = _iniList();
