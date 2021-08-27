@@ -12,8 +12,10 @@ class Auth with ChangeNotifier {
   late User _userData;
   late AppUser _userInfo;
 
+  final _auth = FirebaseAuth.instance;
+
   bool get isAuth {
-    if (FirebaseAuth.instance.currentUser != null) {
+    if (_auth.currentUser != null) {
       return true;
     }
     return false;
@@ -33,7 +35,7 @@ class Auth with ChangeNotifier {
 
   Future<void> _authenticate(String email, String password) async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -55,21 +57,29 @@ class Auth with ChangeNotifier {
           throw HttpException("Houve um erro!\n" + error.toString());
       }
     }
-    _userData = FirebaseAuth.instance.currentUser!;
+    _userData = _auth.currentUser!;
     setUserInfo(_userData.uid);
     notifyListeners();
+  }
+
+  Future<void> _emailConfirmation() async {
+    try {
+      await _auth.currentUser!.sendEmailVerification();
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> signUp(String email, String password, String name,
       String lastname, String date) async {
     UserCredential? user;
     try {
-      user = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
+      user = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         throw HttpException(
-            "Senha muito considerada fraca. Tente novamente com outra.");
+            "Senha considerada muito fraca. Tente novamente com numeros, simbolos e letras maiusculas.");
       } else if (e.code == 'email-already-in-use') {
         throw HttpException("Já existe um usuário com este e-mail.");
       }
@@ -79,19 +89,20 @@ class Auth with ChangeNotifier {
 
     User userResult = user!.user!;
     await userResult.updateDisplayName(name);
+    await userResult.sendEmailVerification();
 
     await FirebaseFirestore.instance
         .collection('user')
         .doc(userResult.uid)
         .set({
-          'firstName': name,
-          'lastName': lastname,
-          'bthDate': date,
-          'email': email,
-          'invited': null
-        })
-        .then((value) => _authenticate(email, password))
-        .catchError(
+      'firstName': name,
+      'lastName': lastname,
+      'bthDate': date,
+      'email': email,
+      'invited': null
+    }).then((value) {
+      _authenticate(email, password);
+    }).catchError(
             (e) => throw HttpException("Houve um Erro!" + e.code.toString()));
   }
 
@@ -100,7 +111,7 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> logout() async {
-    await FirebaseAuth.instance.signOut();
+    await _auth.signOut();
     notifyListeners();
   }
 
@@ -153,21 +164,15 @@ class Auth with ChangeNotifier {
       loadedUsersEmails.add(userEmail);
     });
 
-    // print(loadedUsersEmails);
-
-    //var output = loadedUsersEmails.where((element) => !emails.contains(element));
-
-    // print(output);
-
     notifyListeners();
   }
 
-  Future<bool> tryAutoAuth() async {
-    _userData = FirebaseAuth.instance.currentUser!;
-    await setUserInfo(_userData.uid);
-
-    // ignore: unnecessary_null_comparison
-    return _userData != null && _userInfo != null;
+  Future<void> resetPwd(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<AppUser> getUserById(String uid) async {

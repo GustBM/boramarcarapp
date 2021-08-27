@@ -7,17 +7,15 @@ import '../widgets/app_drawer.dart';
 class SettingsScreen extends StatelessWidget {
   static const routeName = '/settings';
 
-  Widget buildListTile(String title, IconData icon, Function? linkHandler,
-      BuildContext context) {
+  Widget buildListTile(
+      String title, IconData icon, String pageAddress, BuildContext context) {
     return Column(
       children: [
         ListTile(
           leading: Icon(icon, size: 26),
           title: Text(title),
           onTap: () => {
-            // Navigator.of(context).pop(),
-            // Navigator.of(context).pushReplacementNamed('/'),
-            linkHandler
+            Navigator.of(context).pushNamed('/' + pageAddress),
           },
         ),
         listDivider,
@@ -42,9 +40,9 @@ class SettingsScreen extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: ListView(
           children: [
-            buildListTile('Editar Informações', Icons.person, null, context),
-            /*buildListTile('Sair', Icons.exit_to_app,
-                Provider.of<Auth>(context, listen: false).logout, context),*/
+            buildListTile(
+                'Editar Informações', Icons.person, 'edit-user', context),
+            buildListTile('Mudar Senha', Icons.lock, 'edit-user', context),
             Column(
               children: [
                 ListTile(

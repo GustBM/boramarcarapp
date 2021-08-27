@@ -1,10 +1,8 @@
-import 'package:boramarcarapp/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/widgets/app_drawer.dart';
-import 'package:boramarcarapp/providers/auth.dart';
 import 'package:boramarcarapp/providers/events.dart';
 import 'package:boramarcarapp/widgets/event/event_grid.dart';
 
@@ -16,7 +14,7 @@ class HomeScreen extends StatelessWidget {
     // final User? _user = Provider.of<Auth>(context, listen: false).getUser;
 
     Future<void> _refresh(BuildContext context) async {
-      String userId = await FirebaseAuth.instance.currentUser!.uid;
+      String userId = FirebaseAuth.instance.currentUser!.uid;
       try {
         await Provider.of<Events>(context, listen: false)
             .getAndFetchEvents(userId);

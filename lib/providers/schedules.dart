@@ -1,7 +1,8 @@
-import 'package:boramarcarapp/models/http_exception.dart';
-import 'package:boramarcarapp/models/schedule.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+import 'package:boramarcarapp/models/http_exception.dart';
+import 'package:boramarcarapp/models/schedule.dart';
 
 class Schedules extends ChangeNotifier {
   CollectionReference _schedules =
@@ -34,7 +35,7 @@ class Schedules extends ChangeNotifier {
         (e) => throw HttpException("Houve um Erro!" + e.code.toString()));
   }
 
-  Future<void> newAddSchedule(
+  Future<void> addSchedule(
       String userId,
       int sundayIni,
       int sundayEnd,
@@ -73,19 +74,6 @@ class Schedules extends ChangeNotifier {
         .catchError((error) => print('Failed to add event: $error'));
   }
 
-  Future<void> addSchedule(
-      String userId, DateTime datesRangeBegin, DateTime dateRangeEnd) async {
-    var schedules =
-        FirebaseFirestore.instance.collection('schedule').doc(userId);
-    schedules
-        .set({
-          'dataIni': datesRangeBegin,
-          'dataEnd': dateRangeEnd,
-        })
-        .then((value) => print('Novo schedule'))
-        .catchError((error) => print('Failed to add event: $error'));
-  }
-
   List<int> _iniList() {
     return [
       0,
@@ -115,6 +103,7 @@ class Schedules extends ChangeNotifier {
     ];
   }
 
+  /// Retorna um `int` com o valor da posição com o maior valor do array [arr]
   int _indexOfMax(List<int> arr) {
     var max = arr[0];
     var maxIndex = 0;
@@ -129,12 +118,14 @@ class Schedules extends ChangeNotifier {
     return maxIndex;
   }
 
+  /// Retorna uma `List<DateTime>` com os melhores dias entre um intervalo [dateTimeRange]
+  /// e uma lista de usuários [usersId]. A função verifica a disponibilidade
+  /// dos usuários no intervalo.
+  /// TODO: Usuários prioritários e Dias bloqueados.
   Future<List<DateTime>> getIdealDate(
       DateTimeRange dateTimeRange, List<String> usersId) async {
-    // Map<DateTime, int> topDates = Map<DateTime, int>();
     List<DateTime> avaliableDaysList = [];
-    // List<Schedule> userSchedules = [];
-    List<DateTime> bsetDate = [];
+    List<DateTime> bestDates = [];
 
     List<int> sundayList = _iniList();
     List<int> mondayList = _iniList();
@@ -211,12 +202,12 @@ class Schedules extends ChangeNotifier {
       avaliableDaysList.forEach((element) {
         var tmpVal = bestDay;
         if (bestDay == 0) tmpVal = 7;
-        if (element.weekday == tmpVal) bsetDate.add(element);
+        if (element.weekday == tmpVal) bestDates.add(element);
       });
     });
     // print(bestHours);
-    bsetDate.add(dateTimeRange.start);
-    return bsetDate;
+    bestDates.add(dateTimeRange.start);
+    return bestDates;
   }
 
   List<DateTime> calculateDaysInterval(DateTimeRange dateTimeRange) {
@@ -229,6 +220,21 @@ class Schedules extends ChangeNotifier {
     return days;
   }
 
+  Future<List<DateTime>> getIdealDateV2(
+      DateTimeRange dateTimeRange, List<String> usersId) async {
+    List<DateTime> bestDates = [];
+    Map<DateTime, int> dates = Map();
+    DateTime startDate = dateTimeRange.start;
+    DateTime endDate = dateTimeRange.end;
+
+    for (int i = 0; i <= endDate.difference(startDate).inDays; i++) {
+      dates.putIfAbsent(startDate.add(Duration(days: i)), () => 0);
+    }
+
+    return bestDates;
+  }
+
+  /*
   /// Função retorna a data ideal dado um espaço de tempo do evento [eventRange]
   /// e as datas de disponibilidade dados [datesRange].
   /// A função sempre retorna o DateTime mais cedo do [eventRange].
@@ -269,4 +275,5 @@ class Schedules extends ChangeNotifier {
     print(topDates);
     return avaliableDaysList;
   }
+  */
 }

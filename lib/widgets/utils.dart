@@ -1,11 +1,27 @@
 import 'package:flutter/material.dart';
 
-class UtilFunctions {
+class UtilDialogFunctions {
   void showErrorDialog(BuildContext context, String message) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text("ERRO!"),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+              child: Text("Ok"))
+        ],
+      ),
+    );
+  }
+
+  void showMsgDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
         content: Text(message),
         actions: <Widget>[
           TextButton(

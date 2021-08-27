@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:boramarcarapp/providers/auth.dart';
 
-enum AuthMode { Signup, Login }
+enum AuthMode { Signup, Login, ForgotPwd }
 
 class AuthScreen extends StatelessWidget {
   static const routeName = '/auth';
@@ -124,6 +124,29 @@ class _AuthCardState extends State<AuthCard> {
     );
   }
 
+  Future<void> _forgotPwd() async {
+    if (!_formKey.currentState!.validate()) {
+      // Invalid!
+      return;
+    }
+
+    _formKey.currentState!.save();
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await Provider.of<Auth>(context, listen: false)
+          .resetPwd(_authData['email']!);
+    } catch (e) {
+      print(e.toString());
+    }
+    setState(() {
+      _isLoading = false;
+      _authMode = AuthMode.Login;
+    });
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
       // Invalid!
@@ -158,7 +181,13 @@ class _AuthCardState extends State<AuthCard> {
     });
   }
 
-  void _switchAuthMode() {
+  void _switchAuthMode({bool fgtPwd = false}) {
+    if (fgtPwd) {
+      setState(() {
+        _authMode = AuthMode.ForgotPwd;
+      });
+      return;
+    }
     if (_authMode == AuthMode.Login) {
       setState(() {
         _authMode = AuthMode.Signup;
@@ -211,20 +240,21 @@ class _AuthCardState extends State<AuthCard> {
                     _authData['email'] = value!;
                   },
                 ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Senha'),
-                  obscureText: true,
-                  controller: _passwordController,
-                  // ignore: missing_return
-                  validator: (value) {
-                    if (value!.isEmpty || value.length < 6) {
-                      return 'Senha muito curta. Minimo 6 letras!';
-                    }
-                  },
-                  onSaved: (value) {
-                    _authData['password'] = value!;
-                  },
-                ),
+                if (_authMode != AuthMode.ForgotPwd)
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Senha'),
+                    obscureText: true,
+                    controller: _passwordController,
+                    // ignore: missing_return
+                    validator: (value) {
+                      if (value!.isEmpty || value.length < 6) {
+                        return 'Senha muito curta. Minimo 6 letras!';
+                      }
+                    },
+                    onSaved: (value) {
+                      _authData['password'] = value!;
+                    },
+                  ),
                 if (_authMode == AuthMode.Signup)
                   TextFormField(
                     enabled: _authMode == AuthMode.Signup,
@@ -295,7 +325,7 @@ class _AuthCardState extends State<AuthCard> {
                 ),
                 if (_isLoading)
                   CircularProgressIndicator()
-                else
+                else if (_authMode != AuthMode.ForgotPwd)
                   ElevatedButton(
                     child: Text(
                         _authMode == AuthMode.Login ? 'LOGIN' : 'NOVO USUÁRIO'),
@@ -303,6 +333,22 @@ class _AuthCardState extends State<AuthCard> {
                       _submit();
                       FocusScope.of(context).unfocus();
                     },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
+                      primary: Theme.of(context).primaryColor,
+                      textStyle: TextStyle(
+                        color: Theme.of(context).primaryTextTheme.button?.color,
+                      ),
+                    ),
+                  ),
+                if (_authMode == AuthMode.ForgotPwd && !_isLoading)
+                  ElevatedButton(
+                    child: Text('ENVIAR'),
+                    onPressed: _forgotPwd,
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
@@ -326,6 +372,21 @@ class _AuthCardState extends State<AuthCard> {
                     textStyle: TextStyle(color: Theme.of(context).accentColor),
                   ),
                 ),
+                _authMode == AuthMode.Login
+                    ? TextButton(
+                        onPressed: () {
+                          _switchAuthMode(fgtPwd: true);
+                        },
+                        child: Text('ESQUECEU A SENHA?'),
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 30.0, vertical: 4),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          textStyle:
+                              TextStyle(color: Theme.of(context).accentColor),
+                        ),
+                      )
+                    : SizedBox(),
               ],
             ),
           ),

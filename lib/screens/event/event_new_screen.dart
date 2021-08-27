@@ -297,7 +297,10 @@ class _EventFormState extends State<EventFormScreen> {
                           if (_formKey.currentState!.validate()) {
                             _submit();
                           } else {
-                            print("validation failed");
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                  "Houve um erro ao enviar o formulário. Tente novamente mais tarde."),
+                            ));
                           }
                         },
                       ),

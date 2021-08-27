@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/models/http_exception.dart';
-import 'package:boramarcarapp/models/schedule.dart';
 import 'package:boramarcarapp/providers/schedules.dart';
 import 'package:boramarcarapp/widgets/app_drawer.dart';
 
@@ -22,7 +21,6 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final AppUser _userData = Provider.of<Auth>(context).getUserInfo;
     final User? _userInfo = FirebaseAuth.instance.currentUser;
     var _isLoading = false;
 
@@ -58,12 +56,7 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
       });
 
       try {
-        /*Provider.of<Schedules>(context, listen: false).getIdealDate(
-            new DateTimeRange(
-                start: new DateTime.now(),
-                end: new DateTime.now().add(Duration(days: 7))),
-            ['X0jLZhdQcaTuVO6kIklJZ62NGa63', 'fuxDKNkI1NPPiLG2vZ6ar9u7Xlw1']);*/
-        await Provider.of<Schedules>(context, listen: false).newAddSchedule(
+        await Provider.of<Schedules>(context, listen: false).addSchedule(
           _userInfo!.uid,
           _parseFormInput(_schedueleFormKey
               .currentState!.value['sunday_hour_ini'] as String),
