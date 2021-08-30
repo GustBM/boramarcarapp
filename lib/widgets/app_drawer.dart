@@ -5,14 +5,10 @@ import 'package:provider/provider.dart';
 import '../providers/auth.dart';
 import '../utils.dart' as utils;
 
-// TODO: Checar ValueListenableBuilder pros dados de usuário
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // final AppUser _userData = Provider.of<Auth>(context).getUserInfo;
-    // final User _userInfo = Provider.of<Auth>(context).getUser;
-    // ignore: avoid_init_to_null
-    var _user = null;
+    User? _user;
 
     Future<void> getUser() async {
       // ignore: await_only_futures
@@ -36,22 +32,22 @@ class AppDrawer extends StatelessWidget {
                   return Row(
                     children: [
                       ClipOval(
-                        child: (_user == null || _user.photoURL == null)
+                        child: (_user == null || _user!.photoURL == null)
                             ? Image.asset(
                                 'assets/images/standard_user_photo.png',
                                 width: 35,
                               )
                             : Image.network(
-                                _user.photoURL!,
+                                _user!.photoURL!,
                                 width: 35,
                               ),
                       ),
                       SizedBox(
                         width: 20,
                       ),
-                      Text((_user == null || _user.displayName == null
+                      Text((_user == null || _user!.displayName == null
                           ? 'Bem-Vindo'
-                          : _user.displayName)!),
+                          : _user!.displayName)!),
                     ],
                   );
                 }
