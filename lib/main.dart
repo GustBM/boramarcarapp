@@ -4,10 +4,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/providers/auth.dart';
-import 'package:boramarcarapp/screens/home_screen.dart';
-import 'package:boramarcarapp/screens/splash_screen.dart';
 import 'package:boramarcarapp/providers/events.dart';
 import 'package:boramarcarapp/providers/schedules.dart';
+import 'package:boramarcarapp/screens/home_screen.dart';
+import 'package:boramarcarapp/screens/splash_screen.dart';
 import 'package:boramarcarapp/screens/auth_screen.dart';
 import 'package:boramarcarapp/screens/event/event_detail_screen.dart';
 import 'package:boramarcarapp/screens/event/event_new_screen.dart';
