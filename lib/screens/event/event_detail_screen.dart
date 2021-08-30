@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 
 import 'package:boramarcarapp/providers/events.dart';
 import 'package:boramarcarapp/models/event.dart';
-import 'package:boramarcarapp/widgets/utils.dart';
+import 'package:boramarcarapp/utils.dart';
 import 'package:boramarcarapp/widgets/event/event_invited_chip.dart';
 
 class EventDetailScreen extends StatelessWidget {
@@ -50,6 +50,7 @@ class EventDetailScreen extends StatelessWidget {
               invited: new List<String>.from(data['invited']),
               location: data['location'],
               description: data['description'],
+              imageUrl: data['imageUrl'],
             );
             return Scaffold(
               appBar: AppBar(
@@ -76,15 +77,16 @@ class EventDetailScreen extends StatelessWidget {
                     Container(
                       height: 200,
                       width: double.infinity,
-                      child: thisEvent.imageUrl == ''
-                          ? Image.asset(
-                              'assets/images/baloes.jpg',
-                              fit: BoxFit.cover,
-                            )
-                          : Image.network(
-                              thisEvent.imageUrl,
-                              fit: BoxFit.cover,
-                            ),
+                      child:
+                          thisEvent.imageUrl == '' || thisEvent.imageUrl == null
+                              ? Image.asset(
+                                  'assets/images/baloes.jpg',
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.network(
+                                  thisEvent.imageUrl!,
+                                  fit: BoxFit.cover,
+                                ),
                     ),
                     SizedBox(height: 10),
                     Text(

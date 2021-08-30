@@ -18,13 +18,13 @@ class EventItem extends StatelessWidget {
               arguments: _event.eventId,
             );
           },
-          child: _event.imageUrl == ''
+          child: _event.imageUrl == '' || _event.imageUrl == null
               ? Image.asset(
                   'assets/images/baloes.jpg',
                   fit: BoxFit.cover,
                 )
               : Image.network(
-                  _event.imageUrl,
+                  _event.imageUrl!,
                   fit: BoxFit.cover,
                 ),
         ),

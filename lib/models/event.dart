@@ -9,7 +9,7 @@ class Event with ChangeNotifier {
   final DateTime dateIni;
   final DateTime dateEnd;
   final String location;
-  final String imageUrl;
+  final String? imageUrl;
   final String description;
   final List<String> invited;
 

@@ -133,8 +133,9 @@ class Events extends ChangeNotifier {
         date: event['date'].toDate(),
         dateIni: event['dateIni'].toDate(),
         dateEnd: event['dateEnd'].toDate(),
-        location: 'teste',
+        location: event['location'],
         description: event['description'],
+        imageUrl: event['imageUrl'],
       );
       loadedEvents.add(newEvent);
     });
