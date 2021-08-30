@@ -19,13 +19,19 @@ class EventItem extends StatelessWidget {
             );
           },
           child: _event.imageUrl == '' || _event.imageUrl == null
-              ? Image.asset(
-                  'assets/images/baloes.jpg',
-                  fit: BoxFit.cover,
+              ? Hero(
+                  tag: _event.eventId,
+                  child: Image.asset(
+                    'assets/images/baloes.jpg',
+                    fit: BoxFit.cover,
+                  ),
                 )
-              : Image.network(
-                  _event.imageUrl!,
-                  fit: BoxFit.cover,
+              : Hero(
+                  tag: _event.eventId,
+                  child: Image.network(
+                    _event.imageUrl!,
+                    fit: BoxFit.cover,
+                  ),
                 ),
         ),
         footer: GridTileBar(

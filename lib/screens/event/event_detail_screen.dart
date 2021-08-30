@@ -79,13 +79,19 @@ class EventDetailScreen extends StatelessWidget {
                       width: double.infinity,
                       child:
                           thisEvent.imageUrl == '' || thisEvent.imageUrl == null
-                              ? Image.asset(
-                                  'assets/images/baloes.jpg',
-                                  fit: BoxFit.cover,
+                              ? Hero(
+                                  tag: thisEvent.eventId,
+                                  child: Image.asset(
+                                    'assets/images/baloes.jpg',
+                                    fit: BoxFit.cover,
+                                  ),
                                 )
-                              : Image.network(
-                                  thisEvent.imageUrl!,
-                                  fit: BoxFit.cover,
+                              : Hero(
+                                  tag: thisEvent.eventId,
+                                  child: Image.network(
+                                    thisEvent.imageUrl!,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                     ),
                     SizedBox(height: 10),
