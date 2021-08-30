@@ -162,6 +162,12 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
 
     var disableDay = [true, true, true, true, true, true, true];
 
+    void disableDayCheck(int day, bool isDisabled) {
+      setState(() {
+        disableDay[day] = isDisabled;
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(title: Text('Meu Horário')),
       drawer: AppDrawer(),
@@ -195,7 +201,8 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
                               initialValue: true,
                               title: Text('Domingo'),
                               onChanged: (value) {
-                                disableDay[0] = value!;
+                                disableDayCheck(0, value!);
+                                // disableDay[0] = value!;
                               },
                             ),
                           ),

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -193,11 +195,16 @@ class _EventFormState extends State<EventFormScreen> {
                     ),
                     SizedBox(height: 10),
                     FormBuilderTextField(
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
                       name: 'description',
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Descrição',
                         prefixIcon: Icon(Icons.short_text_outlined),
+                        contentPadding:
+                            const EdgeInsets.symmetric(vertical: 40.0),
                         border: OutlineInputBorder(),
+                        helperText: '*máximo de 500 caracteres',
                       ),
                       onChanged: _onChanged,
                       validator: FormBuilderValidators.compose([
@@ -206,7 +213,6 @@ class _EventFormState extends State<EventFormScreen> {
                         FormBuilderValidators.max(context, 500,
                             errorText: 'Máximo de 500 caracteres'),
                       ]),
-                      keyboardType: TextInputType.text,
                     ),
                     TextButton(
                       onPressed: () {

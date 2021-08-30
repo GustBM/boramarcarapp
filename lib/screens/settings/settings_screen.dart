@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/auth.dart';
-import '../widgets/app_drawer.dart';
+import '../../providers/auth.dart';
+import '../../widgets/app_drawer.dart';
 
 class SettingsScreen extends StatelessWidget {
   static const routeName = '/settings';

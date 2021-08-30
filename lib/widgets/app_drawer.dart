@@ -34,20 +34,16 @@ class AppDrawer extends StatelessWidget {
                 } else {
                   return Row(
                     children: [
-                      InkWell(
-                        radius: 20.0,
-                        onTap: () {
-                          print('Click Profile Pic');
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(30.0),
-                          child: (_user == null || _user.photoURL == null)
-                              ? Image.asset(
-                                  'assets/images/standard_user_photo.png',
-                                  width: 40,
-                                )
-                              : Image.network(_user.photoURL!),
-                        ),
+                      ClipOval(
+                        child: (_user == null || _user.photoURL == null)
+                            ? Image.asset(
+                                'assets/images/standard_user_photo.png',
+                                width: 35,
+                              )
+                            : Image.network(
+                                _user.photoURL!,
+                                width: 35,
+                              ),
                       ),
                       SizedBox(
                         width: 20,

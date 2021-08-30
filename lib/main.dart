@@ -11,9 +11,9 @@ import 'package:boramarcarapp/providers/schedules.dart';
 import 'package:boramarcarapp/screens/auth_screen.dart';
 import 'package:boramarcarapp/screens/event/event_detail_screen.dart';
 import 'package:boramarcarapp/screens/event/event_new_screen.dart';
-import 'package:boramarcarapp/screens/settings_screen.dart';
+import 'package:boramarcarapp/screens/settings/settings_screen.dart';
 import 'package:boramarcarapp/screens/schduele_screen.dart';
-import 'package:boramarcarapp/screens/edit_user_info_screen.dart';
+import 'package:boramarcarapp/screens/settings/edit_user_info_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

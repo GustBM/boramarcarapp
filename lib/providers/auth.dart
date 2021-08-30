@@ -62,14 +62,6 @@ class Auth with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _emailConfirmation() async {
-    try {
-      await _auth.currentUser!.sendEmailVerification();
-    } catch (e) {
-      print(e);
-    }
-  }
-
   Future<void> signUp(String email, String password, String name,
       String lastname, String date) async {
     UserCredential? user;
