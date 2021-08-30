@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth.dart';
+import '../utils.dart' as utils;
 
 // TODO: Checar ValueListenableBuilder pros dados de usuário
 class AppDrawer extends StatelessWidget {
@@ -95,9 +96,12 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.exit_to_app),
             title: Text('Logout'),
             onTap: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).pushReplacementNamed('/');
-              Provider.of<Auth>(context, listen: false).logout();
+              utils.showConfirmDialog(context, '', 'Deseja sair do BoraMarcar?',
+                  () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacementNamed('/');
+                Provider.of<Auth>(context, listen: false).logout();
+              });
             },
           ),
         ],

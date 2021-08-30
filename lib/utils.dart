@@ -8,6 +8,34 @@ Random _rnd = Random();
 String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
     length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
+void showConfirmDialog(
+    BuildContext context, String title, String text, Function confirmFunction,
+    [Function? cancelFunction]) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        // title: Text(title),
+        content: Text(text),
+        actions: [
+          TextButton(
+            child: Text("Ok"),
+            onPressed: () {
+              confirmFunction();
+            },
+          ),
+          TextButton(
+            child: Text("Cancelar"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
 class UtilDialogFunctions {
   void showErrorDialog(BuildContext context, String message) {
     showDialog(
