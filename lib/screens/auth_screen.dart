@@ -111,7 +111,7 @@ class _AuthCardState extends State<AuthCard> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text("ERRO!"),
+        // title: Text("ERRO!"),
         content: Text(message),
         actions: <Widget>[
           TextButton(
@@ -217,7 +217,7 @@ class _AuthCardState extends State<AuthCard> {
       ),
       elevation: 8.0,
       child: Container(
-        height: _authMode == AuthMode.Signup ? 340 : 390,
+        height: _authMode == AuthMode.ForgotPwd ? 230 : 400,
         constraints:
             BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
         width: deviceSize.width * 0.75,
@@ -387,33 +387,58 @@ class _AuthCardState extends State<AuthCard> {
                         ),
                       )
                     : SizedBox(),
-                Divider(thickness: 1),
-                Text('Ou Acesse com'),
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    SizedBox(width: 50),
-                    GoogleAuthButton(
-                      onPressed: () async {
-                        await Provider.of<Auth>(context, listen: false)
-                            .signInWithGoogle();
-                      },
-                      darkMode: false,
-                      style: AuthButtonStyle(
-                        buttonType: AuthButtonType.icon,
-                      ),
-                    ),
-                    SizedBox(width: 50),
-                    FacebookAuthButton(
-                      onPressed: () {},
-                      darkMode: false,
-                      style: AuthButtonStyle(
-                        buttonType: AuthButtonType.icon,
-                      ),
-                    ),
-                    SizedBox(width: 50),
-                  ],
-                ),
+                _authMode != AuthMode.ForgotPwd
+                    ? Column(
+                        children: [
+                          Divider(thickness: 1),
+                          Text('Ou Acesse com'),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              SizedBox(width: 40),
+                              GoogleAuthButton(
+                                onPressed: () async {
+                                  try {
+                                    await Provider.of<Auth>(context,
+                                            listen: false)
+                                        .signInWithGoogle();
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(e.toString()),
+                                    ));
+                                  }
+                                },
+                                darkMode: false,
+                                style: AuthButtonStyle(
+                                  buttonType: AuthButtonType.icon,
+                                ),
+                              ),
+                              SizedBox(width: 50),
+                              FacebookAuthButton(
+                                onPressed: () async {
+                                  try {
+                                    await Provider.of<Auth>(context,
+                                            listen: false)
+                                        .signInWithFacebook();
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(e.toString()),
+                                    ));
+                                  }
+                                },
+                                darkMode: false,
+                                style: AuthButtonStyle(
+                                  buttonType: AuthButtonType.icon,
+                                ),
+                              ),
+                              SizedBox(width: 40),
+                            ],
+                          ),
+                        ],
+                      )
+                    : SizedBox(),
               ],
             ),
           ),

@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:boramarcarapp/models/user.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 enum authProblems { UserNotFound, PasswordNotValid, NetworkError }
@@ -168,6 +169,23 @@ class Auth with ChangeNotifier {
     }
   }
 
+  void _registerUserInfo(String userId, String? name, String? lastname,
+      String? date, String? email) async {
+    var userRef = FirebaseFirestore.instance.collection('user').doc(userId);
+    userRef.get().then((docSnapshot) => {
+          if (!docSnapshot.exists)
+            {
+              userRef.set({
+                'firstName': name,
+                'lastName': lastname,
+                'bthDate': date,
+                'email': email,
+                'invited': null
+              })
+            }
+        });
+  }
+
   Future<void> signInWithGoogle() async {
     var credential;
     try {
@@ -186,8 +204,89 @@ class Auth with ChangeNotifier {
 
       await FirebaseAuth.instance.signInWithCredential(credential);
       _userData = _auth.currentUser!;
+      _registerUserInfo(
+          _userData.uid, _userData.displayName, '', null, _userData.email);
       setUserInfo(_userData.uid);
       notifyListeners();
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case "account-exists-with-different-credential":
+          throw HttpException(
+              "Este e-mail já está cadastrado com outro método.");
+
+        case "invalid-credential":
+          throw HttpException("Modo de Acesso Inválido.");
+
+        case "operation-not-allowed":
+          throw HttpException("Operação Inválida. Tente outro tipo de acesso.");
+
+        case "wrong-password":
+          throw HttpException("Senha do Modo de Acesso Inválido");
+
+        case "invalid-verification-code":
+          throw HttpException("Erro no Código de Validação.");
+
+        case "invalid-verification-id":
+          throw HttpException("Erro no ID de Validação.");
+
+        case "user-not-found":
+          throw HttpException("E-mail não encontrado.");
+
+        case "user-disabled":
+          throw HttpException("Usuário Bloqueado.");
+
+        default:
+          throw HttpException("Houve um erro!\n" + e.toString());
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> signInWithFacebook() async {
+    try {
+      final fbLoginResult = await FacebookAuth.instance.login();
+      // final userData = await FacebookAuth.instance.getUserData();
+
+      final fbAuthCredential =
+          FacebookAuthProvider.credential(fbLoginResult.accessToken!.token);
+      await FirebaseAuth.instance.signInWithCredential(fbAuthCredential);
+
+      _userData = _auth.currentUser!;
+      _registerUserInfo(
+          _userData.uid, _userData.displayName, '', null, _userData.email);
+      setUserInfo(_userData.uid);
+      notifyListeners();
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case "account-exists-with-different-credential":
+          throw HttpException(
+              "Este e-mail já está cadastrado com outro método.");
+
+        case "invalid-credential":
+          throw HttpException("Modo de Acesso Inválido.");
+
+        case "operation-not-allowed":
+          throw HttpException("Operação Inválida. Tente outro tipo de acesso.");
+
+        case "wrong-password":
+          throw HttpException("Senha do Modo de Acesso Inválido");
+
+        case "invalid-verification-code":
+          throw HttpException("Erro no Código de Validação.");
+
+        case "invalid-verification-id":
+          throw HttpException("Erro no ID de Validação.");
+
+        case "user-not-found":
+          throw HttpException("E-mail não encontrado.");
+
+        case "user-disabled":
+          throw HttpException("Usuário Bloqueado.");
+
+        default:
+          throw HttpException("Houve um erro!\n" + e.toString());
+      }
     } catch (e) {
       print(e);
     }
