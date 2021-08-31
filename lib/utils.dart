@@ -35,6 +35,23 @@ void showConfirmDialog(
   );
 }
 
+void showErrorDialog(BuildContext context, String message) {
+  showDialog(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      // title: Text("ERRO!"),
+      content: Text(message),
+      actions: <Widget>[
+        TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+            child: Text("Ok"))
+      ],
+    ),
+  );
+}
+
 class UtilDialogFunctions {
   void showErrorDialog(BuildContext context, String message) {
     showDialog(
