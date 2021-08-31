@@ -307,7 +307,7 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
                               hint: Text('Hora Inicial'),
                               initialValue: data.isNotEmpty
                                   ? hourOptionsEnd[data['tuesdayIni']]
-                                  : hourOptionsEnd[18],
+                                  : hourOptionsEnd[6],
                               validator: FormBuilderValidators.compose(
                                   [FormBuilderValidators.required(context)]),
                               items: hourOptionsIni
