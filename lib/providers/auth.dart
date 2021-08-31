@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:boramarcarapp/models/user.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 enum authProblems { UserNotFound, PasswordNotValid, NetworkError }
 
@@ -162,6 +163,31 @@ class Auth with ChangeNotifier {
   Future<void> resetPwd(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> signInWithGoogle() async {
+    var credential;
+    try {
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser!.authentication;
+
+      // Create a new credential
+      credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      _userData = _auth.currentUser!;
+      setUserInfo(_userData.uid);
+      notifyListeners();
     } catch (e) {
       print(e);
     }

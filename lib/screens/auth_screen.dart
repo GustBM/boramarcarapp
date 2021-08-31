@@ -394,7 +394,10 @@ class _AuthCardState extends State<AuthCard> {
                   children: [
                     SizedBox(width: 50),
                     GoogleAuthButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        await Provider.of<Auth>(context, listen: false)
+                            .signInWithGoogle();
+                      },
                       darkMode: false,
                       style: AuthButtonStyle(
                         buttonType: AuthButtonType.icon,
