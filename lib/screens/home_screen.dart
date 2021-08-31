@@ -11,15 +11,16 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final User? _user = Provider.of<Auth>(context, listen: false).getUser;
-
     Future<void> _refresh(BuildContext context) async {
       String userId = FirebaseAuth.instance.currentUser!.uid;
       try {
         await Provider.of<Events>(context, listen: false)
             .getAndFetchEvents(userId);
       } catch (e) {
-        // print(e);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+              "Houve um erro ao buscar eventos. Tente novamente mais tarde."),
+        ));
       }
     }
 
@@ -43,6 +44,7 @@ class HomeScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
             onPressed: () {
+              // TODO: Notificações
               // Navigator.of(context).pushNamed(EditProductScreen.routeName);
             },
           ),

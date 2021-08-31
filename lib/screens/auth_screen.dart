@@ -1,8 +1,11 @@
 import 'dart:math';
 
+import 'package:auth_buttons/auth_buttons.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:auth_buttons/auth_buttons.dart'
+    show AuthButtonStyle, GoogleAuthButton;
 
 import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:boramarcarapp/providers/auth.dart';
@@ -15,10 +18,7 @@ class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-    // final transformConfig = Matrix4.rotationZ(-8 * pi / 180);
-    // transformConfig.translate(-10.0);
     return Scaffold(
-      // resizeToAvoidBottomInset: false,
       body: Stack(
         children: <Widget>[
           Container(
@@ -217,7 +217,7 @@ class _AuthCardState extends State<AuthCard> {
       ),
       elevation: 8.0,
       child: Container(
-        height: _authMode == AuthMode.Signup ? 340 : 300,
+        height: _authMode == AuthMode.Signup ? 340 : 390,
         constraints:
             BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
         width: deviceSize.width * 0.75,
@@ -387,6 +387,30 @@ class _AuthCardState extends State<AuthCard> {
                         ),
                       )
                     : SizedBox(),
+                Divider(thickness: 1),
+                Text('Ou Acesse com'),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    SizedBox(width: 50),
+                    GoogleAuthButton(
+                      onPressed: () {},
+                      darkMode: false,
+                      style: AuthButtonStyle(
+                        buttonType: AuthButtonType.icon,
+                      ),
+                    ),
+                    SizedBox(width: 50),
+                    FacebookAuthButton(
+                      onPressed: () {},
+                      darkMode: false,
+                      style: AuthButtonStyle(
+                        buttonType: AuthButtonType.icon,
+                      ),
+                    ),
+                    SizedBox(width: 50),
+                  ],
+                ),
               ],
             ),
           ),

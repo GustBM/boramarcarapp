@@ -9,8 +9,7 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
     length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
 void showConfirmDialog(
-    BuildContext context, String title, String text, Function confirmFunction,
-    [Function? cancelFunction]) {
+    BuildContext context, String title, String text, Function confirmFunction) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
