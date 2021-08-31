@@ -52,41 +52,6 @@ void showErrorDialog(BuildContext context, String message) {
   );
 }
 
-class UtilDialogFunctions {
-  void showErrorDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text("ERRO!"),
-        content: Text(message),
-        actions: <Widget>[
-          TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-              child: Text("Ok"))
-        ],
-      ),
-    );
-  }
-
-  void showMsgDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        content: Text(message),
-        actions: <Widget>[
-          TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-              child: Text("Ok"))
-        ],
-      ),
-    );
-  }
-}
-
 class SnapshotEmptyMsg extends StatelessWidget {
   final String msg;
   SnapshotEmptyMsg(this.msg);
