@@ -1,16 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
-
-import 'package:boramarcarapp/models/http_exception.dart';
-import 'package:boramarcarapp/models/user.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-enum authProblems { UserNotFound, PasswordNotValid, NetworkError }
+import 'package:boramarcarapp/models/http_exception.dart';
+import 'package:boramarcarapp/models/user.dart';
 
 class Auth with ChangeNotifier {
-  late String? _token;
   late User _userData;
   late AppUser _userInfo;
 
@@ -21,10 +18,6 @@ class Auth with ChangeNotifier {
       return true;
     }
     return false;
-  }
-
-  String? get token {
-    return _token;
   }
 
   User get getUser {
@@ -84,6 +77,7 @@ class Auth with ChangeNotifier {
     User userResult = user!.user!;
     await userResult.updateDisplayName(name);
     await userResult.sendEmailVerification();
+    await addNewUserSchedule(userResult.uid);
 
     await FirebaseFirestore.instance
         .collection('user')
@@ -143,24 +137,6 @@ class Auth with ChangeNotifier {
     return _userInfo;
   }
 
-  Future<void> validateEmails(List<String> emails) async {
-    var snapshot = await FirebaseFirestore.instance
-        .collection('user')
-        .where('email', arrayContainsAny: emails)
-        .get();
-    var dataAll = snapshot.docs.toList();
-    final List<String> loadedUsersEmails = [];
-    // print(dataAll);
-    dataAll.forEach((ev) async {
-      // var eventId = ev.id;
-      var event = ev.data();
-      String userEmail = event['email'];
-      loadedUsersEmails.add(userEmail);
-    });
-
-    notifyListeners();
-  }
-
   Future<void> resetPwd(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
@@ -202,7 +178,7 @@ class Auth with ChangeNotifier {
         idToken: googleAuth.idToken,
       );
 
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      await _auth.signInWithCredential(credential);
       _userData = _auth.currentUser!;
       _registerUserInfo(
           _userData.uid, _userData.displayName, '', null, _userData.email);
@@ -250,7 +226,7 @@ class Auth with ChangeNotifier {
 
       final fbAuthCredential =
           FacebookAuthProvider.credential(fbLoginResult.accessToken!.token);
-      await FirebaseAuth.instance.signInWithCredential(fbAuthCredential);
+      await _auth.signInWithCredential(fbAuthCredential);
 
       _userData = _auth.currentUser!;
       _registerUserInfo(
@@ -308,5 +284,49 @@ class Auth with ChangeNotifier {
       throw HttpException("Houve um ao buscar os convidados!" + e.toString());
     }
     return userInfo;
+  }
+
+  // TODO: ISSO TÁ ERRADO, CORRIGIR A QUEBRA DO FLUXO DE DADOS!
+  Future<void> addNewUserSchedule(String userId) async {
+    FirebaseFirestore.instance.collection('schedule').doc(userId).set({
+      'sundayIni': 6,
+      'sundayEnd': 18,
+      'sundayCheck': true,
+      'mondayIni': 6,
+      'mondayEnd': 18,
+      'mondayCheck': true,
+      'tuesdayIni': 6,
+      'tuesdayEnd': 18,
+      'tuesdayCheck': true,
+      'wednesdayIni': 6,
+      'wednesdayEnd': 18,
+      'wednesdayCheck': true,
+      'thursdayIni': 6,
+      'thursdayEnd': 18,
+      'thursdayCheck': true,
+      'fridayIni': 6,
+      'fridayEnd': 18,
+      'fridayCheck': true,
+      'saturdayIni': 6,
+      'saturdayEnd': 18,
+      'saturdayCheck': true,
+    });
+    /*addSchedule(
+        userId,
+        new Schedule(
+            sundayIni: 6,
+            sundayEnd: 18,
+            mondayIni: 6,
+            mondayEnd: 18,
+            tuesdayIni: 6,
+            tuesdayEnd: 18,
+            wednesdayIni: 6,
+            wednesdayEnd: 18,
+            thursdayIni: 6,
+            thursdayEnd: 18,
+            fridayIni: 6,
+            fridayEnd: 18,
+            saturdayIni: 6,
+            saturdayEnd: 18));*/
   }
 }

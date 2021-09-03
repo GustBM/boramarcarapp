@@ -1,14 +1,14 @@
 import 'dart:math';
 
-import 'package:auth_buttons/auth_buttons.dart';
+import 'package:boramarcarapp/widgets/auth/auth_buttons.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:auth_buttons/auth_buttons.dart'
-    show AuthButtonStyle, GoogleAuthButton;
 
 import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:boramarcarapp/providers/auth.dart';
+
+import '../utils.dart' show showErrorDialog, isValidEmail;
 
 enum AuthMode { Signup, Login, ForgotPwd }
 
@@ -107,23 +107,6 @@ class _AuthCardState extends State<AuthCard> {
   var _isLoading = false;
   final _passwordController = TextEditingController();
 
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        // title: Text("ERRO!"),
-        content: Text(message),
-        actions: <Widget>[
-          TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-              child: Text("Ok"))
-        ],
-      ),
-    );
-  }
-
   Future<void> _forgotPwd() async {
     if (!_formKey.currentState!.validate()) {
       // Invalid!
@@ -171,10 +154,10 @@ class _AuthCardState extends State<AuthCard> {
       }
     } on HttpException catch (e) {
       var errMessage = "Erro na autenticação\n${e.toString()}";
-      _showErrorDialog(errMessage);
+      showErrorDialog(context, errMessage);
     } catch (e) {
       var errMessage = "Falha na autenticação.\n" + e.toString();
-      _showErrorDialog(errMessage);
+      showErrorDialog(context, errMessage);
     }
     setState(() {
       _isLoading = false;
@@ -199,18 +182,13 @@ class _AuthCardState extends State<AuthCard> {
     }
   }
 
-  bool _isValidEmail(String email) {
-    return RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(email);
-  }
-
   var maskFormatter = new MaskTextInputFormatter(
       mask: '##/##/####', filter: {"#": RegExp(r'[0-9]')});
 
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
+    final cardSize = deviceSize.width * 0.75;
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
@@ -219,8 +197,8 @@ class _AuthCardState extends State<AuthCard> {
       child: Container(
         height: _authMode == AuthMode.ForgotPwd ? 230 : 400,
         constraints:
-            BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
-        width: deviceSize.width * 0.75,
+            BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 400 : 230),
+        width: cardSize,
         padding: EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -231,7 +209,7 @@ class _AuthCardState extends State<AuthCard> {
                   decoration: InputDecoration(labelText: 'E-Mail'),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
-                    if (value!.isEmpty || !_isValidEmail(value)) {
+                    if (value!.isEmpty || !isValidEmail(value)) {
                       return 'Email inválido!';
                     }
                     return null;
@@ -395,45 +373,11 @@ class _AuthCardState extends State<AuthCard> {
                           SizedBox(height: 10),
                           Row(
                             children: [
+                              SizedBox(width: cardSize / 5),
+                              GoogleIconLoginButton(),
                               SizedBox(width: 40),
-                              GoogleAuthButton(
-                                onPressed: () async {
-                                  try {
-                                    await Provider.of<Auth>(context,
-                                            listen: false)
-                                        .signInWithGoogle();
-                                  } catch (e) {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                      content: Text(e.toString()),
-                                    ));
-                                  }
-                                },
-                                darkMode: false,
-                                style: AuthButtonStyle(
-                                  buttonType: AuthButtonType.icon,
-                                ),
-                              ),
-                              SizedBox(width: 50),
-                              FacebookAuthButton(
-                                onPressed: () async {
-                                  try {
-                                    await Provider.of<Auth>(context,
-                                            listen: false)
-                                        .signInWithFacebook();
-                                  } catch (e) {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                      content: Text(e.toString()),
-                                    ));
-                                  }
-                                },
-                                darkMode: false,
-                                style: AuthButtonStyle(
-                                  buttonType: AuthButtonType.icon,
-                                ),
-                              ),
-                              SizedBox(width: 40),
+                              FacebookIconLoginButton(),
+                              // SizedBox(width: deviceSize.width / 5),
                             ],
                           ),
                         ],
