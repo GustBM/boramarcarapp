@@ -8,14 +8,18 @@ class Schedules extends ChangeNotifier {
   CollectionReference _schedules =
       FirebaseFirestore.instance.collection('schedule');
 
-  Future<DocumentSnapshot> getUserSchedule(String userId) {
-    return _schedules.doc(userId).get();
+  Future<DocumentSnapshot<Schedule>> getUserSchedule(String userId) {
+    return _schedules
+        .doc(userId)
+        .withConverter<Schedule>(
+            fromFirestore: (snapshot, _) => Schedule.fromJson(snapshot.data()!),
+            toFirestore: (schedule, _) => schedule.toJson())
+        .get();
   }
 
   Future<Schedule?> getAndSetUserSchedule(String userId) async {
     await _schedules.doc(userId).get().then((value) {
       return new Schedule(
-        userId: userId,
         sundayIni: value['sundayIni'],
         sundayEnd: value['sundayEnd'],
         mondayIni: value['mondayIni'],
@@ -35,43 +39,31 @@ class Schedules extends ChangeNotifier {
         (e) => throw HttpException("Houve um Erro!" + e.code.toString()));
   }
 
-  Future<void> addSchedule(
-      String userId,
-      int sundayIni,
-      int sundayEnd,
-      int mondayIni,
-      int mondayEnd,
-      int tuesdayIni,
-      int tuesdayEnd,
-      int wednesdayIni,
-      int wednesdayEnd,
-      int thursdayIni,
-      int thursdayEnd,
-      int fridayIni,
-      int fridayEnd,
-      int saturdayIni,
-      int saturdayEnd) async {
-    var schedules =
-        FirebaseFirestore.instance.collection('schedule').doc(userId);
-    schedules
-        .set({
-          'sundayIni': sundayIni,
-          'sundayEnd': sundayEnd,
-          'mondayIni': mondayIni,
-          'mondayEnd': mondayEnd,
-          'tuesdayIni': tuesdayIni,
-          'tuesdayEnd': tuesdayEnd,
-          'wednesdayIni': wednesdayIni,
-          'wednesdayEnd': wednesdayEnd,
-          'thursdayIni': thursdayIni,
-          'thursdayEnd': thursdayEnd,
-          'fridayIni': fridayIni,
-          'fridayEnd': fridayEnd,
-          'saturdayIni': saturdayIni,
-          'saturdayEnd': saturdayEnd,
-        })
-        .then((value) => print('Novo schedule'))
-        .catchError((error) => print('Failed to add event: $error'));
+  Future<void> addSchedule(String userId, Schedule schedule) async {
+    _schedules.doc(userId).set({
+      'sundayIni': schedule.sundayIni,
+      'sundayEnd': schedule.sundayEnd,
+      'sundayCheck': schedule.sundayCheck,
+      'mondayIni': schedule.mondayIni,
+      'mondayEnd': schedule.mondayEnd,
+      'mondayCheck': schedule.mondayCheck,
+      'tuesdayIni': schedule.tuesdayIni,
+      'tuesdayEnd': schedule.tuesdayEnd,
+      'tuesdayCheck': schedule.thursdayCheck,
+      'wednesdayIni': schedule.wednesdayIni,
+      'wednesdayEnd': schedule.wednesdayEnd,
+      'wednesdayCheck': schedule.wednesdayCheck,
+      'thursdayIni': schedule.thursdayIni,
+      'thursdayEnd': schedule.thursdayEnd,
+      'thursdayCheck': schedule.thursdayCheck,
+      'fridayIni': schedule.fridayIni,
+      'fridayEnd': schedule.fridayEnd,
+      'fridayCheck': schedule.fridayCheck,
+      'saturdayIni': schedule.saturdayIni,
+      'saturdayEnd': schedule.saturdayEnd,
+      'saturdayCheck': schedule.saturdayCheck,
+    }).catchError((error) => throw HttpException(
+        "Erro ao enviar novo Horário. Tente novamente mais tarde."));
   }
 
   List<int> _iniList() {
@@ -141,7 +133,6 @@ class Schedules extends ChangeNotifier {
     await Future.forEach(usersId, (element) async {
       await _schedules.doc(element as String).get().then((value) {
         return new Schedule(
-          userId: element,
           sundayIni: value['sundayIni'],
           sundayEnd: value['sundayEnd'],
           mondayIni: value['mondayIni'],
@@ -198,7 +189,7 @@ class Schedules extends ChangeNotifier {
         bestDay = _indexOfMax(bestHours);
       });
     }).whenComplete(() {
-      avaliableDaysList = calculateDaysInterval(dateTimeRange);
+      avaliableDaysList = _calculateDaysInterval(dateTimeRange);
       avaliableDaysList.forEach((element) {
         var tmpVal = bestDay;
         if (bestDay == 0) tmpVal = 7;
@@ -210,7 +201,7 @@ class Schedules extends ChangeNotifier {
     return bestDates;
   }
 
-  List<DateTime> calculateDaysInterval(DateTimeRange dateTimeRange) {
+  List<DateTime> _calculateDaysInterval(DateTimeRange dateTimeRange) {
     DateTime startDate = dateTimeRange.start;
     DateTime endDate = dateTimeRange.end;
     List<DateTime> days = [];
@@ -233,47 +224,4 @@ class Schedules extends ChangeNotifier {
 
     return bestDates;
   }
-
-  /*
-  /// Função retorna a data ideal dado um espaço de tempo do evento [eventRange]
-  /// e as datas de disponibilidade dados [datesRange].
-  /// A função sempre retorna o DateTime mais cedo do [eventRange].
-  List<DateTime> idealDate(
-      DateTimeRange eventRange, List<DateTimeRange> datesRange) {
-    DateTime dtTemp = eventRange.start;
-    Map<DateTime, int> topDates = Map<DateTime, int>();
-
-    List<DateTime> avaliableDaysList = []; // Dias possíveis do evento
-    List<DateTime> invitedAvaliableDaysList =
-        []; // Dias em que os pariticpantes estarão disponívies
-
-    while (dtTemp != eventRange.end) {
-      dtTemp = dtTemp.add(const Duration(days: 1));
-      avaliableDaysList.add(dtTemp);
-      topDates.putIfAbsent(dtTemp, () => 0);
-    }
-
-    datesRange.forEach((element) {
-      dtTemp = element.start;
-      while (dtTemp.day != eventRange.end.day) {
-        dtTemp = dtTemp.add(const Duration(days: 1));
-        invitedAvaliableDaysList.add(dtTemp);
-      }
-    });
-
-    avaliableDaysList.forEach((avaliableDay) => {
-          invitedAvaliableDaysList.forEach((invitedDay) => {
-                if (avaliableDay == invitedDay)
-                  {
-                    topDates.update(
-                        avaliableDay, (int) => topDates[avaliableDay]! + 1,
-                        ifAbsent: () => 0)
-                  }
-              })
-        });
-
-    print(topDates);
-    return avaliableDaysList;
-  }
-  */
 }
