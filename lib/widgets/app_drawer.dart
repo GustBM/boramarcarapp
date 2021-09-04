@@ -11,8 +11,7 @@ class AppDrawer extends StatelessWidget {
     User? _user;
 
     Future<void> getUser() async {
-      // ignore: await_only_futures
-      _user = await FirebaseAuth.instance.currentUser;
+      _user = FirebaseAuth.instance.currentUser;
     }
 
     return Drawer(
@@ -77,6 +76,14 @@ class AppDrawer extends StatelessWidget {
             title: Text('Meu Horário'),
             onTap: () {
               Navigator.of(context).pushReplacementNamed('/schedule');
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.group),
+            title: Text('Grupos'),
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed('/groups');
             },
           ),
           Divider(),

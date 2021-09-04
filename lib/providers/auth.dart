@@ -24,10 +24,6 @@ class Auth with ChangeNotifier {
     return _userData;
   }
 
-  AppUser get getUserInfo {
-    return _userInfo;
-  }
-
   Future<void> _authenticate(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(
@@ -120,23 +116,6 @@ class Auth with ChangeNotifier {
     return true;
   }
 
-  Future<AppUser?> getAppUserInfo(String uid) async {
-    try {
-      var snapshot =
-          await FirebaseFirestore.instance.collection('user').doc(uid).get();
-      var data = snapshot.data();
-      _userInfo = new AppUser(
-        firstName: data!['firstName'],
-        lastName: data['lastName'],
-        email: data['email'],
-        bthDate: data['bthDate'],
-      );
-    } catch (e) {
-      return null;
-    }
-    return _userInfo;
-  }
-
   Future<void> resetPwd(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
@@ -215,7 +194,7 @@ class Auth with ChangeNotifier {
           throw HttpException("Houve um erro!\n" + e.toString());
       }
     } catch (e) {
-      print(e);
+      throw HttpException("Houve um erro!\n" + e.toString());
     }
   }
 
@@ -268,24 +247,6 @@ class Auth with ChangeNotifier {
     }
   }
 
-  Future<AppUser> getUserById(String uid) async {
-    AppUser userInfo;
-    try {
-      var snapshot =
-          await FirebaseFirestore.instance.collection('user').doc(uid).get();
-      var data = snapshot.data();
-      userInfo = new AppUser(
-        firstName: data!['firstName'],
-        lastName: data['lastName'],
-        email: data['email'],
-        bthDate: data['bthDate'],
-      );
-    } catch (e) {
-      throw HttpException("Houve um ao buscar os convidados!" + e.toString());
-    }
-    return userInfo;
-  }
-
   // TODO: ISSO TÁ ERRADO, CORRIGIR A QUEBRA DO FLUXO DE DADOS!
   Future<void> addNewUserSchedule(String userId) async {
     FirebaseFirestore.instance.collection('schedule').doc(userId).set({
@@ -311,22 +272,5 @@ class Auth with ChangeNotifier {
       'saturdayEnd': 18,
       'saturdayCheck': true,
     });
-    /*addSchedule(
-        userId,
-        new Schedule(
-            sundayIni: 6,
-            sundayEnd: 18,
-            mondayIni: 6,
-            mondayEnd: 18,
-            tuesdayIni: 6,
-            tuesdayEnd: 18,
-            wednesdayIni: 6,
-            wednesdayEnd: 18,
-            thursdayIni: 6,
-            thursdayEnd: 18,
-            fridayIni: 6,
-            fridayEnd: 18,
-            saturdayIni: 6,
-            saturdayEnd: 18));*/
   }
 }

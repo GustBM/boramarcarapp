@@ -9,23 +9,26 @@ import 'package:boramarcarapp/models/event.dart';
 import 'package:boramarcarapp/utils.dart';
 import 'package:boramarcarapp/widgets/event/event_invited_chip.dart';
 
-class EventDetailScreen extends StatelessWidget {
+class EventDetailScreen extends StatefulWidget {
   static const routeName = '/event-detail';
 
+  @override
+  _EventDetailScreenState createState() => _EventDetailScreenState();
+}
+
+class _EventDetailScreenState extends State<EventDetailScreen> {
   void setInvitedList(Future<DocumentSnapshot<Object?>>? loadedEvent) {}
 
   @override
   Widget build(BuildContext context) {
     final eventId = ModalRoute.of(context)!.settings.arguments as String;
-    final loadedEvent =
-        Provider.of<Events>(context, listen: false).findById(eventId);
     final User? _userInfo = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
-      body: FutureBuilder<DocumentSnapshot>(
-        future: loadedEvent,
-        builder:
-            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+      body: FutureBuilder(
+        future: Provider.of<Events>(context, listen: false).getEvent(eventId),
+        builder: (BuildContext context,
+            AsyncSnapshot<DocumentSnapshot<Event>> snapshot) {
           if (snapshot.hasError) {
             return SnapshotErroMsg(
                 'Houve um erro ao buscar o Evento.\nTente novamente mais tarde.');
@@ -35,23 +38,12 @@ class EventDetailScreen extends StatelessWidget {
             return SnapshotErroMsg(
                 "Evento não encontrado ou deletado. Verifique o link.");
           }
-
+          Event? thisEvent;
           if (snapshot.connectionState == ConnectionState.done) {
-            Map<String, dynamic> data =
-                snapshot.data!.data() as Map<String, dynamic>;
-            final thisEvent = new Event(
-              eventId: eventId,
-              name: data['name'],
-              manager: data['manager'],
-              managerId: data['managerId'],
-              date: DateTime.parse(data['date'].toDate().toString()),
-              dateIni: DateTime.parse(data['dateIni'].toDate().toString()),
-              dateEnd: DateTime.parse(data['dateEnd'].toDate().toString()),
-              invited: new List<String>.from(data['invited']),
-              location: data['location'],
-              description: data['description'],
-              imageUrl: data['imageUrl'],
-            );
+            if (!(snapshot.hasData && !snapshot.data!.exists)) {
+              thisEvent = snapshot.data!.data();
+            }
+            final managerPermission = thisEvent!.managerId == _userInfo!.uid;
             return Scaffold(
               appBar: AppBar(
                 title: Row(
@@ -61,7 +53,7 @@ class EventDetailScreen extends StatelessWidget {
                   ],
                 ),
                 actions: <Widget>[
-                  thisEvent.managerId == _userInfo!.uid
+                  managerPermission
                       ? IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: () {
@@ -70,6 +62,10 @@ class EventDetailScreen extends StatelessWidget {
                         )
                       : Text(''),
                 ],
+                leading: IconButton(
+                  icon: Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () => Navigator.of(context).pushNamed('/'),
+                ),
               ),
               body: SingleChildScrollView(
                 child: Column(
@@ -179,7 +175,8 @@ class EventDetailScreen extends StatelessWidget {
                       ),
                     ),
                     Text("Convidados", textScaleFactor: 1.5),
-                    InvitedChipList(thisEvent.invited, () {}),
+                    InvitedChipList(
+                        thisEvent.invited, () {}, managerPermission),
                   ],
                 ),
               ),

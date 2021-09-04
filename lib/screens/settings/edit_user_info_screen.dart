@@ -179,6 +179,18 @@ class _EditUserInfoScreenState extends State<EditUserInfoScreen> {
                       ),
                       SizedBox(height: 10),
                       FormBuilderTextField(
+                        name: 'surname',
+                        decoration: InputDecoration(
+                          labelText: 'Sobrenome',
+                          prefixIcon: Icon(Icons.short_text_outlined),
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: FormBuilderValidators.required(context,
+                            errorText: 'Campo Obrigatório'),
+                        initialValue: _userInfo!.displayName,
+                      ),
+                      SizedBox(height: 10),
+                      FormBuilderTextField(
                         name: 'email',
                         decoration: InputDecoration(
                           labelText: 'E-mail',
@@ -192,6 +204,18 @@ class _EditUserInfoScreenState extends State<EditUserInfoScreen> {
                               errorText: 'Formato do e-mail inválido')
                         ]),
                         initialValue: _userInfo!.email,
+                      ),
+                      SizedBox(height: 10),
+                      FormBuilderTextField(
+                        name: 'bthDate',
+                        decoration: InputDecoration(
+                          labelText: 'Data de Nascimento',
+                          prefixIcon: Icon(Icons.short_text_outlined),
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: FormBuilderValidators.required(context,
+                            errorText: 'Campo Obrigatório'),
+                        initialValue: _userInfo!.displayName,
                       ),
                       SizedBox(height: 20)
                     ],

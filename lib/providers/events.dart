@@ -8,12 +8,10 @@ import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Events extends ChangeNotifier {
-  late final String? authToken;
-  // List<Event>? _previousEvents = [];
-  CollectionReference events = FirebaseFirestore.instance.collection('event');
+import '../utils.dart';
 
-  // Events(this.authToken, this._previousEvents);
+class Events extends ChangeNotifier {
+  CollectionReference _events = FirebaseFirestore.instance.collection('event');
 
   List<Event> _eventList = [];
 
@@ -21,21 +19,13 @@ class Events extends ChangeNotifier {
     return [..._eventList];
   }
 
-  Future<Event>? setDatatoEvent(DocumentSnapshot<Object?> value) async {
-    return new Event(
-        eventId: value['eventId'],
-        name: value['name'],
-        manager: value['manager'],
-        managerId: value['managerId'],
-        date: value['date'],
-        dateIni: value['dateIni'],
-        dateEnd: value['dateEnd'],
-        location: value['location'],
-        description: value['description']);
-  }
-
-  Future<DocumentSnapshot<Object?>>? findById(String eventId) async {
-    return events.doc(eventId).get();
+  Future<DocumentSnapshot<Event>> getEvent(String eventId) async {
+    return _events
+        .doc(eventId)
+        .withConverter<Event>(
+            fromFirestore: (snapshot, _) => Event.fromJson(snapshot.data()!),
+            toFirestore: (schedule, _) => schedule.toJson())
+        .get();
   }
 
   Future<void> update() async {
@@ -63,15 +53,18 @@ class Events extends ChangeNotifier {
           .where('email', isEqualTo: element)
           .get();
       var user = snapshot.docs[0].id;
-      print(user);
+      // print(user);
       usersId.add(user);
     }).then((value) async {
       var dateRange = new DateTimeRange(start: dateIni, end: dateEnd);
       bestDates = await Provider.of<Schedules>(context, listen: false)
           .getIdealDate(dateRange, usersId);
     }).then((dates) {
-      return events
-          .add({
+      final eventId = getRandomString(20);
+      return _events
+          .doc(eventId)
+          .set({
+            'eventId': eventId,
             'name': name,
             'manager': manager,
             'managerId': managerId,
@@ -83,7 +76,7 @@ class Events extends ChangeNotifier {
             'description': description,
             'invited': usersId,
           })
-          .then((value) => goToEvent(context, value.id, managerId, invited))
+          .then((value) => goToEvent(context, eventId, managerId, invited))
           .catchError(
               (e) => throw HttpException("Houve um Erro!" + e.code.toString()));
     });
@@ -115,7 +108,18 @@ class Events extends ChangeNotifier {
     );
   }
 
-  Future<void> getAndFetchEvents(String uid) async {
+  Future<void> refresh(BuildContext context, String userId) async {
+    try {
+      await _getAndFetchEvents(userId);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+            "Houve um erro ao buscar eventos. Tente novamente mais tarde."),
+      ));
+    }
+  }
+
+  Future<void> _getAndFetchEvents(String uid) async {
     var snapshot = await FirebaseFirestore.instance
         .collection('event')
         .where('invited', arrayContainsAny: [uid]).get();

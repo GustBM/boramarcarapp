@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Event with ChangeNotifier {
@@ -26,4 +27,35 @@ class Event with ChangeNotifier {
     this.invited = const [],
     this.imageUrl = '',
   });
+
+  Event.fromJson(Map<String, Object?> json)
+      : this(
+          eventId: json['eventId']! as String,
+          name: json['name']! as String,
+          manager: json['manager']! as String,
+          managerId: json['managerId']! as String,
+          date: (json['date']! as Timestamp).toDate(),
+          dateIni: (json['dateIni']! as Timestamp).toDate(),
+          dateEnd: (json['dateEnd']! as Timestamp).toDate(),
+          location: json['location']! as String,
+          description: json['description']! as String,
+          invited: (json['invited'] as List<dynamic>).cast<String>(),
+          imageUrl: json['imageUrl']! as String,
+        );
+
+  Map<String, Object?> toJson() {
+    return {
+      'eventId': eventId,
+      'name': name,
+      'manager': manager,
+      'managerId': managerId,
+      'date': date,
+      'dateIni': dateIni,
+      'dateEnd': dateEnd,
+      'location': location,
+      'description': description,
+      'invited': invited,
+      'imageUrl': imageUrl,
+    };
+  }
 }

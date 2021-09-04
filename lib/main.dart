@@ -12,8 +12,10 @@ import 'package:boramarcarapp/screens/auth_screen.dart';
 import 'package:boramarcarapp/screens/event/event_detail_screen.dart';
 import 'package:boramarcarapp/screens/event/event_new_screen.dart';
 import 'package:boramarcarapp/screens/settings/settings_screen.dart';
-import 'package:boramarcarapp/screens/schduele_screen.dart';
+import 'package:boramarcarapp/screens/schedule_screen.dart';
 import 'package:boramarcarapp/screens/settings/edit_user_info_screen.dart';
+import 'package:boramarcarapp/providers/users.dart';
+import 'package:boramarcarapp/screens/group_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +39,10 @@ class BoraMarcarApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<Schedules>(
           create: (_) => Schedules(),
+          // update: (ctx, auth, previousEvents) => previousEvents!..update(),
+        ),
+        ChangeNotifierProvider<Users>(
+          create: (_) => Users(),
           // update: (ctx, auth, previousEvents) => previousEvents!..update(),
         ),
       ],
@@ -87,6 +93,7 @@ class BoraMarcarApp extends StatelessWidget {
             EventFormScreen.routeName: (ctx) => EventFormScreen(),
             SchedueleScreen.routeName: (ctx) => SchedueleScreen(),
             EditUserInfoScreen.routeName: (ctx) => EditUserInfoScreen(),
+            GroupsScreen.routeName: (ctx) => GroupsScreen(),
           },
         ),
       ),

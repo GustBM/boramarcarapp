@@ -1,30 +1,21 @@
-import 'package:boramarcarapp/models/http_exception.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:boramarcarapp/models/user.dart';
+import 'package:boramarcarapp/providers/users.dart';
+
+import '../../utils.dart';
 
 class InvitedChipList extends StatelessWidget {
   final List<String> invitedList;
   final Function setState;
+  final bool adminPermission;
 
-  InvitedChipList(this.invitedList, this.setState);
+  InvitedChipList(this.invitedList, this.setState, this.adminPermission);
 
   final List<String> invitedName = [];
-  Future<void> getUserById() async {
-    invitedList.forEach((element) async {
-      try {
-        var snapshot = await FirebaseFirestore.instance
-            .collection('user')
-            .doc(element)
-            .get();
-        var data = snapshot.data();
-        invitedName.add(data!['firstName']);
-      } catch (e) {
-        throw HttpException("Houve um ao buscar os convidados!" + e.toString());
-      }
-    });
-  }
 
-  Widget _buildChip(String label) {
+  Widget _buildChip(BuildContext context, AppUser user) {
     return Chip(
       labelPadding: EdgeInsets.all(2.0),
       avatar: CircleAvatar(
@@ -33,7 +24,7 @@ class InvitedChipList extends StatelessWidget {
         ).image,
       ),
       label: Text(
-        label,
+        user.firstName,
         style: TextStyle(
           color: Colors.white,
         ),
@@ -42,19 +33,22 @@ class InvitedChipList extends StatelessWidget {
       elevation: 6.0,
       shadowColor: Colors.grey[60],
       padding: EdgeInsets.all(8.0),
-      deleteIcon: Icon(Icons.cancel),
+      deleteIcon: adminPermission ? Icon(Icons.cancel) : Text(''),
       onDeleted: () {
-        setState(label);
+        showConfirmDialog(
+            context,
+            '',
+            'Tem certeza que deseja desconvidar ' + user.firstName + '?',
+            () {});
       },
     );
   }
 
-  List<Widget> listChips() {
+  List<Widget> listChips(BuildContext context, List<AppUser?> invitedList) {
     List<Widget> chips = [];
-
-    invitedName.forEach((element) {
-      var chip = _buildChip(element);
-      chips.add(chip);
+    print(invitedList);
+    invitedList.forEach((element) {
+      chips.add(_buildChip(context, element!));
     });
 
     return chips;
@@ -62,26 +56,23 @@ class InvitedChipList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<void>(
-      future: getUserById(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
+    return FutureBuilder<List<AppUser?>>(
+      future: Provider.of<Users>(context, listen: false)
+          .getInvitedUserList(invitedList),
+      builder: (BuildContext context, AsyncSnapshot<List<AppUser?>> snapshot) {
         if (snapshot.hasError) {
           return Text("Houve um Erro ao buscar os convidados.");
-        }
-
-        if (snapshot.hasData && !snapshot.data!.exists) {
-          return Text("Document does not exist");
         }
 
         if (snapshot.connectionState == ConnectionState.done) {
           return Wrap(
             spacing: 6.0,
             runSpacing: 6.0,
-            children: listChips(),
+            children: listChips(context, snapshot.data!),
           );
         }
 
-        return Text("Buscando Convidados...");
+        return CircularProgressIndicator();
       },
     );
   }

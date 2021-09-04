@@ -162,7 +162,7 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
             return Text(
                 "Erro ao recuperar o horário. Tente novamente mais tarde.");
           }
-          // Map<String, Schedule> data = {};
+          
           Schedule? sch;
           if (snapshot.connectionState == ConnectionState.done) {
             if (!(snapshot.hasData && !snapshot.data!.exists)) {

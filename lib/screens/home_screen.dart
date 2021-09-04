@@ -11,18 +11,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future<void> _refresh(BuildContext context) async {
-      String userId = FirebaseAuth.instance.currentUser!.uid;
-      try {
-        await Provider.of<Events>(context, listen: false)
-            .getAndFetchEvents(userId);
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-              "Houve um erro ao buscar eventos. Tente novamente mais tarde."),
-        ));
-      }
-    }
+    String userId = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
       appBar: AppBar(
@@ -52,9 +41,11 @@ class HomeScreen extends StatelessWidget {
       ),
       drawer: AppDrawer(),
       body: RefreshIndicator(
-        onRefresh: () => _refresh(context),
+        onRefresh: () => Provider.of<Events>(context, listen: false)
+            .refresh(context, userId),
         child: FutureBuilder(
-          future: _refresh(context),
+          future: Provider.of<Events>(context, listen: false)
+              .refresh(context, userId),
           builder: (ctx, dataSnapshot) {
             if (dataSnapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -76,7 +67,10 @@ class HomeScreen extends StatelessWidget {
                   SizedBox(height: 20.0),
                   ElevatedButton(
                     child: Text('Recarregar'),
-                    onPressed: () => {_refresh(context)},
+                    onPressed: () => {
+                      Provider.of<Events>(context, listen: false)
+                          .refresh(context, userId)
+                    },
                     style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
