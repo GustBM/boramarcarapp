@@ -31,4 +31,13 @@ class Users extends ChangeNotifier {
         });
     return invitedList;
   }
+
+  Future<void> addAndUpdateAppUser(String userId, AppUser appUser) async {
+    _schedules
+        .doc(userId)
+        .withConverter<AppUser>(
+            fromFirestore: (snapshot, _) => AppUser.fromJson(snapshot.data()!),
+            toFirestore: (schedule, _) => schedule.toJson())
+        .set(appUser);
+  }
 }

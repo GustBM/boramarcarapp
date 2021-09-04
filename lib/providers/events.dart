@@ -28,10 +28,6 @@ class Events extends ChangeNotifier {
         .get();
   }
 
-  Future<void> update() async {
-    notifyListeners();
-  }
-
   Future<void> addEvent(
       String name,
       String manager,

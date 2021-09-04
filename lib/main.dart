@@ -35,15 +35,12 @@ class BoraMarcarApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<Events>(
           create: (_) => Events(),
-          // update: (ctx, auth, previousEvents) => previousEvents!..update(),
         ),
         ChangeNotifierProvider<Schedules>(
           create: (_) => Schedules(),
-          // update: (ctx, auth, previousEvents) => previousEvents!..update(),
         ),
         ChangeNotifierProvider<Users>(
           create: (_) => Users(),
-          // update: (ctx, auth, previousEvents) => previousEvents!..update(),
         ),
       ],
       child: Consumer<Auth>(

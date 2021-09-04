@@ -39,7 +39,7 @@ class InvitedChipList extends StatelessWidget {
             context,
             '',
             'Tem certeza que deseja desconvidar ' + user.firstName + '?',
-            () {});
+            () {}); //TODO: Desconvidar convidado
       },
     );
   }
