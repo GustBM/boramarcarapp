@@ -20,6 +20,7 @@ class GoogleIconLoginButton extends StatelessWidget {
       darkMode: false,
       style: AuthButtonStyle(
         buttonType: AuthButtonType.icon,
+        borderRadius: 40.0,
       ),
     );
   }
@@ -41,6 +42,7 @@ class FacebookIconLoginButton extends StatelessWidget {
       darkMode: false,
       style: AuthButtonStyle(
         buttonType: AuthButtonType.icon,
+        borderRadius: 40.0,
       ),
     );
   }
