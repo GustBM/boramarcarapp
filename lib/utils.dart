@@ -73,6 +73,7 @@ class SnapshotEmptyMsg extends StatelessWidget {
           child: Text(
             msg,
             textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 24),
           ),
         ),
       ],

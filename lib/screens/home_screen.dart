@@ -86,13 +86,7 @@ class HomeScreen extends StatelessWidget {
                 ],
               ));
             } else {
-              return Column(
-                children: <Widget>[
-                  Container(
-                    child: EventGrid(),
-                  ),
-                ],
-              );
+              return EventGrid();
             }
           },
         ),

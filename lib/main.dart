@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:boramarcarapp/providers/auth.dart';
 import 'package:boramarcarapp/providers/events.dart';
 import 'package:boramarcarapp/providers/schedules.dart';
+import 'package:boramarcarapp/providers/users.dart';
 import 'package:boramarcarapp/screens/home_screen.dart';
 import 'package:boramarcarapp/screens/splash_screen.dart';
 import 'package:boramarcarapp/screens/auth_screen.dart';
@@ -14,7 +15,6 @@ import 'package:boramarcarapp/screens/event/event_new_screen.dart';
 import 'package:boramarcarapp/screens/settings/settings_screen.dart';
 import 'package:boramarcarapp/screens/schedule_screen.dart';
 import 'package:boramarcarapp/screens/settings/edit_user_info_screen.dart';
-import 'package:boramarcarapp/providers/users.dart';
 import 'package:boramarcarapp/screens/group_screen.dart';
 
 Future<void> main() async {
@@ -69,7 +69,7 @@ class BoraMarcarApp extends StatelessWidget {
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   print('Erro! ${snapshot.error.toString()}');
-                  return Text("Houve um erro!");
+                  return Text("Houve um erro na conexão com o banco!");
                 } else if (snapshot.hasData) {
                   return auth.isAuth
                       ? FutureBuilder(

@@ -28,6 +28,14 @@ class Events extends ChangeNotifier {
         .get();
   }
 
+  Future<QuerySnapshot<Event>> getAllUserEvents(String uid) async {
+    return _events
+        .withConverter<Event>(
+            fromFirestore: (snapshot, _) => Event.fromJson(snapshot.data()!),
+            toFirestore: (schedule, _) => schedule.toJson())
+        .where('invited', arrayContainsAny: [uid]).get();
+  }
+
   Future<void> addEvent(
       String name,
       String manager,
@@ -106,6 +114,7 @@ class Events extends ChangeNotifier {
 
   Future<void> refresh(BuildContext context, String userId) async {
     try {
+      // await getAllEvents(userId);
       await _getAndFetchEvents(userId);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
