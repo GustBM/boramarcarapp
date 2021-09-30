@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -12,6 +11,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:boramarcarapp/providers/events.dart';
 import 'package:boramarcarapp/widgets/app_drawer.dart';
+import 'package:boramarcarapp/widgets/event/event_invite_modal.dart';
 import 'package:boramarcarapp/utils.dart' as utils;
 
 class EventFormScreen extends StatefulWidget {
@@ -51,44 +51,7 @@ class _EventFormState extends State<EventFormScreen> {
     );
   }
 
-  Widget _buildChip(String label) {
-    return Chip(
-      labelPadding: EdgeInsets.all(2.0),
-      avatar: CircleAvatar(
-        backgroundImage: Image.asset(
-          'assets/images/standard_user_photo.png',
-        ).image,
-      ),
-      label: Text(
-        label,
-        style: TextStyle(
-          color: Colors.white,
-        ),
-      ),
-      backgroundColor: Color(0xFF5f65d3),
-      elevation: 6.0,
-      shadowColor: Colors.grey[60],
-      padding: EdgeInsets.all(8.0),
-      deleteIcon: Icon(Icons.cancel),
-      onDeleted: () {
-        removeChip(label);
-      },
-    );
-  }
-
   void _onChanged(dynamic value) {}
-
-  bool _isValidEmail(String email) {
-    return RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(email);
-  }
-
-  void removeChip(String label) {
-    setState(() {
-      invitedList.removeWhere((element) => element == label);
-    });
-  }
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
@@ -310,73 +273,7 @@ class _EventFormState extends State<EventFormScreen> {
                             errorText: 'Máximo de 500 caracteres'),
                       ]),
                     ),
-                    TextButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (_) => new AlertDialog(
-                            title: Text(
-                              'Insira o e-mail do convidado',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                            content: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: TextField(
-                                    decoration: InputDecoration(
-                                        hintText: 'Insira o e-mail'),
-                                    controller: userEmailController,
-                                  ),
-                                ),
-                                Text(
-                                  errorText,
-                                  style: TextStyle(
-                                    color: Colors.red,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text('Fechar',
-                                    style: TextStyle(fontSize: 16)),
-                                onPressed: () {
-                                  setState(() {});
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                              TextButton(
-                                  child: Text(
-                                    'Adicionar Convidado',
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                  onPressed: () {
-                                    if (_isValidEmail(
-                                        userEmailController.value.text)) {
-                                      invitedList
-                                          .add(userEmailController.value.text);
-                                      setState(() {});
-                                      Navigator.of(context).pop();
-                                    }
-                                  }),
-                            ],
-                          ),
-                        );
-                      },
-                      child: Text(
-                        '+ Adicionar Convidado',
-                        style: TextStyle(
-                            decoration: TextDecoration.underline, fontSize: 22),
-                      ),
-                    ),
-                    Column(
-                      children: invitedList.map((e) {
-                        return _buildChip(e);
-                      }).toList(),
-                    )
-                    // InvitedChipList([], () {}),
+                    EventInviteModal(invitedList),
                   ],
                 ),
               ),

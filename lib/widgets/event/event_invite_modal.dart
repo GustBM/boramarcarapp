@@ -1,78 +1,165 @@
+import 'package:boramarcarapp/models/user.dart';
+import 'package:boramarcarapp/providers/users.dart';
 import 'package:flutter/material.dart';
-
-import '../../utils.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:provider/provider.dart';
 
 class EventInviteModal extends StatefulWidget {
-  final TextEditingController? userEmailController;
-  final Function addToList;
-  EventInviteModal(this.userEmailController, this.addToList);
+  final List<String> invitedList;
+  EventInviteModal(this.invitedList);
   @override
   _EventInviteModalState createState() => _EventInviteModalState();
 }
 
 class _EventInviteModalState extends State<EventInviteModal> {
+  List<AppUser> _users = [];
+
+  void addAll(List<AppUser> userList) {
+    userList.forEach((element) {
+      if (!widget.invitedList.contains(element))
+        widget.invitedList.add(element.firstName);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final TextEditingController? userEmailController =
-        widget.userEmailController;
-    // final List<String> invitedList = widget.invitedList;
-    final Function addToList = widget.addToList;
-    return TextButton(
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (_) => new AlertDialog(
-            title: Text(
-              'Insira o e-mail do convidado',
-              style: TextStyle(fontSize: 20),
-            ),
-            content: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(5),
-                  child: TextField(
-                    decoration: InputDecoration(hintText: 'Insira o e-mail'),
-                    controller: userEmailController,
-                  ),
+    final List<String> _invitedList = widget.invitedList;
+
+    return Column(
+      children: [
+        TextButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (_) => new AlertDialog(
+                title: Text(
+                  'Adicionar Convidados',
+                  style: TextStyle(fontSize: 20),
                 ),
-                Text(
-                  'Erro',
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text('Fechar', style: TextStyle(fontSize: 16)),
-                onPressed: () {
-                  setState(() {});
-                  Navigator.of(context).pop();
-                },
-              ),
-              TextButton(
-                  child: Text(
-                    'Adicionar Convidado',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  onPressed: () {
-                    if (isValidEmail(userEmailController!.value.text)) {
-                      setState(() {
-                        addToList(userEmailController.value.text);
-                      });
+                content: TypeAheadField(
+                  textFieldConfiguration: TextFieldConfiguration(
+                      autofocus: true,
+                      style: DefaultTextStyle.of(context)
+                          .style
+                          .copyWith(fontStyle: FontStyle.italic),
+                      decoration:
+                          InputDecoration(border: OutlineInputBorder())),
+                  suggestionsCallback: (pattern) async {
+                    return await Provider.of<Users>(context, listen: false)
+                        .getUsersList(pattern);
+                  },
+                  itemBuilder: (context, AppUser appUser) {
+                    return ListTile(
+                      leading: Icon(Icons.shopping_cart),
+                      title: Text(appUser.firstName),
+                      subtitle: Text(appUser.email),
+                    );
+                  },
+                  onSuggestionSelected: (AppUser suggestion) {
+                    setState(() {
+                      _invitedList.add(suggestion.email);
                       Navigator.of(context).pop();
-                    }
-                  }),
-            ],
+                    });
+                  },
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child:
+                        Text('Convidar Todos', style: TextStyle(fontSize: 16)),
+                    onPressed: () {
+                      addAll(_users);
+                      setState(() {});
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: Text('Fechar', style: TextStyle(fontSize: 16)),
+                    onPressed: () {
+                      setState(() {});
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+          child: Text(
+            '+ Adicionar Convidado',
+            style:
+                TextStyle(decoration: TextDecoration.underline, fontSize: 22),
           ),
-        );
-      },
-      child: Text(
-        '+ Adicionar Convidado',
-        style: TextStyle(decoration: TextDecoration.underline, fontSize: 22),
+        ),
+        InvitedChipList(_invitedList),
+      ],
+    );
+  }
+}
+
+class InvitedChipList extends StatefulWidget {
+  final List<String> invitedList;
+  InvitedChipList(this.invitedList);
+
+  @override
+  _InvitedChipListState createState() => _InvitedChipListState();
+}
+
+class _InvitedChipListState extends State<InvitedChipList> {
+  void removeChip(String label) {
+    setState(() {
+      widget.invitedList.removeWhere((element) => element == label);
+    });
+  }
+
+  Widget _buildChip(String label) {
+    return Chip(
+      labelPadding: EdgeInsets.all(2.0),
+      avatar: CircleAvatar(
+        backgroundImage: Image.asset(
+          'assets/images/standard_user_photo.png',
+        ).image,
       ),
+      label: Text(
+        label,
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+      backgroundColor: Color(0xFF5f65d3),
+      elevation: 6.0,
+      shadowColor: Colors.grey[60],
+      // padding: EdgeInsets.all(8.0),
+      deleteIcon: Icon(Icons.cancel),
+      onDeleted: () {
+        removeChip(label);
+      },
+    );
+  }
+
+  List<Widget> listChips(List<String> invitedList) {
+    List<Widget> chips = [];
+    invitedList.forEach((element) {
+      chips.add(_buildChip(element));
+    });
+
+    return chips;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final List<String> _invitedList = widget.invitedList;
+
+    // return GridView.count(
+    //   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+    //   crossAxisCount: 2,
+    //   children: _invitedList.map((e) {
+    //     return _buildChip(e);
+    //   }).toList(),
+    //   shrinkWrap: true,
+    // );
+    return Wrap(
+      spacing: 6.0,
+      runSpacing: 6.0,
+      children: listChips(_invitedList),
     );
   }
 }

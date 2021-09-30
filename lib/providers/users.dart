@@ -15,6 +15,28 @@ class Users extends ChangeNotifier {
         .get();
   }
 
+  Future<QuerySnapshot<AppUser>> getAppUserByEmail(String email) async {
+    return _schedules
+        .where('email', isEqualTo: email)
+        .withConverter<AppUser>(
+            fromFirestore: (snapshot, _) => AppUser.fromJson(snapshot.data()!),
+            toFirestore: (schedule, _) => schedule.toJson())
+        .get();
+  }
+
+  Future<List<AppUser>> getUsersList(String email) async {
+    QuerySnapshot qShot =
+        await _schedules.where('email', isEqualTo: email).get();
+
+    return qShot.docs
+        .map((user) => AppUser(
+              firstName: user['firstName'],
+              lastName: user['lastName'],
+              email: user['email'],
+            ))
+        .toList();
+  }
+
   Future<List<AppUser?>> getInvitedUserList(List<String> userIds) async {
     List<AppUser?> invitedList = [];
     userIds.forEach((id) => {

@@ -46,7 +46,6 @@ class InvitedChipList extends StatelessWidget {
 
   List<Widget> listChips(BuildContext context, List<AppUser?> invitedList) {
     List<Widget> chips = [];
-    print(invitedList);
     invitedList.forEach((element) {
       chips.add(_buildChip(context, element!));
     });
