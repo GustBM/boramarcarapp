@@ -44,9 +44,13 @@ class AppDrawer extends StatelessWidget {
                       SizedBox(
                         width: 20,
                       ),
-                      Text((_user == null || _user!.displayName == null
-                          ? 'Bem-Vindo'
-                          : _user!.displayName)!),
+                      Flexible(
+                        child: Text(
+                            (_user == null || _user!.displayName == null
+                                ? 'Bem-Vindo'
+                                : _user!.displayName)!,
+                            overflow: TextOverflow.ellipsis),
+                      ),
                     ],
                   );
                 }

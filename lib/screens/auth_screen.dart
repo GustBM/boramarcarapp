@@ -72,10 +72,7 @@ class AuthScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Flexible(
-                    flex: deviceSize.width > 600 ? 2 : 1,
-                    child: AuthCard(),
-                  ),
+                  AuthCard(),
                 ],
               ),
             ),
@@ -195,7 +192,7 @@ class _AuthCardState extends State<AuthCard> {
       ),
       elevation: 8.0,
       child: Container(
-        height: _authMode == AuthMode.ForgotPwd ? 230 : 400,
+        height: _authMode == AuthMode.ForgotPwd ? 230 : 420,
         constraints:
             BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 400 : 230),
         width: cardSize,
@@ -347,7 +344,8 @@ class _AuthCardState extends State<AuthCard> {
                     padding:
                         EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    textStyle: TextStyle(color: Theme.of(context).accentColor),
+                    textStyle: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary),
                   ),
                 ),
                 _authMode == AuthMode.Login
@@ -360,8 +358,8 @@ class _AuthCardState extends State<AuthCard> {
                           padding: EdgeInsets.symmetric(
                               horizontal: 30.0, vertical: 4),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          textStyle:
-                              TextStyle(color: Theme.of(context).accentColor),
+                          textStyle: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary),
                         ),
                       )
                     : SizedBox(),

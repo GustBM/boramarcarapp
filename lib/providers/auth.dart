@@ -45,7 +45,8 @@ class Auth with ChangeNotifier {
           throw HttpException("Usuário desabilitado.");
 
         default:
-          throw HttpException("Houve um erro!\n" + error.toString());
+          throw HttpException(
+              "[" + error.code + "]" + "Houve um erro!\n" + error.toString());
       }
     }
     _userData = _auth.currentUser!;
@@ -194,6 +195,7 @@ class Auth with ChangeNotifier {
           throw HttpException("Houve um erro!\n" + e.toString());
       }
     } catch (e) {
+      print(e.toString());
       throw HttpException("Houve um erro!\n" + e.toString());
     }
   }

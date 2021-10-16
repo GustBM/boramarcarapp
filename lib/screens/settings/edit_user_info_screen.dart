@@ -269,7 +269,8 @@ class _EditUserInfoScreenState extends State<EditUserInfoScreen> {
                               SizedBox(width: 10),
                               Expanded(
                                 child: MaterialButton(
-                                  color: Theme.of(context).accentColor,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
                                   child: Text(
                                     "Salvar Alterações",
                                     style: TextStyle(color: Colors.white),

@@ -1,3 +1,4 @@
+import 'package:boramarcarapp/theme_data.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -51,19 +52,7 @@ class BoraMarcarApp extends StatelessWidget {
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate
           ],
-          theme: ThemeData(
-            brightness: Brightness.light,
-            // primaryColor: Colors.amber[400],
-            primaryColor: Color(0xFF5f65d3),
-            // accentColor: Color.fromRGBO(82, 104, 143, 1),
-            accentColor: Colors.amber[400],
-            fontFamily: 'Lato',
-            textTheme: TextTheme(
-              headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-              headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
-              bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
-            ),
-          ),
+          theme: appThemeData,
           home: FutureBuilder(
               future: _fbApp,
               builder: (context, snapshot) {

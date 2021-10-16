@@ -15,13 +15,14 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Text(
               'BoraMarcar',
               style: TextStyle(
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context).colorScheme.secondary,
                 fontFamily: 'Klavika',
                 fontSize: 24,
                 fontWeight: FontWeight.w900,

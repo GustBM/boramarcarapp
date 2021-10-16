@@ -261,7 +261,7 @@ class _EventFormState extends State<EventFormScreen> {
                         labelText: 'Descrição',
                         prefixIcon: Icon(Icons.short_text_outlined),
                         contentPadding:
-                            const EdgeInsets.symmetric(vertical: 40.0),
+                            const EdgeInsets.symmetric(vertical: 30.0),
                         border: OutlineInputBorder(),
                         helperText: '*máximo de 500 caracteres',
                       ),
@@ -286,7 +286,7 @@ class _EventFormState extends State<EventFormScreen> {
                     SizedBox(width: 10),
                     Expanded(
                       child: MaterialButton(
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.secondary,
                         child: Text(
                           "Enviar",
                           style: TextStyle(color: Colors.white),
@@ -307,7 +307,7 @@ class _EventFormState extends State<EventFormScreen> {
                     SizedBox(width: 20),
                     Expanded(
                       child: MaterialButton(
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.secondary,
                         child: Text(
                           "Limpar",
                           style: TextStyle(color: Colors.white),
