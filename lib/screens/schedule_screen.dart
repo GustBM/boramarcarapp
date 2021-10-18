@@ -156,7 +156,13 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
       drawer: AppDrawer(),
       body: FutureBuilder(
         future: Provider.of<Schedules>(context, listen: false)
-            .getUserSchedule(_userInfo!.uid),
+            .getUserSchedule(_userInfo!.uid)
+            .catchError((onError) {
+          Provider.of<Schedules>(context, listen: false)
+              .addNewUserSchedule(_userInfo.uid);
+          showErrorDialog(context,
+              'Houve um erro no cadastro do horário e ele dedverá ser resetado.');
+        }),
         builder: (BuildContext context,
             AsyncSnapshot<DocumentSnapshot<Schedule>> snapshot) {
           if (snapshot.hasError) {
@@ -200,7 +206,7 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
                             ),
                             Expanded(
                               child: FormBuilderDropdown(
-                                enabled: disableDay[0],
+                                enabled: sch.sundayCheck,
                                 name: 'sunday_hour_ini',
                                 hint: Text('Hora Inicial'),
                                 initialValue: hourOptionsIni[sch.sundayIni],

@@ -66,6 +66,32 @@ class Schedules extends ChangeNotifier {
         "Erro ao enviar novo Horário. Tente novamente mais tarde."));
   }
 
+  Future<void> addNewUserSchedule(String userId) async {
+    FirebaseFirestore.instance.collection('schedule').doc(userId).set({
+      'sundayIni': 6,
+      'sundayEnd': 18,
+      'sundayCheck': true,
+      'mondayIni': 6,
+      'mondayEnd': 18,
+      'mondayCheck': true,
+      'tuesdayIni': 6,
+      'tuesdayEnd': 18,
+      'tuesdayCheck': true,
+      'wednesdayIni': 6,
+      'wednesdayEnd': 18,
+      'wednesdayCheck': true,
+      'thursdayIni': 6,
+      'thursdayEnd': 18,
+      'thursdayCheck': true,
+      'fridayIni': 6,
+      'fridayEnd': 18,
+      'fridayCheck': true,
+      'saturdayIni': 6,
+      'saturdayEnd': 18,
+      'saturdayCheck': true,
+    });
+  }
+
   List<int> _iniList() {
     return [
       0,

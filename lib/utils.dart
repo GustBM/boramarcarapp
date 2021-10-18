@@ -58,6 +58,10 @@ void showErrorDialog(BuildContext context, String message) {
   );
 }
 
+// dynamic setValueIfNull(dynamic variable, dynamic valueIfNull) {
+//   var len = foo?.length ?? 0; // Provide a default value if foo was null.
+// }
+
 class SnapshotEmptyMsg extends StatelessWidget {
   final String msg;
   SnapshotEmptyMsg(this.msg);
