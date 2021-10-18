@@ -50,7 +50,14 @@ class _EventInviteModalState extends State<EventInviteModal> {
                   },
                   itemBuilder: (context, AppUser appUser) {
                     return ListTile(
-                      leading: Icon(Icons.shopping_cart),
+                      leading: CircleAvatar(
+                        foregroundColor: Theme.of(context).primaryColor,
+                        backgroundColor: Colors.grey,
+                        // backgroundImage: appUser.
+                        //     Image.asset('assets/images/standard_user_photo.png')
+                        //         .image,
+                        child: Text('${appUser.firstName[0]}'),
+                      ),
                       title: Text(appUser.firstName),
                       subtitle: Text(appUser.email),
                     );

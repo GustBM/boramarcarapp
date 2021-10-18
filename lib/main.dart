@@ -1,4 +1,3 @@
-import 'package:boramarcarapp/theme_data.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -6,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/providers/auth.dart';
 import 'package:boramarcarapp/providers/events.dart';
+import 'package:boramarcarapp/providers/groups.dart';
 import 'package:boramarcarapp/providers/schedules.dart';
 import 'package:boramarcarapp/providers/users.dart';
 import 'package:boramarcarapp/screens/home_screen.dart';
@@ -16,7 +16,10 @@ import 'package:boramarcarapp/screens/event/event_new_screen.dart';
 import 'package:boramarcarapp/screens/settings/settings_screen.dart';
 import 'package:boramarcarapp/screens/schedule_screen.dart';
 import 'package:boramarcarapp/screens/settings/edit_user_info_screen.dart';
-import 'package:boramarcarapp/screens/group_screen.dart';
+import 'package:boramarcarapp/screens/group/group_details_screen.dart';
+import 'package:boramarcarapp/screens/group/groups_screen.dart';
+import 'package:boramarcarapp/screens/group/group_new_screen.dart';
+import 'package:boramarcarapp/theme_data.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +45,9 @@ class BoraMarcarApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<Users>(
           create: (_) => Users(),
+        ),
+        ChangeNotifierProvider<Groups>(
+          create: (_) => Groups(),
         ),
       ],
       child: Consumer<Auth>(
@@ -80,6 +86,8 @@ class BoraMarcarApp extends StatelessWidget {
             SchedueleScreen.routeName: (ctx) => SchedueleScreen(),
             EditUserInfoScreen.routeName: (ctx) => EditUserInfoScreen(),
             GroupsScreen.routeName: (ctx) => GroupsScreen(),
+            NewGroupScreen.routeName: (ctx) => NewGroupScreen(),
+            GroupDetailsScreen.routeName: (ctx) => GroupDetailsScreen(),
           },
         ),
       ),

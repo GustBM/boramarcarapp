@@ -16,9 +16,9 @@ class AppUser {
   AppUser.fromJson(Map<String, Object?> json)
       : this(
           firstName: json['firstName']! as String,
-          lastName: json['lastName'] as String,
+          lastName: json['lastName'] as String?,
           email: json['email']! as String,
-          bthDate: json['bthDate'] as String,
+          bthDate: json['bthDate'] as String?,
           invited: (json['invited']! as List<dynamic>).cast<String>(),
         );
 
