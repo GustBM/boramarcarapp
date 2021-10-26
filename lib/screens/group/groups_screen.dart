@@ -1,4 +1,5 @@
 import 'package:boramarcarapp/providers/groups.dart';
+import 'package:boramarcarapp/widgets/empty_message_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -47,9 +48,14 @@ class _GroupsScreenState extends State<GroupsScreen> {
           }
 
           if (snapshot.hasData && snapshot.data!.size == 0) {
-            return Center(
-                child: Text(
-                    "Nenhum grupo encontrado. Gostaria de criar seu grou?"));
+            return EmptyMessage(
+              icon: Icons.group_add,
+              messageText:
+                  "Nenhum grupo encontrado.\nGostaria de criar seu grupo?",
+              buttonFunction: () =>
+                  Navigator.of(context).pushNamed(NewGroupScreen.routeName),
+              buttonText: 'Novo Grupo',
+            );
           }
           if (snapshot.connectionState == ConnectionState.done) {
             List<Group> groupsList = snapshot.data!.docs

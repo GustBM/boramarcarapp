@@ -1,3 +1,8 @@
+import 'package:boramarcarapp/screens/event/event_new_screen.dart';
+import 'package:boramarcarapp/screens/group/groups_screen.dart';
+import 'package:boramarcarapp/screens/home_screen.dart';
+import 'package:boramarcarapp/screens/schedule_screen.dart';
+import 'package:boramarcarapp/screens/settings/settings_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -58,50 +63,36 @@ class AppDrawer extends StatelessWidget {
             ),
             automaticallyImplyLeading: false,
           ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.home_filled),
-            title: Text('Tela Inicial'),
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed('/');
-            },
+          DrawerItem(
+            icon: Icons.home_filled,
+            title: 'Tela Inicial',
+            path: HomeScreen.routeName,
           ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.event),
-            title: Text('Novo Evento'),
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed('/new-event');
-            },
+          DrawerItem(
+            icon: Icons.event,
+            title: 'Novo Evento',
+            path: EventFormScreen.routeName,
           ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.access_time_rounded),
-            title: Text('Meu Horário'),
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed('/schedule');
-            },
+          DrawerItem(
+            icon: Icons.access_time_rounded,
+            title: 'Meu Horário',
+            path: SchedueleScreen.routeName,
           ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.group),
-            title: Text('Grupos'),
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed('/groups');
-            },
+          DrawerItem(
+            icon: Icons.group,
+            title: 'Grupos',
+            path: GroupsScreen.routeName,
           ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Configurações'),
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed('/settings');
-            },
+          DrawerItem(
+            icon: Icons.settings,
+            title: 'Configurações',
+            path: SettingsScreen.routeName,
           ),
           Divider(),
           ListTile(
             leading: Icon(Icons.exit_to_app),
-            title: Text('Logout'),
+            title: Text('Logout',
+                style: TextStyle(fontSize: 18, fontFamily: 'Lato')),
             onTap: () {
               utils.showConfirmDialog(context, '', 'Deseja sair do BoraMarcar?',
                   () {
@@ -113,6 +104,33 @@ class AppDrawer extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class DrawerItem extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String path;
+
+  DrawerItem({required this.icon, required this.title, required this.path});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Divider(),
+        ListTile(
+          leading: Icon(icon),
+          title: Text(
+            title,
+            style: TextStyle(fontSize: 18, fontFamily: 'Lato'),
+          ),
+          onTap: () {
+            Navigator.of(context).pushReplacementNamed(path);
+          },
+        ),
+      ],
     );
   }
 }

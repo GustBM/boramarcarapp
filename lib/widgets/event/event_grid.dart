@@ -1,4 +1,5 @@
 import 'package:boramarcarapp/models/event.dart';
+import 'package:boramarcarapp/widgets/empty_message_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -91,7 +92,13 @@ class _EventGridState extends State<EventGrid> {
                 ),
               )
             : Center(
-                child: SnapshotEmptyMsg('Não há eventos disponíveis.'),
+                child: EmptyMessage(
+                  buttonFunction: () =>
+                      Navigator.of(context).pushReplacementNamed('/new-event'),
+                  icon: Icons.event,
+                  buttonText: 'Novo Evento',
+                  messageText: 'Você não está convidado a nenhum evento.',
+                ),
               )
       ],
     );

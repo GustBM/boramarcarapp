@@ -1,13 +1,54 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/widgets/app_drawer.dart';
 import 'package:boramarcarapp/providers/events.dart';
 import 'package:boramarcarapp/widgets/event/event_grid.dart';
+import 'package:boramarcarapp/widgets/notification_badge.dart';
 
-class HomeScreen extends StatelessWidget {
+class PushNotification {
+  PushNotification({
+    this.title,
+    this.body,
+  });
+  String? title;
+  String? body;
+}
+
+class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late int _totalNotifications;
+  late FirebaseMessaging _messaging;
+
+  @override
+  void initState() {
+    _totalNotifications = 0;
+    // _messaging = FirebaseMessaging.instance;
+    // _messaging.getToken().then((value) {
+    //   print(value);
+    // });
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+      showSimpleNotification(Text(event.notification!.title!),
+          leading: NotificationBadge(totalNotifications: _totalNotifications),
+          subtitle: Text(event.notification!.body!),
+          background: Theme.of(context).primaryColor,
+          duration: Duration(seconds: 120),
+          slideDismissDirection: DismissDirection.vertical);
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print('Message clicked!');
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +72,8 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {
-              // TODO: Notificações
-              // Navigator.of(context).pushNamed(EditProductScreen.routeName);
-            },
+          NotificationBadge(
+            totalNotifications: _totalNotifications,
           ),
         ],
       ),
