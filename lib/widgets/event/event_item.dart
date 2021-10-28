@@ -8,16 +8,16 @@ class EventItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _event = Provider.of<Event>(context, listen: false);
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: GridTile(
-        child: GestureDetector(
-          onTap: () {
-            Navigator.of(context).pushNamed(
-              EventDetailScreen.routeName,
-              arguments: _event.eventId,
-            );
-          },
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).pushNamed(
+          EventDetailScreen.routeName,
+          arguments: _event.eventId,
+        );
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: GridTile(
           child: _event.imageUrl == '' || _event.imageUrl == null
               ? Hero(
                   tag: _event.eventId,
@@ -33,18 +33,18 @@ class EventItem extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                 ),
-        ),
-        footer: GridTileBar(
-          backgroundColor: Colors.black87,
-          title: Text(
-            _event.name,
-            textAlign: TextAlign.left,
+          footer: GridTileBar(
+            backgroundColor: Colors.black87,
+            title: Text(
+              _event.name,
+              textAlign: TextAlign.left,
+            ),
+            subtitle: Text(_event.date.day.toString() +
+                '/' +
+                _event.date.month.toString() +
+                '/' +
+                _event.date.year.toString()),
           ),
-          subtitle: Text(_event.date.day.toString() +
-              '/' +
-              _event.date.month.toString() +
-              '/' +
-              _event.date.year.toString()),
         ),
       ),
     );
