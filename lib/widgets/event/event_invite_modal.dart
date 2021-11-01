@@ -39,9 +39,6 @@ class _EventInviteModalState extends State<EventInviteModal> {
                 content: TypeAheadField(
                   textFieldConfiguration: TextFieldConfiguration(
                       autofocus: true,
-                      style: DefaultTextStyle.of(context)
-                          .style
-                          .copyWith(fontStyle: FontStyle.italic),
                       decoration:
                           InputDecoration(border: OutlineInputBorder())),
                   suggestionsCallback: (pattern) async {
@@ -60,6 +57,14 @@ class _EventInviteModalState extends State<EventInviteModal> {
                       ),
                       title: Text(appUser.firstName),
                       subtitle: Text(appUser.email),
+                    );
+                  },
+                  noItemsFoundBuilder: (context) {
+                    return ListTile(
+                      leading: Icon(Icons.search),
+                      title: Text('Escreva o e-mail do convidado.'),
+                      subtitle: Text(
+                          'Caso queira convidar múltiplos, separe o e-mail com \';\' e clique em convidar todos.'),
                     );
                   },
                   onSuggestionSelected: (AppUser suggestion) {

@@ -1,3 +1,5 @@
+import 'package:boramarcarapp/utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -43,6 +45,34 @@ class SettingsScreen extends StatelessWidget {
             buildListTile(
                 'Editar Informações', Icons.person, 'edit-user', context),
             buildListTile('Mudar Senha', Icons.lock, 'edit-user', context),
+            Column(
+              children: [
+                ListTile(
+                  leading: Icon(Icons.calendar_view_month, size: 26),
+                  title: Text('Reiniciar Horário'),
+                  onTap: () {
+                    showConfirmDialog(context, 'Reiniciar Horário',
+                        'Deseja Reiniciar Horário?', () {
+                      try {
+                        Provider.of<Auth>(context, listen: false)
+                            .addNewUserSchedule(
+                                FirebaseAuth.instance.currentUser!.uid);
+                      } on Exception catch (e) {
+                        showErrorDialog(
+                            context,
+                            ' [' +
+                                e.toString() +
+                                '] Houve um Erro, Tente Novamente');
+                      } finally {
+                        SnapshotEmptyMsg('Horário Atualizado');
+                        Navigator.pop(context);
+                      }
+                    });
+                  },
+                ),
+                listDivider,
+              ],
+            ),
             Column(
               children: [
                 ListTile(

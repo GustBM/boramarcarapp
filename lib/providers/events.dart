@@ -19,7 +19,8 @@ class Events extends ChangeNotifier {
     return [..._eventList];
   }
 
-  Future<DocumentSnapshot<Event>> getEvent(String eventId) async {
+  Future<DocumentSnapshot<Event>?> getEvent(String? eventId) async {
+    if (eventId == null) return null;
     return _events
         .doc(eventId)
         .withConverter<Event>(

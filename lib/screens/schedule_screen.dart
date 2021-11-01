@@ -121,7 +121,7 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
       "20:00",
       "21:00",
       "22:00",
-      "23:00"
+      "23:00",
     ];
 
     var hourOptionsEnd = [
@@ -148,7 +148,7 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
       "20:00",
       "21:00",
       "22:00",
-      "23:00"
+      "23:00",
     ];
 
     return Scaffold(
@@ -161,7 +161,7 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
           Provider.of<Schedules>(context, listen: false)
               .addNewUserSchedule(_userInfo.uid);
           showErrorDialog(context,
-              'Houve um erro no cadastro do horário e ele dedverá ser resetado.');
+              'Houve um erro no cadastro do horário e ele deverá ser resetado.');
         }),
         builder: (BuildContext context,
             AsyncSnapshot<DocumentSnapshot<Schedule>> snapshot) {
@@ -175,7 +175,6 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
             if (!(snapshot.hasData && !snapshot.data!.exists)) {
               sch = snapshot.data!.data();
             }
-
             if (sch == null) {
               Provider.of<Auth>(context, listen: false)
                   .addNewUserSchedule(_userInfo.uid);
@@ -184,7 +183,15 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
                   MaterialPageRoute(
                       builder: (BuildContext context) => super.widget));
               return Center(child: CircularProgressIndicator());
-            } else
+            } else {
+              disableDayCheck(0, sch.sundayCheck);
+              disableDayCheck(1, sch.mondayCheck);
+              disableDayCheck(2, sch.tuesdayCheck);
+              disableDayCheck(3, sch.wednesdayCheck);
+              disableDayCheck(4, sch.thursdayCheck);
+              disableDayCheck(5, sch.fridayCheck);
+              disableDayCheck(6, sch.saturdayCheck);
+
               return SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -192,306 +199,20 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
                     key: _schedueleFormKey,
                     child: Column(
                       children: [
-                        Row(
-                          children: [
-                            Flexible(
-                              child: FormBuilderCheckbox(
-                                name: 'sunday_check',
-                                initialValue: sch.sundayCheck,
-                                title: Text('Domingo'),
-                                onChanged: (value) {
-                                  disableDayCheck(0, value!);
-                                },
-                              ),
-                            ),
-                            Expanded(
-                              child: FormBuilderDropdown(
-                                enabled: sch.sundayCheck,
-                                name: 'sunday_hour_ini',
-                                hint: Text('Hora Inicial'),
-                                initialValue: hourOptionsIni[sch.sundayIni],
-                                validator: FormBuilderValidators.compose(
-                                    [FormBuilderValidators.required(context)]),
-                                items: hourOptionsIni
-                                    .map((chosenHour) => DropdownMenuItem(
-                                          value: chosenHour,
-                                          child: Text('$chosenHour'),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: FormBuilderDropdown(
-                                enabled: sch.sundayCheck,
-                                name: 'sunday_hour_end',
-                                hint: Text('Hora Final'),
-                                initialValue: hourOptionsEnd[sch.sundayEnd],
-                                validator: FormBuilderValidators.compose(
-                                    [FormBuilderValidators.required(context)]),
-                                items: hourOptionsEnd
-                                    .map((chosenHour) => DropdownMenuItem(
-                                          value: chosenHour,
-                                          child: Text('$chosenHour'),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                          ],
-                        ),
-                        // Terça
-                        Row(
-                          children: [
-                            Flexible(
-                              child: FormBuilderCheckbox(
-                                name: 'monday_check',
-                                initialValue: true,
-                                title: Text('Segunda'),
-                              ),
-                            ),
-                            Expanded(
-                              child: FormBuilderDropdown(
-                                name: 'monday_hour_ini',
-                                hint: Text('Hora Inicial'),
-                                initialValue: hourOptionsIni[sch.mondayIni],
-                                validator: FormBuilderValidators.compose(
-                                    [FormBuilderValidators.required(context)]),
-                                items: hourOptionsIni
-                                    .map((chosenHour) => DropdownMenuItem(
-                                          value: chosenHour,
-                                          child: Text('$chosenHour'),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: FormBuilderDropdown(
-                                name: 'monday_hour_end',
-                                hint: Text('Hora Final'),
-                                initialValue: hourOptionsEnd[sch.mondayEnd],
-                                validator: FormBuilderValidators.compose(
-                                    [FormBuilderValidators.required(context)]),
-                                items: hourOptionsEnd
-                                    .map((chosenHour) => DropdownMenuItem(
-                                          value: chosenHour,
-                                          child: Text('$chosenHour'),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Flexible(
-                              child: FormBuilderCheckbox(
-                                name: 'tuesday_check',
-                                initialValue: true,
-                                title: Text('Terça'),
-                              ),
-                            ),
-                            Expanded(
-                              child: FormBuilderDropdown(
-                                name: 'tuesday_hour_ini',
-                                hint: Text('Hora Inicial'),
-                                initialValue: hourOptionsEnd[sch.tuesdayIni],
-                                validator: FormBuilderValidators.compose(
-                                    [FormBuilderValidators.required(context)]),
-                                items: hourOptionsIni
-                                    .map((chosenHour) => DropdownMenuItem(
-                                          value: chosenHour,
-                                          child: Text('$chosenHour'),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: FormBuilderDropdown(
-                                name: 'tuesday_hour_end',
-                                hint: Text('Hora Final'),
-                                initialValue: hourOptionsEnd[sch.tuesdayEnd],
-                                validator: FormBuilderValidators.compose(
-                                    [FormBuilderValidators.required(context)]),
-                                items: hourOptionsEnd
-                                    .map((chosenHour) => DropdownMenuItem(
-                                          value: chosenHour,
-                                          child: Text('$chosenHour'),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Flexible(
-                              child: FormBuilderCheckbox(
-                                name: 'wednesday_check',
-                                initialValue: true,
-                                title: Text('Quarta'),
-                              ),
-                            ),
-                            Expanded(
-                              child: FormBuilderDropdown(
-                                name: 'wednesday_hour_ini',
-                                hint: Text('Hora Inicial'),
-                                initialValue: hourOptionsIni[sch.wednesdayIni],
-                                validator: FormBuilderValidators.compose(
-                                    [FormBuilderValidators.required(context)]),
-                                items: hourOptionsIni
-                                    .map((chosenHour) => DropdownMenuItem(
-                                          value: chosenHour,
-                                          child: Text('$chosenHour'),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: FormBuilderDropdown(
-                                name: 'wednesday_hour_end',
-                                hint: Text('Hora Final'),
-                                initialValue: hourOptionsEnd[sch.wednesdayEnd],
-                                validator: FormBuilderValidators.compose(
-                                    [FormBuilderValidators.required(context)]),
-                                items: hourOptionsIni
-                                    .map((chosenHour) => DropdownMenuItem(
-                                          value: chosenHour,
-                                          child: Text('$chosenHour'),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Flexible(
-                              child: FormBuilderCheckbox(
-                                name: 'thursday_check',
-                                initialValue: true,
-                                title: Text('Quinta'),
-                              ),
-                            ),
-                            Expanded(
-                              child: FormBuilderDropdown(
-                                name: 'thursday_hour_ini',
-                                hint: Text('Hora Inicial'),
-                                initialValue: hourOptionsIni[sch.thursdayIni],
-                                validator: FormBuilderValidators.compose(
-                                    [FormBuilderValidators.required(context)]),
-                                items: hourOptionsIni
-                                    .map((chosenHour) => DropdownMenuItem(
-                                          value: chosenHour,
-                                          child: Text('$chosenHour'),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: FormBuilderDropdown(
-                                name: 'thursday_hour_end',
-                                hint: Text('Hora Final'),
-                                initialValue: hourOptionsEnd[sch.thursdayEnd],
-                                validator: FormBuilderValidators.compose(
-                                    [FormBuilderValidators.required(context)]),
-                                items: hourOptionsEnd
-                                    .map((chosenHour) => DropdownMenuItem(
-                                          value: chosenHour,
-                                          child: Text('$chosenHour'),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Flexible(
-                              child: FormBuilderCheckbox(
-                                name: 'friday_check',
-                                initialValue: true,
-                                title: Text('Sexta'),
-                              ),
-                            ),
-                            Expanded(
-                              child: FormBuilderDropdown(
-                                name: 'friday_hour_ini',
-                                hint: Text('Hora Inicial'),
-                                initialValue: hourOptionsIni[sch.fridayIni],
-                                validator: FormBuilderValidators.compose(
-                                    [FormBuilderValidators.required(context)]),
-                                items: hourOptionsIni
-                                    .map((chosenHour) => DropdownMenuItem(
-                                          value: chosenHour,
-                                          child: Text('$chosenHour'),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: FormBuilderDropdown(
-                                name: 'friday_hour_end',
-                                hint: Text('Hora Final'),
-                                initialValue: hourOptionsEnd[sch.fridayEnd],
-                                validator: FormBuilderValidators.compose(
-                                    [FormBuilderValidators.required(context)]),
-                                items: hourOptionsEnd
-                                    .map((chosenHour) => DropdownMenuItem(
-                                          value: chosenHour,
-                                          child: Text('$chosenHour'),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Flexible(
-                              child: FormBuilderCheckbox(
-                                name: 'saturday_check',
-                                initialValue: true,
-                                title: Text('Sábado'),
-                              ),
-                            ),
-                            Expanded(
-                              child: FormBuilderDropdown(
-                                name: 'saturday_hour_ini',
-                                hint: Text('Hora Inicial'),
-                                initialValue: hourOptionsIni[sch.saturdayIni],
-                                validator: FormBuilderValidators.compose(
-                                    [FormBuilderValidators.required(context)]),
-                                items: hourOptionsIni
-                                    .map((chosenHour) => DropdownMenuItem(
-                                          value: chosenHour,
-                                          child: Text('$chosenHour'),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: FormBuilderDropdown(
-                                name: 'saturday_hour_end',
-                                hint: Text('Hora Final'),
-                                initialValue: hourOptionsEnd[sch.saturdayEnd],
-                                validator: FormBuilderValidators.compose(
-                                    [FormBuilderValidators.required(context)]),
-                                items: hourOptionsEnd
-                                    .map((chosenHour) => DropdownMenuItem(
-                                          value: chosenHour,
-                                          child: Text('$chosenHour'),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                          ],
-                        ),
+                        SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
+                            hourOptionsEnd, 0),
+                        SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
+                            hourOptionsEnd, 1),
+                        SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
+                            hourOptionsEnd, 2),
+                        SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
+                            hourOptionsEnd, 3),
+                        SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
+                            hourOptionsEnd, 4),
+                        SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
+                            hourOptionsEnd, 5),
+                        SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
+                            hourOptionsEnd, 6),
                         SizedBox(width: 10),
                         if (_isLoading)
                           CircularProgressIndicator()
@@ -521,11 +242,154 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
                   ),
                 ),
               );
+            }
           }
-
           return Center(child: CircularProgressIndicator());
         },
       ),
+    );
+  }
+}
+
+class SchedueleFormField extends StatefulWidget {
+  final Schedule? sch;
+  final void Function(int, bool) disableDayCheck;
+  final List<String> hourOptionsIni;
+  final List<String> hourOptionsEnd;
+  final int weekDay;
+
+  SchedueleFormField(this.sch, this.disableDayCheck, this.hourOptionsIni,
+      this.hourOptionsEnd, this.weekDay);
+
+  @override
+  _SchedueleFormFieldState createState() => _SchedueleFormFieldState();
+}
+
+class _SchedueleFormFieldState extends State<SchedueleFormField> {
+  late String fieldName;
+  late String fieldTitle;
+  late String fieldIniName;
+  late String fieldEndName;
+  late bool fieldCheck;
+  late int initialHour;
+  late int endHour;
+
+  @override
+  Widget build(BuildContext context) {
+    switch (widget.weekDay) {
+      case 0:
+        fieldName = 'sunday_check';
+        fieldTitle = 'Domingo';
+        initialHour = widget.sch!.sundayIni;
+        endHour = widget.sch!.sundayEnd;
+        fieldIniName = 'sunday_hour_ini';
+        fieldEndName = 'sunday_hour_end';
+        fieldCheck = widget.sch!.sundayCheck;
+        break;
+      case 1:
+        fieldName = 'monday_check';
+        fieldTitle = 'Segunda';
+        initialHour = widget.sch!.mondayIni;
+        endHour = widget.sch!.mondayEnd;
+        fieldIniName = 'monday_hour_ini';
+        fieldEndName = 'monday_hour_end';
+        fieldCheck = widget.sch!.mondayCheck;
+        break;
+      case 2:
+        fieldName = 'tuesday_check';
+        fieldTitle = 'Terça';
+        initialHour = widget.sch!.tuesdayIni;
+        endHour = widget.sch!.tuesdayEnd;
+        fieldIniName = 'tuesday_hour_ini';
+        fieldEndName = 'tuesday_hour_end';
+        fieldCheck = widget.sch!.tuesdayCheck;
+        break;
+      case 3:
+        fieldName = 'wednesday_check';
+        fieldTitle = 'Quarta';
+        initialHour = widget.sch!.wednesdayIni;
+        endHour = widget.sch!.wednesdayEnd;
+        fieldIniName = 'wednesday_hour_ini';
+        fieldEndName = 'wednesday_hour_end';
+        fieldCheck = widget.sch!.wednesdayCheck;
+        break;
+      case 4:
+        fieldName = 'thursday_check';
+        fieldTitle = 'Quinta';
+        initialHour = widget.sch!.thursdayIni;
+        endHour = widget.sch!.thursdayEnd;
+        fieldIniName = 'thursday_hour_ini';
+        fieldEndName = 'thursday_hour_end';
+        fieldCheck = widget.sch!.thursdayCheck;
+        break;
+      case 5:
+        fieldName = 'friday_check';
+        fieldTitle = 'Sexta';
+        initialHour = widget.sch!.fridayIni;
+        endHour = widget.sch!.fridayEnd;
+        fieldIniName = 'friday_hour_ini';
+        fieldEndName = 'friday_hour_end';
+        fieldCheck = widget.sch!.fridayCheck;
+        break;
+      case 6:
+        fieldName = 'saturday_check';
+        fieldTitle = 'Sábado';
+        initialHour = widget.sch!.saturdayIni;
+        endHour = widget.sch!.saturdayEnd;
+        fieldIniName = 'saturday_hour_ini';
+        fieldEndName = 'saturday_hour_end';
+        fieldCheck = widget.sch!.saturdayCheck;
+        break;
+
+      default:
+        break;
+    }
+    return Row(
+      children: [
+        Flexible(
+          child: FormBuilderCheckbox(
+            name: fieldName,
+            initialValue: fieldCheck,
+            title: Text(fieldTitle),
+            onChanged: (value) {
+              widget.disableDayCheck(widget.weekDay, value!);
+            },
+          ),
+        ),
+        Expanded(
+          child: FormBuilderDropdown(
+            enabled: fieldCheck,
+            name: fieldIniName,
+            hint: Text('Hora Inicial'),
+            initialValue: widget.hourOptionsIni[initialHour],
+            validator: FormBuilderValidators.compose(
+                [FormBuilderValidators.required(context)]),
+            items: widget.hourOptionsIni
+                .map((chosenHour) => DropdownMenuItem(
+                      value: chosenHour,
+                      child: Text('$chosenHour'),
+                    ))
+                .toList(),
+          ),
+        ),
+        SizedBox(width: 10),
+        Expanded(
+          child: FormBuilderDropdown(
+            enabled: fieldCheck,
+            name: fieldEndName,
+            hint: Text('Hora Final'),
+            initialValue: widget.hourOptionsEnd[endHour],
+            validator: FormBuilderValidators.compose(
+                [FormBuilderValidators.required(context)]),
+            items: widget.hourOptionsEnd
+                .map((chosenHour) => DropdownMenuItem(
+                      value: chosenHour,
+                      child: Text('$chosenHour'),
+                    ))
+                .toList(),
+          ),
+        ),
+      ],
     );
   }
 }

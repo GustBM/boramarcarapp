@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:boramarcarapp/models/event.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,8 @@ import 'package:boramarcarapp/providers/events.dart';
 import 'package:boramarcarapp/widgets/app_drawer.dart';
 import 'package:boramarcarapp/widgets/event/event_invite_modal.dart';
 import 'package:boramarcarapp/utils.dart' as utils;
+
+import '../../utils.dart';
 
 class EventFormScreen extends StatefulWidget {
   static const routeName = '/new-event';
@@ -80,7 +84,6 @@ class _EventFormState extends State<EventFormScreen> {
             .child('event_banner_' + utils.getRandomString(10));
         await ref.putFile(File(_imgFile!.path)).then((storageTask) async {
           link = await storageTask.ref.getDownloadURL();
-          print(link);
         });
       }
       invitedList.add(userEmail!);
@@ -197,130 +200,170 @@ class _EventFormState extends State<EventFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final eventId = ModalRoute.of(context)!.settings.arguments as String?;
+
     return Scaffold(
-      appBar: AppBar(title: Text('Novo Evento')),
+      appBar: AppBar(
+          title: eventId == null ? Text('Novo Evento') : Text('Editar Evento')),
       drawer: AppDrawer(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: <Widget>[
-              FormBuilder(
-                key: _formKey,
-                autovalidateMode: AutovalidateMode.disabled,
-                child: Column(
+          child: FutureBuilder(
+            future:
+                Provider.of<Events>(context, listen: false).getEvent(eventId),
+            builder: (BuildContext context,
+                AsyncSnapshot<DocumentSnapshot<Event>?> snapshot) {
+              if (snapshot.hasError) {
+                return SnapshotErroMsg(
+                    'Houve um erro ao buscar o Evento.\nTente novamente mais tarde.');
+              }
+              if (snapshot.hasData && !snapshot.data!.exists) {
+                return SnapshotErroMsg(
+                    "Evento não encontrado ou deletado. Verifique o link.");
+              }
+              Event? thisEvent;
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (!(snapshot.hasData && !snapshot.data!.exists) &&
+                    snapshot.data != null) {
+                  thisEvent = snapshot.data!.data();
+                  print(thisEvent);
+                }
+                return Column(
                   children: <Widget>[
-                    _eventImageBanner(),
-                    SizedBox(height: 10),
-                    FormBuilderTextField(
-                      name: 'name',
-                      decoration: InputDecoration(
-                        labelText: 'Nome do Evento',
-                        prefixIcon: Icon(Icons.short_text_outlined),
-                        border: OutlineInputBorder(),
+                    FormBuilder(
+                      key: _formKey,
+                      autovalidateMode: AutovalidateMode.disabled,
+                      child: Column(
+                        children: <Widget>[
+                          _eventImageBanner(),
+                          SizedBox(height: 10),
+                          FormBuilderTextField(
+                            name: 'name',
+                            decoration: InputDecoration(
+                              labelText: 'Nome do Evento',
+                              prefixIcon: Icon(Icons.short_text_outlined),
+                              border: OutlineInputBorder(),
+                            ),
+                            validator: FormBuilderValidators.required(context,
+                                errorText: 'Campo Obrigatório'),
+                            initialValue:
+                                thisEvent == null ? null : thisEvent.name,
+                          ),
+                          SizedBox(height: 10),
+                          FormBuilderTextField(
+                            name: 'local',
+                            decoration: InputDecoration(
+                              labelText: 'Endereço',
+                              prefixIcon: Icon(Icons.location_on_sharp),
+                              border: OutlineInputBorder(),
+                            ),
+                            validator: FormBuilderValidators.required(context,
+                                errorText: 'Campo Obrigatório'),
+                            initialValue:
+                                thisEvent == null ? null : thisEvent.location,
+                          ),
+                          SizedBox(height: 10),
+                          SafeArea(
+                            child: FormBuilderDateRangePicker(
+                              name: 'date_range',
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime(DateTime.now().year + 1),
+                              format: DateFormat('dd-MM-yyyy'),
+                              onChanged: _onChanged,
+                              decoration: InputDecoration(
+                                labelText: 'Intervalo de Data',
+                                helperText: '*Intervalo máximo de 6 meses',
+                                prefixIcon: Icon(Icons.date_range),
+                                hintText: 'Selecione o período',
+                                border: OutlineInputBorder(),
+                              ),
+                              validator: FormBuilderValidators.required(context,
+                                  errorText: 'Campo Obrigatório'),
+                              initialValue: thisEvent == null
+                                  ? null
+                                  : DateTimeRange(
+                                      start: thisEvent.dateIni,
+                                      end: thisEvent.dateEnd),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          FormBuilderTextField(
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+                            name: 'description',
+                            decoration: const InputDecoration(
+                              labelText: 'Descrição',
+                              prefixIcon: Icon(Icons.short_text_outlined),
+                              contentPadding:
+                                  const EdgeInsets.symmetric(vertical: 30.0),
+                              border: OutlineInputBorder(),
+                              helperText: '*máximo de 500 caracteres',
+                            ),
+                            onChanged: _onChanged,
+                            validator: FormBuilderValidators.compose([
+                              FormBuilderValidators.required(context,
+                                  errorText: 'Campo Obrigatório'),
+                              FormBuilderValidators.max(context, 500,
+                                  errorText: 'Máximo de 500 caracteres'),
+                            ]),
+                            initialValue: thisEvent == null
+                                ? null
+                                : thisEvent.description,
+                          ),
+                          EventInviteModal(invitedList),
+                        ],
                       ),
-                      validator: FormBuilderValidators.required(context,
-                          errorText: 'Campo Obrigatório'),
                     ),
-                    SizedBox(height: 10),
-                    FormBuilderTextField(
-                      name: 'local',
-                      decoration: InputDecoration(
-                        labelText: 'Endereço',
-                        prefixIcon: Icon(Icons.location_on_sharp),
-                        border: OutlineInputBorder(),
-                      ),
-                      validator: FormBuilderValidators.required(context,
-                          errorText: 'Campo Obrigatório'),
-                    ),
-                    SizedBox(height: 10),
-                    SafeArea(
-                      child: FormBuilderDateRangePicker(
-                        name: 'date_range',
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime(DateTime.now().year + 1),
-                        format: DateFormat('dd-MM-yyyy'),
-                        onChanged: _onChanged,
-                        decoration: InputDecoration(
-                          labelText: 'Intervalo de Data',
-                          helperText: '*Intervalo máximo de 6 meses',
-                          prefixIcon: Icon(Icons.date_range),
-                          hintText: 'Selecione o período',
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: FormBuilderValidators.required(context,
-                            errorText: 'Campo Obrigatório'),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    FormBuilderTextField(
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      name: 'description',
-                      decoration: const InputDecoration(
-                        labelText: 'Descrição',
-                        prefixIcon: Icon(Icons.short_text_outlined),
-                        contentPadding:
-                            const EdgeInsets.symmetric(vertical: 30.0),
-                        border: OutlineInputBorder(),
-                        helperText: '*máximo de 500 caracteres',
-                      ),
-                      onChanged: _onChanged,
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(context,
-                            errorText: 'Campo Obrigatório'),
-                        FormBuilderValidators.max(context, 500,
-                            errorText: 'Máximo de 500 caracteres'),
-                      ]),
-                    ),
-                    EventInviteModal(invitedList),
+                    SizedBox(height: 20),
+                    if (_isLoading)
+                      CircularProgressIndicator()
+                    else
+                      Row(
+                        children: <Widget>[
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: MaterialButton(
+                              color: Theme.of(context).colorScheme.secondary,
+                              child: Text(
+                                "Enviar",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              onPressed: () {
+                                _formKey.currentState!.save();
+                                if (_formKey.currentState!.validate()) {
+                                  _submit();
+                                } else {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text(
+                                        "Houve um erro ao enviar o formulário. Tente novamente mais tarde."),
+                                  ));
+                                }
+                              },
+                            ),
+                          ),
+                          SizedBox(width: 20),
+                          Expanded(
+                            child: MaterialButton(
+                              color: Theme.of(context).colorScheme.secondary,
+                              child: Text(
+                                "Limpar",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              onPressed: () {
+                                _formKey.currentState!.reset();
+                              },
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                        ],
+                      )
                   ],
-                ),
-              ),
-              SizedBox(height: 20),
-              if (_isLoading)
-                CircularProgressIndicator()
-              else
-                Row(
-                  children: <Widget>[
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: MaterialButton(
-                        color: Theme.of(context).colorScheme.secondary,
-                        child: Text(
-                          "Enviar",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: () {
-                          _formKey.currentState!.save();
-                          if (_formKey.currentState!.validate()) {
-                            _submit();
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(
-                                  "Houve um erro ao enviar o formulário. Tente novamente mais tarde."),
-                            ));
-                          }
-                        },
-                      ),
-                    ),
-                    SizedBox(width: 20),
-                    Expanded(
-                      child: MaterialButton(
-                        color: Theme.of(context).colorScheme.secondary,
-                        child: Text(
-                          "Limpar",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: () {
-                          _formKey.currentState!.reset();
-                        },
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                  ],
-                )
-            ],
+                );
+              }
+              return Center(child: CircularProgressIndicator());
+            },
           ),
         ),
       ),

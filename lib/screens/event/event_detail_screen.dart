@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
+import 'package:boramarcarapp/screens/event/event_new_screen.dart';
 import 'package:boramarcarapp/providers/events.dart';
 import 'package:boramarcarapp/models/event.dart';
 import 'package:boramarcarapp/utils.dart';
@@ -28,7 +29,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       body: FutureBuilder(
         future: Provider.of<Events>(context, listen: false).getEvent(eventId),
         builder: (BuildContext context,
-            AsyncSnapshot<DocumentSnapshot<Event>> snapshot) {
+            AsyncSnapshot<DocumentSnapshot<Event>?> snapshot) {
           if (snapshot.hasError) {
             return SnapshotErroMsg(
                 'Houve um erro ao buscar o Evento.\nTente novamente mais tarde.');
@@ -57,7 +58,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       ? IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: () {
-                            // Navigator.of(context).pushNamed(EditProductScreen.routeName);
+                            Navigator.of(context).pushNamed(
+                                EventFormScreen.routeName,
+                                arguments: eventId);
                           },
                         )
                       : Text(''),
