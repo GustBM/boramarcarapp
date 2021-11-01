@@ -12,7 +12,6 @@ import 'package:provider/provider.dart';
 import '../../utils.dart';
 
 class NewGroupScreen extends StatefulWidget {
-  const NewGroupScreen({Key? key}) : super(key: key);
   static const routeName = '/new-group';
 
   @override
@@ -153,109 +152,6 @@ class _NewGroupScreenState extends State<NewGroupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     title: Text('Novo Grupo'),
-    //   ),
-    //   drawer: AppDrawer(),
-    //   body: FutureBuilder(
-    //       future: func(),
-    //       builder: (BuildContext context,
-    //           AsyncSnapshot<DocumentSnapshot<Group?>> snapshot) {
-    //         if (snapshot.hasError) {
-    //           return SnapshotErroMsg(
-    //               'Houve um erro ao buscar os seus dados.\nTente novamente mais tarde.');
-    //         }
-
-    //         Group? userInfo;
-    //         if (snapshot.connectionState == ConnectionState.done) {
-    //           if (!(snapshot.hasData && !snapshot.data!.exists)) {
-    //             userInfo = snapshot.data!.data();
-    //           }
-    //           return Padding(
-    //             padding: const EdgeInsets.all(8.0),
-    //             child: SingleChildScrollView(
-    //               child: Padding(
-    //                 padding: const EdgeInsets.all(8.0),
-    //                 child: Column(
-    //                   children: [
-    //                     _imageProfile(),
-    //                     FormBuilder(
-    //                       key: _formKey,
-    //                       autovalidateMode: AutovalidateMode.onUserInteraction,
-    //                       child: Column(
-    //                         children: [
-    //                           SizedBox(height: 10),
-    //                           FormBuilderTextField(
-    //                             name: 'name',
-    //                             decoration: InputDecoration(
-    //                               labelText: 'Nome',
-    //                               prefixIcon: Icon(Icons.short_text_outlined),
-    //                               border: OutlineInputBorder(),
-    //                             ),
-    //                             validator: FormBuilderValidators.required(
-    //                                 context,
-    //                                 errorText: 'Campo Obrigatório'),
-    //                             // initialValue: _userInfo!.displayName,
-    //                           ),
-    //                           SizedBox(height: 10),
-    //                           FormBuilderTextField(
-    //                             name: 'lastName',
-    //                             decoration: InputDecoration(
-    //                               labelText: 'Sobrenome',
-    //                               prefixIcon: Icon(Icons.short_text_outlined),
-    //                               border: OutlineInputBorder(),
-    //                             ),
-    //                             validator: FormBuilderValidators.required(
-    //                                 context,
-    //                                 errorText: 'Campo Obrigatório'),
-    //                             // initialValue: userInfo!.lastName,
-    //                           ),
-    //                           SizedBox(height: 20)
-    //                         ],
-    //                       ),
-    //                     ),
-    //                     if (_isLoading)
-    //                       CircularProgressIndicator()
-    //                     else
-    //                       Row(
-    //                         children: [
-    //                           SizedBox(width: 10),
-    //                           Expanded(
-    //                             child: MaterialButton(
-    //                               color:
-    //                                   Theme.of(context).colorScheme.secondary,
-    //                               child: Text(
-    //                                 "Salvar Alterações",
-    //                                 style: TextStyle(color: Colors.white),
-    //                               ),
-    //                               onPressed: () {
-    //                                 _formKey.currentState!.save();
-    //                                 if (_formKey.currentState!.validate()) {
-    //                                   // _submit(userInfo!.invited);
-    //                                 } else {
-    //                                   ScaffoldMessenger.of(context)
-    //                                       .showSnackBar(SnackBar(
-    //                                     content: Text(
-    //                                         "Houve um erro ao enviar o formulário. Tente novamente mais tarde."),
-    //                                   ));
-    //                                 }
-    //                               },
-    //                             ),
-    //                           ),
-    //                           SizedBox(width: 10),
-    //                         ],
-    //                       )
-    //                   ],
-    //                 ),
-    //               ),
-    //             ),
-    //           );
-    //         }
-    //         return Center(child: CircularProgressIndicator());
-    //       }),
-    // );
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Novo Grupo'),
