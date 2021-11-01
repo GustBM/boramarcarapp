@@ -1,8 +1,9 @@
-import 'package:boramarcarapp/models/user.dart';
-import 'package:boramarcarapp/providers/users.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
+
+import 'package:boramarcarapp/models/user.dart';
+import 'package:boramarcarapp/providers/users.dart';
 
 class EventInviteModal extends StatefulWidget {
   final List<String> invitedList;
@@ -36,7 +37,7 @@ class _EventInviteModalState extends State<EventInviteModal> {
                   'Adicionar Convidados',
                   style: TextStyle(fontSize: 20),
                 ),
-                content: TypeAheadField(
+                content: TypeAheadFormField(
                   textFieldConfiguration: TextFieldConfiguration(
                       autofocus: true,
                       decoration:
@@ -46,18 +47,24 @@ class _EventInviteModalState extends State<EventInviteModal> {
                         .getUsersList(pattern);
                   },
                   itemBuilder: (context, AppUser appUser) {
-                    return ListTile(
-                      leading: CircleAvatar(
-                        foregroundColor: Theme.of(context).primaryColor,
-                        backgroundColor: Colors.grey,
-                        // backgroundImage: appUser.
-                        //     Image.asset('assets/images/standard_user_photo.png')
-                        //         .image,
-                        child: Text('${appUser.firstName[0]}'),
-                      ),
-                      title: Text(appUser.firstName),
-                      subtitle: Text(appUser.email),
-                    );
+                    if (appUser.firstName == 'gambiarra') {
+                      return ListTile(
+                        leading: Icon(Icons.group_work),
+                        title: Text('Clique aqui para adicionar os convidados'),
+                      );
+                    } else
+                      return ListTile(
+                        leading: CircleAvatar(
+                          foregroundColor: Theme.of(context).primaryColor,
+                          backgroundColor: Colors.grey,
+                          // backgroundImage: appUser.
+                          //     Image.asset('assets/images/standard_user_photo.png')
+                          //         .image,
+                          child: Text('${appUser.firstName[0]}'),
+                        ),
+                        title: Text(appUser.firstName),
+                        subtitle: Text(appUser.email),
+                      );
                   },
                   noItemsFoundBuilder: (context) {
                     return ListTile(
@@ -75,15 +82,15 @@ class _EventInviteModalState extends State<EventInviteModal> {
                   },
                 ),
                 actions: <Widget>[
-                  TextButton(
-                    child:
-                        Text('Convidar Todos', style: TextStyle(fontSize: 16)),
-                    onPressed: () {
-                      addAll(_users);
-                      setState(() {});
-                      Navigator.of(context).pop();
-                    },
-                  ),
+                  // TextButton(
+                  //   child:
+                  //       Text('Convidar Todos', style: TextStyle(fontSize: 16)),
+                  //   onPressed: () {
+                  //     addAll(_users);
+                  //     setState(() {});
+                  //     Navigator.of(context).pop();
+                  //   },
+                  // ),
                   TextButton(
                     child: Text('Fechar', style: TextStyle(fontSize: 16)),
                     onPressed: () {
@@ -96,7 +103,7 @@ class _EventInviteModalState extends State<EventInviteModal> {
             );
           },
           child: Text(
-            '+ Adicionar Convidado',
+            '+ Adicionar Convidados',
             style:
                 TextStyle(decoration: TextDecoration.underline, fontSize: 22),
           ),

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:boramarcarapp/models/event.dart';
+import 'package:boramarcarapp/widgets/group/group_invite_modal.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -37,6 +38,22 @@ class _EventFormState extends State<EventFormScreen> {
   final userEmailController = TextEditingController();
 
   var errorText = '';
+
+  late FocusNode myFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+
+    myFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    myFocusNode.dispose();
+
+    super.dispose();
+  }
 
   void _showErrorDialog(String message) {
     showDialog(
@@ -227,7 +244,6 @@ class _EventFormState extends State<EventFormScreen> {
                 if (!(snapshot.hasData && !snapshot.data!.exists) &&
                     snapshot.data != null) {
                   thisEvent = snapshot.data!.data();
-                  print(thisEvent);
                 }
                 return Column(
                   children: <Widget>[
@@ -239,6 +255,7 @@ class _EventFormState extends State<EventFormScreen> {
                           _eventImageBanner(),
                           SizedBox(height: 10),
                           FormBuilderTextField(
+                            focusNode: myFocusNode,
                             name: 'name',
                             decoration: InputDecoration(
                               labelText: 'Nome do Evento',
@@ -311,6 +328,8 @@ class _EventFormState extends State<EventFormScreen> {
                                 ? null
                                 : thisEvent.description,
                           ),
+                          GroupInviteModal(invitedList),
+                          SizedBox(height: 10),
                           EventInviteModal(invitedList),
                         ],
                       ),

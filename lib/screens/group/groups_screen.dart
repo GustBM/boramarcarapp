@@ -49,7 +49,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
 
           if (snapshot.hasData && snapshot.data!.size == 0) {
             return EmptyMessage(
-              icon: Icons.group_add,
+              icon: Icons.group,
               messageText:
                   "Nenhum grupo encontrado.\nGostaria de criar seu grupo?",
               buttonFunction: () =>

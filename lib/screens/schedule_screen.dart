@@ -22,6 +22,22 @@ class SchedueleScreen extends StatefulWidget {
 class _SchedueleScreenState extends State<SchedueleScreen> {
   final GlobalKey<FormBuilderState> _schedueleFormKey =
       GlobalKey<FormBuilderState>();
+  
+  late FocusNode myFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+
+    myFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    myFocusNode.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
