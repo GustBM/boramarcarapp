@@ -13,13 +13,22 @@ class EventInviteModal extends StatefulWidget {
 }
 
 class _EventInviteModalState extends State<EventInviteModal> {
-  List<AppUser> _users = [];
+  late List<AppUser> _users = [];
 
   void addAll(List<AppUser> userList) {
     userList.forEach((element) {
       if (!widget.invitedList.contains(element))
         widget.invitedList.add(element.firstName);
     });
+  }
+
+  String _printUserEmails(List<AppUser> users) {
+    StringBuffer emails = StringBuffer();
+    users.forEach((user) {
+      emails.writeln(user.email);
+    });
+
+    return emails.toString();
   }
 
   @override
@@ -43,28 +52,40 @@ class _EventInviteModalState extends State<EventInviteModal> {
                       decoration:
                           InputDecoration(border: OutlineInputBorder())),
                   suggestionsCallback: (pattern) async {
-                    return await Provider.of<Users>(context, listen: false)
+                    _users = await Provider.of<Users>(context, listen: false)
                         .getUsersList(pattern);
+                    return _users;
                   },
                   itemBuilder: (context, AppUser appUser) {
-                    if (appUser.firstName == 'gambiarra') {
-                      return ListTile(
-                        leading: Icon(Icons.group_work),
-                        title: Text('Clique aqui para adicionar os convidados'),
-                      );
-                    } else
-                      return ListTile(
-                        leading: CircleAvatar(
-                          foregroundColor: Theme.of(context).primaryColor,
-                          backgroundColor: Colors.grey,
-                          // backgroundImage: appUser.
-                          //     Image.asset('assets/images/standard_user_photo.png')
-                          //         .image,
-                          child: Text('${appUser.firstName[0]}'),
-                        ),
-                        title: Text(appUser.firstName),
-                        subtitle: Text(appUser.email),
-                      );
+                    return _users.length > 1
+                        ? appUser.email == _users[0].email
+                            ? Expanded(
+                                child: ListTile(
+                                  leading: CircleAvatar(
+                                    foregroundColor:
+                                        Theme.of(context).primaryColor,
+                                    backgroundColor: Colors.grey,
+                                    child: Icon(Icons.group_add),
+                                  ),
+                                  title: Text('Adicionar os usuários;'),
+                                  subtitle: Text(_printUserEmails(_users)),
+                                ),
+                              )
+                            : SizedBox()
+                        : Expanded(
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                foregroundColor: Theme.of(context).primaryColor,
+                                backgroundColor: Colors.grey,
+                                // backgroundImage: appUser.
+                                //     Image.asset('assets/images/standard_user_photo.png')
+                                //         .image,
+                                child: Text('${appUser.firstName[0]}'),
+                              ),
+                              title: Text(appUser.firstName),
+                              subtitle: Text(appUser.email),
+                            ),
+                          );
                   },
                   noItemsFoundBuilder: (context) {
                     return ListTile(
@@ -75,22 +96,21 @@ class _EventInviteModalState extends State<EventInviteModal> {
                     );
                   },
                   onSuggestionSelected: (AppUser suggestion) {
-                    setState(() {
-                      _invitedList.add(suggestion.email);
-                      Navigator.of(context).pop();
-                    });
+                    if (_users.length > 1) {
+                      setState(() {
+                        _users.forEach((element) {
+                          _invitedList.add(element.email);
+                        });
+                        Navigator.of(context).pop();
+                      });
+                    } else
+                      setState(() {
+                        _invitedList.add(suggestion.email);
+                        Navigator.of(context).pop();
+                      });
                   },
                 ),
                 actions: <Widget>[
-                  // TextButton(
-                  //   child:
-                  //       Text('Convidar Todos', style: TextStyle(fontSize: 16)),
-                  //   onPressed: () {
-                  //     addAll(_users);
-                  //     setState(() {});
-                  //     Navigator.of(context).pop();
-                  //   },
-                  // ),
                   TextButton(
                     child: Text('Fechar', style: TextStyle(fontSize: 16)),
                     onPressed: () {

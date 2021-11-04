@@ -25,8 +25,14 @@ class Users extends ChangeNotifier {
   }
 
   Future<List<AppUser>> getUsersList(String email) async {
-    QuerySnapshot qShot =
-        await _schedules.where('email', isEqualTo: email).get();
+    List<String> emailList;
+    QuerySnapshot qShot;
+    if (email.contains(';')) {
+      emailList = email.split(';');
+      print(emailList);
+      qShot = await _schedules.where('email', whereIn: emailList).get();
+    } else
+      qShot = await _schedules.where('email', isEqualTo: email).get();
 
     return qShot.docs
         .map((user) => AppUser(
