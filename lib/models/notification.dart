@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Notification {
+class AppNotification {
   final String message;
   final DateTime date;
   final String redirectUrl;
   final bool hasSeen;
   final bool hasResponded;
 
-  Notification({
+  AppNotification({
     required this.message,
     required this.date,
     required this.redirectUrl,
@@ -15,7 +15,7 @@ class Notification {
     this.hasResponded = false,
   });
 
-  Notification.fromJson(Map<String, Object?> json)
+  AppNotification.fromJson(Map<String, Object?> json)
       : this(
           message: json['message']! as String,
           date: (json['date']! as Timestamp).toDate(),

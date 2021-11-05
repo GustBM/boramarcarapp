@@ -1,5 +1,4 @@
 import 'package:boramarcarapp/models/schedule.dart';
-import 'package:boramarcarapp/providers/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,7 +21,7 @@ class SchedueleScreen extends StatefulWidget {
 class _SchedueleScreenState extends State<SchedueleScreen> {
   final GlobalKey<FormBuilderState> _schedueleFormKey =
       GlobalKey<FormBuilderState>();
-  
+
   late FocusNode myFocusNode;
 
   @override
@@ -174,8 +173,7 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
         future: Provider.of<Schedules>(context, listen: false)
             .getUserSchedule(_userInfo!.uid)
             .catchError((onError) {
-          Provider.of<Schedules>(context, listen: false)
-              .addNewUserSchedule(_userInfo.uid);
+          Schedules.addNewUserSchedule(_userInfo.uid);
           showErrorDialog(context,
               'Houve um erro no cadastro do horário e ele deverá ser resetado.');
         }),
@@ -192,8 +190,7 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
               sch = snapshot.data!.data();
             }
             if (sch == null) {
-              Provider.of<Auth>(context, listen: false)
-                  .addNewUserSchedule(_userInfo.uid);
+              Schedules.addNewUserSchedule(_userInfo.uid);
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(

@@ -6,8 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:boramarcarapp/providers/events.dart';
 import 'package:boramarcarapp/widgets/event/event_item.dart';
 
-import '../../utils.dart';
-
 class EventGrid extends StatefulWidget {
   @override
   _EventGridState createState() => _EventGridState();

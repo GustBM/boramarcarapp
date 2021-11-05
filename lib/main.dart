@@ -1,3 +1,5 @@
+import 'package:boramarcarapp/models/notification.dart';
+import 'package:boramarcarapp/providers/notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +57,9 @@ class BoraMarcarApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<Groups>(
           create: (_) => Groups(),
+        ),
+        ChangeNotifierProvider<AppNotifications>(
+          create: (_) => AppNotifications(),
         ),
       ],
       child: Consumer<Auth>(

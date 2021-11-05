@@ -66,7 +66,7 @@ class Schedules extends ChangeNotifier {
         "Erro ao enviar novo Horário. Tente novamente mais tarde."));
   }
 
-  Future<void> addNewUserSchedule(String userId) async {
+  static Future<void> addNewUserSchedule(String userId) async {
     FirebaseFirestore.instance.collection('schedule').doc(userId).set({
       'sundayIni': 6,
       'sundayEnd': 18,

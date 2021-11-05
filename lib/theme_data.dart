@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
 final base = ThemeData.light();
-final mainColor = Color(0xFF5f65d3);
-final secondaryColor = Colors.amber[400];
+final mainColor = Color(0xFF8597AD);
+final secondaryColor = Color(0xFFFFFFFF);
 
 ThemeData get appThemeData => ThemeData(
       brightness: Brightness.light,
-      // primaryColor: Colors.amber[400],
       primaryColor: mainColor,
       fontFamily: 'Lato',
       textTheme: TextTheme(

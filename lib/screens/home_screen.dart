@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:boramarcarapp/widgets/app_drawer.dart';
 import 'package:boramarcarapp/providers/events.dart';
 import 'package:boramarcarapp/widgets/event/event_grid.dart';
-import 'package:boramarcarapp/widgets/notification_badge.dart';
+import 'package:boramarcarapp/widgets/notification/notification_badge.dart';
 
 class PushNotification {
   PushNotification({

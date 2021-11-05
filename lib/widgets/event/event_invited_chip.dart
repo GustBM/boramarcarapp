@@ -3,15 +3,19 @@ import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/models/user.dart';
 import 'package:boramarcarapp/providers/users.dart';
+import 'package:boramarcarapp/models/event.dart';
+import 'package:boramarcarapp/providers/events.dart';
 
 import '../../utils.dart';
 
-class InvitedChipList extends StatelessWidget {
+class InvitedChipListWithButton extends StatelessWidget {
   final List<String> invitedList;
   final Function setState;
   final bool adminPermission;
+  final String eventId;
 
-  InvitedChipList(this.invitedList, this.setState, this.adminPermission);
+  InvitedChipListWithButton(
+      this.invitedList, this.setState, this.adminPermission, this.eventId);
 
   final List<String> invitedName = [];
 
@@ -35,11 +39,10 @@ class InvitedChipList extends StatelessWidget {
       padding: EdgeInsets.all(8.0),
       deleteIcon: adminPermission ? Icon(Icons.cancel) : Text(''),
       onDeleted: () {
-        showConfirmDialog(
-            context,
-            '',
-            'Tem certeza que deseja desconvidar ' + user.firstName + '?',
-            () {}); //TODO: Desconvidar convidado
+        showConfirmDialog(context, '',
+            'Tem certeza que deseja desconvidar ' + user.firstName + '?', () {
+          // Provider.of<Events>(context).uninviteUser(eventId, userId)
+        });
       },
     );
   }

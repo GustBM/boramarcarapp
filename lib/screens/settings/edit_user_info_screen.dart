@@ -66,6 +66,7 @@ class _EditUserInfoScreenState extends State<EditUserInfoScreen> {
       await Provider.of<Users>(context, listen: false).addAndUpdateAppUser(
           _userInfo!.uid,
           AppUser(
+              uid: _userInfo!.uid,
               firstName: name,
               email: email,
               bthDate: bthDate,

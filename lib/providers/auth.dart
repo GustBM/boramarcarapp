@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:boramarcarapp/models/user.dart';
+import 'package:boramarcarapp/providers/schedules.dart' as sch;
 
 class Auth with ChangeNotifier {
   late User _userData;
@@ -74,7 +75,7 @@ class Auth with ChangeNotifier {
     User userResult = user!.user!;
     await userResult.updateDisplayName(name);
     await userResult.sendEmailVerification();
-    await addNewUserSchedule(userResult.uid);
+    await sch.Schedules.addNewUserSchedule(userResult.uid);
 
     await FirebaseFirestore.instance
         .collection('user')
@@ -84,7 +85,8 @@ class Auth with ChangeNotifier {
       'lastName': lastname,
       'bthDate': date,
       'email': email,
-      'invited': null
+      'invited': null,
+      'imageUrl': userResult.photoURL,
     }).then((value) {
       _authenticate(email, password);
     }).catchError(
@@ -106,6 +108,7 @@ class Auth with ChangeNotifier {
           await FirebaseFirestore.instance.collection('user').doc(uid).get();
       var data = snapshot.data();
       _userInfo = new AppUser(
+        uid: uid,
         firstName: data!['firstName'],
         lastName: data['lastName'],
         email: data['email'],
@@ -247,32 +250,5 @@ class Auth with ChangeNotifier {
     } catch (e) {
       print(e);
     }
-  }
-
-  // TODO: ISSO TÁ ERRADO, CORRIGIR A QUEBRA DO FLUXO DE DADOS!
-  Future<void> addNewUserSchedule(String userId) async {
-    FirebaseFirestore.instance.collection('schedule').doc(userId).set({
-      'sundayIni': 6,
-      'sundayEnd': 18,
-      'sundayCheck': true,
-      'mondayIni': 6,
-      'mondayEnd': 18,
-      'mondayCheck': true,
-      'tuesdayIni': 6,
-      'tuesdayEnd': 18,
-      'tuesdayCheck': true,
-      'wednesdayIni': 6,
-      'wednesdayEnd': 18,
-      'wednesdayCheck': true,
-      'thursdayIni': 6,
-      'thursdayEnd': 18,
-      'thursdayCheck': true,
-      'fridayIni': 6,
-      'fridayEnd': 18,
-      'fridayCheck': true,
-      'saturdayIni': 6,
-      'saturdayEnd': 18,
-      'saturdayCheck': true,
-    });
   }
 }

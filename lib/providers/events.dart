@@ -153,4 +153,20 @@ class Events extends ChangeNotifier {
     _eventList = loadedEvents;
     notifyListeners();
   }
+
+  Future<void> uninviteUser(String eventId, String userId) async {
+    try {
+      DocumentSnapshot<Event> snapshot = await _events
+          .doc(eventId)
+          .withConverter<Event>(
+              fromFirestore: (snapshot, _) => Event.fromJson(snapshot.data()!),
+              toFirestore: (schedule, _) => schedule.toJson())
+          .get();
+      List<String> data = snapshot.data()!.invited;
+      data.remove(userId);
+      _events.doc(eventId).update({'invited': data});
+    } catch (e) {
+      throw HttpException('Houve um erro! Tente novamente mais tarde.');
+    }
+  }
 }

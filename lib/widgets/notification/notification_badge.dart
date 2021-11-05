@@ -1,3 +1,4 @@
+import 'package:boramarcarapp/screens/notification_screen.dart';
 import 'package:flutter/material.dart';
 
 class NotificationBadge extends StatelessWidget {
@@ -37,9 +38,12 @@ class NotificationBadge extends StatelessWidget {
               : SizedBox(),
         ],
       ),
-      onPressed: () {
-        // TODO: Notificações
-        // Navigator.of(context).pushNamed(EditProductScreen.routeName);
+      onPressed: () => {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (ctx) => NotificationScreen(),
+          ),
+        )
       },
     );
   }

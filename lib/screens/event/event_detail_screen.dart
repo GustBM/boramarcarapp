@@ -178,8 +178,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       ),
                     ),
                     Text("Convidados", textScaleFactor: 1.5),
-                    InvitedChipList(
-                        thisEvent.invited, () {}, managerPermission),
+                    InvitedChipListWithButton(thisEvent.invited, () {},
+                        managerPermission, thisEvent.eventId),
                   ],
                 ),
               ),
