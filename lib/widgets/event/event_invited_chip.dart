@@ -3,8 +3,6 @@ import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/models/user.dart';
 import 'package:boramarcarapp/providers/users.dart';
-import 'package:boramarcarapp/models/event.dart';
-import 'package:boramarcarapp/providers/events.dart';
 
 import '../../utils.dart';
 

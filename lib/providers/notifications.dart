@@ -2,26 +2,37 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:boramarcarapp/models/notification.dart';
-import 'package:boramarcarapp/models/user.dart';
 
 class AppNotifications extends ChangeNotifier {
   CollectionReference _users = FirebaseFirestore.instance.collection('user');
   final _uid = FirebaseAuth.instance.currentUser!.uid;
 
   Future<List<AppNotification>> get getUserNotifications async {
-    await _users
-        .doc(_uid)
-        .withConverter<AppUser>(
-            fromFirestore: (snapshot, _) => AppUser.fromJson(snapshot.data()!),
-            toFirestore: (schedule, _) => schedule.toJson())
-        .get()
-        .then((docSnapshot) {
-      return docSnapshot.data()!.notifications;
-    }).onError((error, stackTrace) => throw HttpException(
-            'Erro ao buscar Notificações. Verifique a conexão e tente novamente.'));
-    return [];
+    List<AppNotification> notifications = [];
+    await _users.doc(_uid).get().then((docSnapshot) {
+      (docSnapshot['notifications'] as List<dynamic>).forEach((notification) {
+        notifications.add(new AppNotification(
+            date: (notification['date'] as Timestamp).toDate(),
+            message: notification['message'],
+            redirectUrl: notification['message'],
+            hasResponded: notification['hasResponded'],
+            hasSeen: notification['hasSeen']));
+      });
+    });
+    return notifications;
+  }
+
+  Future<int> get getUnreadNotificationsNumber async {
+    int unreadNum = 0;
+    await _users.doc(_uid).get().then((docSnapshot) {
+      (docSnapshot['notifications'] as List<dynamic>).forEach((notification) {
+        if (!notification['hasSeen']) {
+          unreadNum++;
+        }
+      });
+    });
+    return unreadNum;
   }
 
   Future<void> addUserNotifications(

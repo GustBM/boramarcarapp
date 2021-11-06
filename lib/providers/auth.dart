@@ -10,6 +10,7 @@ import 'package:boramarcarapp/providers/schedules.dart' as sch;
 
 class Auth with ChangeNotifier {
   late User _userData;
+  // ignore: unused_field
   late AppUser _userInfo;
 
   final _auth = FirebaseAuth.instance;

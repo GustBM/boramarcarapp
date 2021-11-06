@@ -30,8 +30,9 @@ class AppUser {
           bthDate: json['bthDate'] as String?,
           invited: (json['invited']! as List<dynamic>).cast<String>(),
           imageUrl: json['imageUrl'] as String?,
-          notifications:
-              (json['notifications'] as List<dynamic>).cast<AppNotification>(),
+          // notifications: List<AppNotification>.from(
+          //     (json['notifications']! as List<AppNotification>)),
+          notifications: json['notifications'] as List<AppNotification>,
         );
 
   Map<String, Object?> toJson() {

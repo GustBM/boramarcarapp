@@ -15,14 +15,23 @@ class AppNotification {
     this.hasResponded = false,
   });
 
-  AppNotification.fromJson(Map<String, Object?> json)
-      : this(
-          message: json['message']! as String,
-          date: (json['date']! as Timestamp).toDate(),
-          redirectUrl: json['redirectUrl']! as String,
-          hasSeen: json['hasSeen']! as bool,
-          hasResponded: json['hasResponded']! as bool,
-        );
+  // AppNotification.fromJson(Map<String, Object?> json)
+  //     : this(
+  //         message: json['message']! as String,
+  //         date: (json['date']! as Timestamp).toDate(),
+  //         redirectUrl: json['redirectUrl']! as String,
+  //         hasSeen: json['hasSeen']! as bool,
+  //         hasResponded: json['hasResponded']! as bool,
+  //       );
+
+  factory AppNotification.fromJson(Map<String, dynamic> json) =>
+      AppNotification(
+        message: json['message']! as String,
+        date: (json['date']! as Timestamp).toDate(),
+        redirectUrl: json['redirectUrl']! as String,
+        hasSeen: json['hasSeen']! as bool,
+        hasResponded: json['hasResponded']! as bool,
+      );
 
   Map<String, Object?> toJson() {
     return {
