@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:boramarcarapp/providers/schedules.dart';
-import 'package:boramarcarapp/widgets/app_drawer.dart';
 
 import '../utils.dart';
 
@@ -167,8 +166,11 @@ class _SchedueleScreenState extends State<SchedueleScreen> {
     ];
 
     return Scaffold(
-      appBar: AppBar(title: Text('Meu Horário')),
-      drawer: AppDrawer(),
+      appBar: AppBar(
+        title: Text('Meu Horário'),
+        automaticallyImplyLeading: false,
+      ),
+      // drawer: AppDrawer(),
       body: FutureBuilder(
         future: Provider.of<Schedules>(context, listen: false)
             .getUserSchedule(_userInfo!.uid)

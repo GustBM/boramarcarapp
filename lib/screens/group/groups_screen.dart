@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:boramarcarapp/models/group.dart';
 import 'package:boramarcarapp/screens/group/group_details_screen.dart';
 import 'package:boramarcarapp/screens/group/group_new_screen.dart';
-import 'package:boramarcarapp/widgets/app_drawer.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils.dart';
@@ -26,6 +25,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text('Grupos'),
         actions: <Widget>[
           IconButton(
@@ -36,7 +36,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
           ),
         ],
       ),
-      drawer: AppDrawer(),
+      // drawer: AppDrawer(),
       body: FutureBuilder<QuerySnapshot<Group>>(
         future: Provider.of<Groups>(context, listen: false)
             .getUserGroups(_userInfo!.email!),

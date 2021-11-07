@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth.dart';
-import '../../widgets/app_drawer.dart';
+import '../../utils.dart';
 
 class SettingsScreen extends StatelessWidget {
   static const routeName = '/settings';
@@ -33,9 +33,10 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text('Configurações'),
       ),
-      drawer: AppDrawer(),
+      // drawer: AppDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListView(
@@ -77,9 +78,12 @@ class SettingsScreen extends StatelessWidget {
                   leading: Icon(Icons.exit_to_app, size: 26),
                   title: Text('Sair'),
                   onTap: () {
-                    // Navigator.of(context).pop();
-                    Navigator.of(context).pushReplacementNamed('/');
-                    Provider.of<Auth>(context, listen: false).logout();
+                    showConfirmDialog(context, '', 'Deseja sair do BoraMarcar?',
+                        () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushReplacementNamed('/');
+                      Provider.of<Auth>(context, listen: false).logout();
+                    });
                   },
                 ),
                 listDivider,

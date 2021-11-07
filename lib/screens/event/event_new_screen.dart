@@ -13,7 +13,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:boramarcarapp/providers/events.dart';
-import 'package:boramarcarapp/widgets/app_drawer.dart';
 import 'package:boramarcarapp/widgets/event/event_invite_modal.dart';
 import 'package:boramarcarapp/utils.dart' as utils;
 
@@ -221,8 +220,9 @@ class _EventFormState extends State<EventFormScreen> {
 
     return Scaffold(
       appBar: AppBar(
+          automaticallyImplyLeading: !(eventId == null),
           title: eventId == null ? Text('Novo Evento') : Text('Editar Evento')),
-      drawer: AppDrawer(),
+      // drawer: AppDrawer(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
