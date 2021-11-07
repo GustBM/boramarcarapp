@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // });
     FirebaseMessaging.onMessage.listen((RemoteMessage event) {
       showSimpleNotification(Text(event.notification!.title!),
-          leading: NotificationBadge(totalNotifications: _totalNotifications),
+          leading: NotificationBadge(),
           subtitle: Text(event.notification!.body!),
           background: Theme.of(context).primaryColor,
           duration: Duration(seconds: 120),
@@ -72,9 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         actions: <Widget>[
-          NotificationBadge(
-            totalNotifications: _totalNotifications,
-          ),
+          NotificationBadge(),
         ],
       ),
       drawer: AppDrawer(),

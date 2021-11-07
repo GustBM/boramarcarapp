@@ -1,16 +1,16 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:boramarcarapp/models/notification.dart';
 import 'package:boramarcarapp/providers/notifications.dart';
 import 'package:boramarcarapp/widgets/empty_message_widget.dart';
 import 'package:boramarcarapp/widgets/notification/notification_card.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../utils.dart';
 
 class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // final User? _userInfo = FirebaseAuth.instance.currentUser;
     return Scaffold(
       appBar: AppBar(),
       body: FutureBuilder<List<AppNotification>>(
@@ -31,7 +31,6 @@ class NotificationScreen extends StatelessWidget {
               );
             }
             if (snapshot.connectionState == ConnectionState.done) {
-              print(snapshot);
               List<AppNotification> notifications = snapshot.data!;
 
               return Padding(
