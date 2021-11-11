@@ -40,6 +40,7 @@ class Schedules extends ChangeNotifier {
   }
 
   Future<void> addSchedule(String userId, Schedule schedule) async {
+    _checkSchedule(schedule);
     _schedules.doc(userId).set({
       'sundayIni': schedule.sundayIni,
       'sundayEnd': schedule.sundayEnd,
@@ -49,7 +50,7 @@ class Schedules extends ChangeNotifier {
       'mondayCheck': schedule.mondayCheck,
       'tuesdayIni': schedule.tuesdayIni,
       'tuesdayEnd': schedule.tuesdayEnd,
-      'tuesdayCheck': schedule.thursdayCheck,
+      'tuesdayCheck': schedule.tuesdayCheck,
       'wednesdayIni': schedule.wednesdayIni,
       'wednesdayEnd': schedule.wednesdayEnd,
       'wednesdayCheck': schedule.wednesdayCheck,
@@ -64,6 +65,18 @@ class Schedules extends ChangeNotifier {
       'saturdayCheck': schedule.saturdayCheck,
     }).catchError((error) => throw HttpException(
         "Erro ao enviar novo Horário. Tente novamente mais tarde."));
+  }
+
+  void _checkSchedule(Schedule sch) {
+    if ((sch.sundayIni >= sch.sundayEnd && sch.sundayCheck) ||
+        (sch.mondayIni >= sch.mondayEnd && sch.mondayCheck) ||
+        (sch.tuesdayIni >= sch.tuesdayEnd && sch.tuesdayCheck) ||
+        (sch.wednesdayIni >= sch.wednesdayEnd && sch.wednesdayCheck) ||
+        (sch.thursdayIni >= sch.thursdayEnd && sch.thursdayCheck) ||
+        (sch.fridayIni >= sch.fridayEnd && sch.fridayCheck) ||
+        (sch.saturdayIni >= sch.saturdayEnd && sch.saturdayCheck))
+      throw HttpException(
+          "O horário final não pode ser maior ou igual ao horário inicial.");
   }
 
   static Future<void> addNewUserSchedule(String userId) async {
