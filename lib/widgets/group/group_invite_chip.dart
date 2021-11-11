@@ -1,26 +1,26 @@
-import 'package:boramarcarapp/widgets/empty_message_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/models/user.dart';
 import 'package:boramarcarapp/providers/users.dart';
+import 'package:boramarcarapp/widgets/empty_message_widget.dart';
 
 import '../../utils.dart';
 
-class InvitedAppUserChipListEvent extends StatefulWidget {
+class InvitedAppUserChipListGroup extends StatefulWidget {
   final List<String> invitedEmails;
   final bool canEdit;
 
-  InvitedAppUserChipListEvent(this.invitedEmails, this.canEdit);
+  InvitedAppUserChipListGroup(this.invitedEmails, this.canEdit);
 
   @override
-  _InvitedAppUserChipListEventState createState() =>
-      _InvitedAppUserChipListEventState();
+  _InvitedAppUserChipListGroupState createState() =>
+      _InvitedAppUserChipListGroupState();
 }
 
-class _InvitedAppUserChipListEventState
-    extends State<InvitedAppUserChipListEvent> {
+class _InvitedAppUserChipListGroupState
+    extends State<InvitedAppUserChipListGroup> {
   Widget _buildChip(AppUser user) {
     return Chip(
       // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -80,7 +80,7 @@ class _InvitedAppUserChipListEventState
   Widget build(BuildContext context) {
     return FutureBuilder<QuerySnapshot<AppUser>>(
         future: Provider.of<Users>(context)
-            .getAppUserListFromUserId(widget.invitedEmails),
+            .getAppUserListFromEmails(widget.invitedEmails),
         builder: (context, AsyncSnapshot<QuerySnapshot<AppUser>> snapshot) {
           if (snapshot.hasError) {
             return SnapshotErroMsg(

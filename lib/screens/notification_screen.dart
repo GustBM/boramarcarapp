@@ -11,6 +11,12 @@ import '../utils.dart';
 class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Provider.of<AppNotifications>(context).addUserNotifications(
+    //     'VUjOHQ6XIKYXokTe7mhElJYFaEB2',
+    //     new AppNotification(
+    //         message: 'message2',
+    //         date: DateTime.now(),
+    //         redirectUrl: 'redirectUrl'));
     return Scaffold(
       appBar: AppBar(),
       body: FutureBuilder<List<AppNotification>>(

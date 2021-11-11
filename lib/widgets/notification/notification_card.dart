@@ -21,7 +21,7 @@ class NotificationCard extends StatelessWidget {
                   child: Icon(Icons.notifications),
                 ),
                 title: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Text(
                       notification.message,

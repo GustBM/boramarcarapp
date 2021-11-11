@@ -1,9 +1,11 @@
+import 'package:boramarcarapp/widgets/group/group_invite_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/models/user.dart';
 import 'package:boramarcarapp/providers/users.dart';
+import 'package:boramarcarapp/widgets/event/event_invited_chip.dart';
 
 class EventInviteModal extends StatefulWidget {
   final List<String> invitedList;
@@ -129,6 +131,9 @@ class _EventInviteModalState extends State<EventInviteModal> {
           ),
         ),
         InvitedChipList(_invitedList),
+        // _invitedList == []
+        //     ? InvitedAppUserChipListGroup(_invitedList, true)
+        //     : SizedBox(),
       ],
     );
   }

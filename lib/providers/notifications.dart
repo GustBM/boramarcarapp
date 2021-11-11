@@ -17,10 +17,10 @@ class AppNotifications extends ChangeNotifier {
             message: notification['message'],
             redirectUrl: notification['message'],
             hasResponded: notification['hasResponded'],
-            hasSeen: notification['hasSeen'],
+            hasSeen: true,
             notificationType: NotificationType.values
                 .elementAt(notification['notificationType'])));
-        // _updateAsReadNotification(notifications);
+        _updateAsReadNotification(notifications);
       });
     });
     return notifications;
@@ -55,11 +55,11 @@ class AppNotifications extends ChangeNotifier {
     );
   }
 
-  // Future _updateAsReadNotification(List<AppNotification> notification) async {
-  //   await _users.doc(_uid).update(
-  //     {
-  //       'notifications': [notification]
-  //     },
-  //   );
-  // }
+  Future _updateAsReadNotification(List<AppNotification> notification) async {
+    late var list;
+    notification.forEach((element) {
+      list = FieldValue.arrayUnion([element.toJson()]);
+    });
+    await _users.doc(_uid).update({'notifications': list});
+  }
 }

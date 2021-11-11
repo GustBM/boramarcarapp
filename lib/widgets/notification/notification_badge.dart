@@ -26,7 +26,7 @@ class NotificationBadge extends StatelessWidget {
                 future: Provider.of<AppNotifications>(context)
                     .getUnreadNotificationsNumber,
                 builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-                  if (snapshot.hasData) {
+                  if (snapshot.hasData && snapshot.data! > 0) {
                     var totalNotifications = snapshot.data!;
                     return Text(
                       '$totalNotifications',

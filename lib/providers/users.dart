@@ -79,4 +79,14 @@ class Users extends ChangeNotifier {
         .where('email', whereIn: invitedEmails)
         .get();
   }
+
+  Future<QuerySnapshot<AppUser>> getAppUserListFromUserId(
+      List<String> invitedIds) {
+    return _users
+        .withConverter<AppUser>(
+            fromFirestore: (snapshot, _) => AppUser.fromJson(snapshot.data()!),
+            toFirestore: (schedule, _) => schedule.toJson())
+        .where('uid', whereIn: invitedIds)
+        .get();
+  }
 }
