@@ -1,6 +1,6 @@
 import 'package:boramarcarapp/models/group.dart';
 import 'package:boramarcarapp/providers/groups.dart';
-import 'package:boramarcarapp/widgets/event/event_invite_modal.dart';
+import 'package:boramarcarapp/widgets/event/event_invited_chip.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -123,7 +123,7 @@ class GroupDetailsScreen extends StatelessWidget {
                       ),
                     ),
                     Text("Convidados", textScaleFactor: 1.5),
-                    InvitedChipList(thisGroup.groupMembers),
+                    InvitedAppUserChipList(thisGroup.groupMembers, false),
                   ],
                 ),
               ),

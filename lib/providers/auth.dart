@@ -130,7 +130,7 @@ class Auth with ChangeNotifier {
   }
 
   void _registerUserInfo(String userId, String? name, String? lastname,
-      String? date, String? email) async {
+      String? date, String? email, String? profileImageUrl) async {
     var userRef = FirebaseFirestore.instance.collection('user').doc(userId);
     userRef.get().then((docSnapshot) => {
           if (!docSnapshot.exists)
@@ -140,7 +140,9 @@ class Auth with ChangeNotifier {
                 'lastName': lastname,
                 'bthDate': date,
                 'email': email,
-                'invited': null
+                'invited': null,
+                'imageUrl': profileImageUrl,
+                'notifications': [],
               })
             }
         });
@@ -164,8 +166,8 @@ class Auth with ChangeNotifier {
 
       await _auth.signInWithCredential(credential);
       _userData = _auth.currentUser!;
-      _registerUserInfo(
-          _userData.uid, _userData.displayName, '', null, _userData.email);
+      _registerUserInfo(_userData.uid, _userData.displayName, '', null,
+          _userData.email, _userData.photoURL);
       setUserInfo(_userData.uid);
       notifyListeners();
     } on FirebaseAuthException catch (e) {
@@ -214,8 +216,8 @@ class Auth with ChangeNotifier {
       await _auth.signInWithCredential(fbAuthCredential);
 
       _userData = _auth.currentUser!;
-      _registerUserInfo(
-          _userData.uid, _userData.displayName, '', null, _userData.email);
+      _registerUserInfo(_userData.uid, _userData.displayName, '', null,
+          _userData.email, _userData.photoURL);
       setUserInfo(_userData.uid);
       notifyListeners();
     } on FirebaseAuthException catch (e) {
@@ -249,7 +251,7 @@ class Auth with ChangeNotifier {
           throw HttpException("Houve um erro!\n" + e.toString());
       }
     } catch (e) {
-      print(e);
+      throw HttpException("Houve um erro!\n" + e.toString());
     }
   }
 }

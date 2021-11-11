@@ -11,14 +11,14 @@ class AppNotification {
   final String redirectUrl;
   final bool hasSeen;
   final bool hasResponded;
-  final String? eventRedirectId;
+  // final String? eventRedirectId;
   final NotificationType notificationType;
 
   AppNotification({
     required this.message,
     required this.date,
     required this.redirectUrl,
-    this.eventRedirectId,
+    // this.eventRedirectId,
     this.hasSeen = false,
     this.hasResponded = false,
     this.notificationType = NotificationType.notify,
@@ -42,7 +42,7 @@ class AppNotification {
         hasResponded: json['hasResponded']! as bool,
         notificationType:
             NotificationType.values.elementAt(json['notificationType']!),
-        eventRedirectId: json['eventRedirectId']! as String,
+        // eventRedirectId: json['eventRedirectId']! as String,
       );
 
   Map<String, Object?> toJson() {
@@ -53,7 +53,7 @@ class AppNotification {
       'hasSeen': hasSeen,
       'hasResponded': hasResponded,
       'notificationType': notificationType.index,
-      'eventRedirectId': eventRedirectId,
+      // 'eventRedirectId': eventRedirectId,
     };
   }
 }

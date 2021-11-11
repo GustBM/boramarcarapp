@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:boramarcarapp/models/event.dart';
-import 'package:boramarcarapp/widgets/group/group_invite_modal.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -11,9 +9,11 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
+import 'package:boramarcarapp/models/event.dart';
 import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:boramarcarapp/providers/events.dart';
 import 'package:boramarcarapp/widgets/event/event_invite_modal.dart';
+import 'package:boramarcarapp/widgets/group/group_invite_modal.dart';
 import 'package:boramarcarapp/utils.dart' as utils;
 
 import '../../utils.dart';

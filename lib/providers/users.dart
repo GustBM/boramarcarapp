@@ -69,4 +69,14 @@ class Users extends ChangeNotifier {
             toFirestore: (schedule, _) => schedule.toJson())
         .set(appUser);
   }
+
+  Future<QuerySnapshot<AppUser>> getAppUserListFromEmails(
+      List<String> invitedEmails) {
+    return _users
+        .withConverter<AppUser>(
+            fromFirestore: (snapshot, _) => AppUser.fromJson(snapshot.data()!),
+            toFirestore: (schedule, _) => schedule.toJson())
+        .where('email', whereIn: invitedEmails)
+        .get();
+  }
 }

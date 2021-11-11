@@ -18,7 +18,7 @@ class EventDetailScreen extends StatefulWidget {
 }
 
 class _EventDetailScreenState extends State<EventDetailScreen> {
-  void setInvitedList(Future<DocumentSnapshot<Object?>>? loadedEvent) {}
+  // void setInvitedList(Future<DocumentSnapshot<Object?>>? loadedEvent) {}
 
   @override
   Widget build(BuildContext context) {
@@ -178,8 +178,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       ),
                     ),
                     Text("Convidados", textScaleFactor: 1.5),
-                    InvitedChipListWithButton(thisEvent.invited, () {},
-                        managerPermission, thisEvent.eventId),
+                    // InvitedChipListWithButton(thisEvent.invited, () {},
+                    //     managerPermission, thisEvent.eventId),
                   ],
                 ),
               ),
