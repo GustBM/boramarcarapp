@@ -13,7 +13,6 @@ class NotificationInviteCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final User? _userInfo = FirebaseAuth.instance.currentUser;
-
     return ListTile(
       leading: CircleAvatar(
         foregroundColor: Theme.of(context).primaryColor,
@@ -25,16 +24,22 @@ class NotificationInviteCard extends StatelessWidget {
         children: <Widget>[
           Flexible(
             child: Text(
-              // notification.message,
-              'O usuário está te convidando para o evento Evento convite',
+              notification.message,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
           // Icon(Icons.arrow_forward),
           IconButton(
               onPressed: () {
-                Provider.of<AppNotifications>(context)
-                    .removeNotification(_userInfo!.uid, notification);
+                try {
+                  Provider.of<AppNotifications>(context, listen: false)
+                      .confirmInvite(
+                          context, notification, false, _userInfo!.uid);
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(e.toString()),
+                  ));
+                }
               },
               icon: Container(
                 height: double.infinity,
@@ -42,7 +47,10 @@ class NotificationInviteCard extends StatelessWidget {
                 color: Colors.red,
               )),
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Provider.of<AppNotifications>(context, listen: false)
+                    .confirmInvite(context, notification, true, _userInfo!.uid);
+              },
               icon: Container(
                 child: Icon(Icons.check),
                 color: Colors.green,

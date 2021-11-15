@@ -1,3 +1,4 @@
+import 'package:boramarcarapp/models/user.dart';
 import 'package:boramarcarapp/providers/schedules.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -167,6 +168,19 @@ class Events extends ChangeNotifier {
       _events.doc(eventId).update({'invited': data});
     } catch (e) {
       throw HttpException('Houve um erro! Tente novamente mais tarde.');
+    }
+  }
+
+  Future<void> addInvited(String eventId, String invitedUserId) async {
+    try {
+      _events.doc(eventId).update(
+        {
+          'invited': FieldValue.arrayUnion([invitedUserId])
+        },
+      );
+    } catch (e) {
+      throw HttpException(
+          'Houve um erro ao confirmar o convite. Tente novamente mais tarde.');
     }
   }
 }

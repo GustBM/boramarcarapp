@@ -342,12 +342,8 @@ class _EventFormState extends State<EventFormScreen> {
                         children: <Widget>[
                           SizedBox(width: 10),
                           Expanded(
-                            child: MaterialButton(
-                              color: Theme.of(context).colorScheme.secondary,
-                              child: Text(
-                                "Enviar",
-                                style: TextStyle(color: Colors.white),
-                              ),
+                            child: ElevatedButton(
+                              child: Text("Enviar"),
                               onPressed: () {
                                 _formKey.currentState!.save();
                                 if (_formKey.currentState!.validate()) {
@@ -364,12 +360,8 @@ class _EventFormState extends State<EventFormScreen> {
                           ),
                           SizedBox(width: 20),
                           Expanded(
-                            child: MaterialButton(
-                              color: Theme.of(context).colorScheme.secondary,
-                              child: Text(
-                                "Limpar",
-                                style: TextStyle(color: Colors.white),
-                              ),
+                            child: OutlinedButton(
+                              child: Text("Limpar"),
                               onPressed: () {
                                 _formKey.currentState!.reset();
                               },

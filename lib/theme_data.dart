@@ -24,4 +24,26 @@ ThemeData get appThemeData => ThemeData(
             borderRadius: BorderRadius.circular(14.0),
             side: BorderSide(color: Colors.white24, width: 1)),
       ),
+      buttonTheme: ButtonThemeData(
+        buttonColor: mainColor,
+        textTheme: ButtonTextTheme.accent,
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+            primary: mainColor,
+            backgroundColor: Colors.white70,
+            side: BorderSide(width: 3, color: mainColor),
+            padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
+            textStyle: TextStyle(fontSize: 20)),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
+          primary: mainColor,
+          textStyle: TextStyle(color: secondaryColor, fontSize: 20),
+        ),
+      ),
     );

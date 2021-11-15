@@ -8,9 +8,10 @@ class Schedules extends ChangeNotifier {
   CollectionReference _schedules =
       FirebaseFirestore.instance.collection('schedule');
 
-  Future<DocumentSnapshot<Schedule>> getUserSchedule(String userId) {
+  Future<DocumentSnapshot<Schedule>> getUserSchedule(String userId,
+      {scheduleType = ''}) {
     return _schedules
-        .doc(userId)
+        .doc(scheduleType + userId)
         .withConverter<Schedule>(
             fromFirestore: (snapshot, _) => Schedule.fromJson(snapshot.data()!),
             toFirestore: (schedule, _) => schedule.toJson())
@@ -39,9 +40,10 @@ class Schedules extends ChangeNotifier {
         (e) => throw HttpException("Houve um Erro!" + e.code.toString()));
   }
 
-  Future<void> addSchedule(String userId, Schedule schedule) async {
+  Future<void> addSchedule(String userId, Schedule schedule,
+      {scheduleType = ''}) async {
     _checkSchedule(schedule);
-    _schedules.doc(userId).set({
+    _schedules.doc(scheduleType + userId).set({
       'sundayIni': schedule.sundayIni,
       'sundayEnd': schedule.sundayEnd,
       'sundayCheck': schedule.sundayCheck,
@@ -83,7 +85,7 @@ class Schedules extends ChangeNotifier {
     FirebaseFirestore.instance.collection('schedule').doc(userId).set({
       'sundayIni': 6,
       'sundayEnd': 18,
-      'sundayCheck': true,
+      'sundayCheck': false,
       'mondayIni': 6,
       'mondayEnd': 18,
       'mondayCheck': true,
@@ -99,6 +101,30 @@ class Schedules extends ChangeNotifier {
       'fridayIni': 6,
       'fridayEnd': 18,
       'fridayCheck': true,
+      'saturdayIni': 6,
+      'saturdayEnd': 18,
+      'saturdayCheck': false,
+    });
+
+    FirebaseFirestore.instance.collection('schedule').doc('L' + userId).set({
+      'sundayIni': 6,
+      'sundayEnd': 18,
+      'sundayCheck': true,
+      'mondayIni': 6,
+      'mondayEnd': 18,
+      'mondayCheck': false,
+      'tuesdayIni': 6,
+      'tuesdayEnd': 18,
+      'tuesdayCheck': false,
+      'wednesdayIni': 6,
+      'wednesdayEnd': 18,
+      'wednesdayCheck': false,
+      'thursdayIni': 6,
+      'thursdayEnd': 18,
+      'thursdayCheck': false,
+      'fridayIni': 6,
+      'fridayEnd': 18,
+      'fridayCheck': false,
       'saturdayIni': 6,
       'saturdayEnd': 18,
       'saturdayCheck': true,

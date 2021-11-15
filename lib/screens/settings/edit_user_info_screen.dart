@@ -170,8 +170,9 @@ class _EditUserInfoScreenState extends State<EditUserInfoScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Editar'),
+        automaticallyImplyLeading: true,
       ),
-      drawer: AppDrawer(),
+      // drawer: AppDrawer(),
       body: FutureBuilder(
           future: Provider.of<Users>(context, listen: false)
               .getAppUserInfo(_userInfo!.uid),
@@ -269,13 +270,8 @@ class _EditUserInfoScreenState extends State<EditUserInfoScreen> {
                             children: [
                               SizedBox(width: 10),
                               Expanded(
-                                child: MaterialButton(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
-                                  child: Text(
-                                    "Salvar Alterações",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
+                                child: ElevatedButton(
+                                  child: Text("Salvar Alterações"),
                                   onPressed: () {
                                     _schedueleFormKey.currentState!.save();
                                     if (_schedueleFormKey.currentState!

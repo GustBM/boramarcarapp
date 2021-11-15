@@ -214,8 +214,7 @@ class _NewGroupScreenState extends State<NewGroupScreen> {
                     children: [
                       SizedBox(width: 10),
                       Expanded(
-                        child: MaterialButton(
-                          color: Theme.of(context).colorScheme.secondary,
+                        child: ElevatedButton(
                           child: Text(
                             "Criar Grupo",
                             style: TextStyle(color: Colors.white),

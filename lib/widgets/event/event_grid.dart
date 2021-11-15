@@ -1,9 +1,11 @@
-import 'package:boramarcarapp/models/event.dart';
-import 'package:boramarcarapp/widgets/empty_message_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+// import 'package:get/instance_manager.dart';
 
+import 'package:boramarcarapp/models/event.dart';
 import 'package:boramarcarapp/providers/events.dart';
+// import 'package:boramarcarapp/providers/notifications.dart';
+import 'package:boramarcarapp/widgets/empty_message_widget.dart';
 import 'package:boramarcarapp/widgets/event/event_item.dart';
 
 class EventGrid extends StatefulWidget {
@@ -45,8 +47,13 @@ class _EventGridState extends State<EventGrid> {
 
   @override
   Widget build(BuildContext context) {
+    // final _controller = Get.find<Controller>();
     return Column(
       children: [
+        // ElevatedButton(
+        //   onPressed: () => _controller.sendNotification(),
+        //   child: const Text('Send Notification'),
+        // ),
         SizedBox(height: 10),
         Padding(
           padding: const EdgeInsets.all(8.0),

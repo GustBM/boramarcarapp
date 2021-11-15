@@ -1,7 +1,7 @@
 import 'package:boramarcarapp/screens/event/event_new_screen.dart';
 import 'package:boramarcarapp/screens/group/groups_screen.dart';
 import 'package:boramarcarapp/screens/home_screen.dart';
-import 'package:boramarcarapp/screens/schedule_screen.dart';
+import 'package:boramarcarapp/screens/schedule/schedule_screen.dart';
 import 'package:boramarcarapp/screens/settings/settings_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

@@ -1,3 +1,5 @@
+import 'package:boramarcarapp/providers/schedules.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -53,9 +55,8 @@ class SettingsScreen extends StatelessWidget {
             //         showConfirmDialog(context, 'Reiniciar Horário',
             //             'Deseja Reiniciar Horário?', () {
             //           try {
-            //             Provider.of<Auth>(context, listen: false)
-            //                 .addNewUserSchedule(
-            //                     FirebaseAuth.instance.currentUser!.uid);
+            //             Schedules.addNewUserSchedule(
+            //                 FirebaseAuth.instance.currentUser!.uid);
             //           } on Exception catch (e) {
             //             showErrorDialog(
             //                 context,

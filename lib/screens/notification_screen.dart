@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,9 +15,11 @@ class NotificationScreen extends StatelessWidget {
     // Provider.of<AppNotifications>(context).addUserNotifications(
     //     'VUjOHQ6XIKYXokTe7mhElJYFaEB2',
     //     new AppNotification(
-    //         message: 'message2',
+    //         message: 'Gustavo convidou para o evento; EVENTO 2',
     //         date: DateTime.now(),
-    //         redirectUrl: 'redirectUrl'));
+    //         redirectUrl: 'juNbV88QMchEvSDZXPIr',
+    //         notificationType: NotificationType.invite));
+
     return Scaffold(
       appBar: AppBar(),
       body: FutureBuilder<List<AppNotification>>(
