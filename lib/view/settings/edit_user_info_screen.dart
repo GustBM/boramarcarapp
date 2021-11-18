@@ -9,9 +9,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 
-import 'package:boramarcarapp/widgets/app_drawer.dart';
-import 'package:boramarcarapp/models/user.dart';
 import 'package:boramarcarapp/controllers/users_controller.dart';
+import 'package:boramarcarapp/models/user.dart';
 
 import '../../utils.dart';
 

@@ -1,11 +1,9 @@
-import 'package:boramarcarapp/widgets/group/group_invite_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 
-import 'package:boramarcarapp/models/user.dart';
 import 'package:boramarcarapp/controllers/users_controller.dart';
-import 'package:boramarcarapp/widgets/event/event_invited_chip.dart';
+import 'package:boramarcarapp/models/user.dart';
 
 class EventInviteModal extends StatefulWidget {
   final List<String> invitedList;

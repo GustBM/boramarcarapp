@@ -1,5 +1,3 @@
-import 'package:boramarcarapp/controllers/schedules_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

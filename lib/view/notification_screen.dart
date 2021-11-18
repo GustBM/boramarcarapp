@@ -1,9 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:boramarcarapp/models/notification.dart';
 import 'package:boramarcarapp/controllers/notifications_controller.dart';
+import 'package:boramarcarapp/models/notification.dart';
 import 'package:boramarcarapp/widgets/empty_message_widget.dart';
 import 'package:boramarcarapp/widgets/notification/notification_card.dart';
 
@@ -12,14 +11,6 @@ import '../utils.dart';
 class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Provider.of<AppNotificationController>(context).addUserNotifications(
-    //     'VUjOHQ6XIKYXokTe7mhElJYFaEB2',
-    //     new AppNotification(
-    //         message: 'Gustavo convidou para o evento; EVENTO 2',
-    //         date: DateTime.now(),
-    //         redirectUrl: 'juNbV88QMchEvSDZXPIr',
-    //         notificationType: NotificationType.invite));
-
     return Scaffold(
       appBar: AppBar(),
       body: FutureBuilder<List<AppNotification>>(
