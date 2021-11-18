@@ -1,9 +1,8 @@
-import 'package:boramarcarapp/models/user.dart';
-import 'package:boramarcarapp/providers/schedules.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'package:boramarcarapp/screens/event/event_detail_screen.dart';
+import 'package:boramarcarapp/controllers/schedules_controller.dart';
+import 'package:boramarcarapp/view/event/event_detail_screen.dart';
 import 'package:boramarcarapp/models/event.dart';
 import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../utils.dart';
 
-class Events extends ChangeNotifier {
+class EventController extends ChangeNotifier {
   CollectionReference _events = FirebaseFirestore.instance.collection('event');
 
   List<Event> _eventList = [];
@@ -63,7 +62,7 @@ class Events extends ChangeNotifier {
       usersId.add(user);
     }).then((value) async {
       var dateRange = new DateTimeRange(start: dateIni, end: dateEnd);
-      bestDates = await Provider.of<Schedules>(context, listen: false)
+      bestDates = await Provider.of<ScheduleController>(context, listen: false)
           .getIdealDate(dateRange, usersId);
     }).then((dates) {
       final eventId = getRandomString(20);

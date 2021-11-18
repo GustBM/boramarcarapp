@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:boramarcarapp/controllers/groups_controller.dart';
 import 'package:boramarcarapp/models/group.dart';
-import 'package:boramarcarapp/providers/groups.dart';
 import 'package:boramarcarapp/widgets/group/group_invite_chip.dart';
 
 import '../../utils.dart';
@@ -19,7 +19,8 @@ class GroupDetailsScreen extends StatelessWidget {
     final groupId = ModalRoute.of(context)!.settings.arguments as String;
     return Scaffold(
       body: FutureBuilder(
-        future: Provider.of<Groups>(context, listen: false).getGroup(groupId),
+        future: Provider.of<GroupController>(context, listen: false)
+            .getGroup(groupId),
         builder: (BuildContext context,
             AsyncSnapshot<DocumentSnapshot<Group>> snapshot) {
           if (snapshot.hasError) {

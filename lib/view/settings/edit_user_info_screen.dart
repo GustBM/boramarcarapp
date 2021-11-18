@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/widgets/app_drawer.dart';
 import 'package:boramarcarapp/models/user.dart';
-import 'package:boramarcarapp/providers/users.dart';
+import 'package:boramarcarapp/controllers/users_controller.dart';
 
 import '../../utils.dart';
 
@@ -63,15 +63,16 @@ class _EditUserInfoScreenState extends State<EditUserInfoScreen> {
           await FirebaseAuth.instance.currentUser!.updatePhotoURL(link);
         });
       }
-      await Provider.of<Users>(context, listen: false).addAndUpdateAppUser(
-          _userInfo!.uid,
-          AppUser(
-              uid: _userInfo!.uid,
-              firstName: name,
-              email: email,
-              bthDate: bthDate,
-              lastName: lastName,
-              invited: invitedList));
+      await Provider.of<UserController>(context, listen: false)
+          .addAndUpdateAppUser(
+              _userInfo!.uid,
+              AppUser(
+                  uid: _userInfo!.uid,
+                  firstName: name,
+                  email: email,
+                  bthDate: bthDate,
+                  lastName: lastName,
+                  invited: invitedList));
     } catch (e) {
       message = "Falha na atualização!\n" + e.toString();
       setState(() {
@@ -174,7 +175,7 @@ class _EditUserInfoScreenState extends State<EditUserInfoScreen> {
       ),
       // drawer: AppDrawer(),
       body: FutureBuilder(
-          future: Provider.of<Users>(context, listen: false)
+          future: Provider.of<UserController>(context, listen: false)
               .getAppUserInfo(_userInfo!.uid),
           builder: (BuildContext context,
               AsyncSnapshot<DocumentSnapshot<AppUser>> snapshot) {

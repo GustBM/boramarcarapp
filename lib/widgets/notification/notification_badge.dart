@@ -1,5 +1,5 @@
-import 'package:boramarcarapp/providers/notifications.dart';
-import 'package:boramarcarapp/screens/notification_screen.dart';
+import 'package:boramarcarapp/controllers/notifications_controller.dart';
+import 'package:boramarcarapp/view/notification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +23,7 @@ class NotificationBadge extends StatelessWidget {
                 minHeight: 12,
               ),
               child: FutureBuilder(
-                future: Provider.of<AppNotifications>(context)
+                future: Provider.of<AppNotificationController>(context)
                     .getUnreadNotificationsNumber,
                 builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
                   if (snapshot.hasData && snapshot.data! > 0) {

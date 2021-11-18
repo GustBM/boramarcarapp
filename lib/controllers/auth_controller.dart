@@ -6,9 +6,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:boramarcarapp/models/user.dart';
-import 'package:boramarcarapp/providers/schedules.dart' as sch;
+import 'package:boramarcarapp/controllers/schedules_controller.dart' as sch;
 
-class Auth with ChangeNotifier {
+class AuthController with ChangeNotifier {
   late User _userData;
   // ignore: unused_field
   late AppUser _userInfo;
@@ -76,7 +76,7 @@ class Auth with ChangeNotifier {
     User userResult = user!.user!;
     await userResult.updateDisplayName(name);
     await userResult.sendEmailVerification();
-    await sch.Schedules.addNewUserSchedule(userResult.uid);
+    await sch.ScheduleController.addNewUserSchedule(userResult.uid);
 
     await FirebaseFirestore.instance
         .collection('user')

@@ -2,7 +2,7 @@ import 'package:boramarcarapp/models/event.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:boramarcarapp/screens/event/event_detail_screen.dart';
+import 'package:boramarcarapp/view/event/event_detail_screen.dart';
 
 class EventItem extends StatelessWidget {
   @override

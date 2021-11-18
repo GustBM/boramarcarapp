@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/models/http_exception.dart';
-import 'package:boramarcarapp/providers/auth.dart';
+import 'package:boramarcarapp/controllers/auth_controller.dart';
 
 import '../utils.dart' show showErrorDialog, isValidEmail;
 
@@ -116,7 +116,7 @@ class _AuthCardState extends State<AuthCard> {
     });
 
     try {
-      await Provider.of<Auth>(context, listen: false)
+      await Provider.of<AuthController>(context, listen: false)
           .resetPwd(_authData['email']!);
     } catch (e) {
       print(e.toString());
@@ -138,10 +138,10 @@ class _AuthCardState extends State<AuthCard> {
     });
     try {
       if (_authMode == AuthMode.Login) {
-        await Provider.of<Auth>(context, listen: false)
+        await Provider.of<AuthController>(context, listen: false)
             .login(_authData['email']!, _authData['password']!);
       } else {
-        await Provider.of<Auth>(context, listen: false).signUp(
+        await Provider.of<AuthController>(context, listen: false).signUp(
           _authData['email']!,
           _authData['password']!,
           _authData['firstName']!,

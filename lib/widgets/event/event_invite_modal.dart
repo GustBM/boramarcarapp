@@ -4,7 +4,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/models/user.dart';
-import 'package:boramarcarapp/providers/users.dart';
+import 'package:boramarcarapp/controllers/users_controller.dart';
 import 'package:boramarcarapp/widgets/event/event_invited_chip.dart';
 
 class EventInviteModal extends StatefulWidget {
@@ -54,7 +54,8 @@ class _EventInviteModalState extends State<EventInviteModal> {
                       decoration:
                           InputDecoration(border: OutlineInputBorder())),
                   suggestionsCallback: (pattern) async {
-                    _users = await Provider.of<Users>(context, listen: false)
+                    _users = await Provider.of<UserController>(context,
+                            listen: false)
                         .getUsersList(pattern);
                     return _users;
                   },

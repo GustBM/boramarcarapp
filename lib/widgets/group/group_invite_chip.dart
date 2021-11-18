@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/models/user.dart';
-import 'package:boramarcarapp/providers/users.dart';
+import 'package:boramarcarapp/controllers/users_controller.dart';
 import 'package:boramarcarapp/widgets/empty_message_widget.dart';
 
 import '../../utils.dart';
@@ -79,7 +79,7 @@ class _InvitedAppUserChipListGroupState
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<QuerySnapshot<AppUser>>(
-        future: Provider.of<Users>(context)
+        future: Provider.of<UserController>(context)
             .getAppUserListFromEmails(widget.invitedEmails),
         builder: (context, AsyncSnapshot<QuerySnapshot<AppUser>> snapshot) {
           if (snapshot.hasError) {

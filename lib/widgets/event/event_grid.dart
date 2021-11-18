@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 // import 'package:get/instance_manager.dart';
 
 import 'package:boramarcarapp/models/event.dart';
-import 'package:boramarcarapp/providers/events.dart';
-// import 'package:boramarcarapp/providers/notifications.dart';
+import 'package:boramarcarapp/controllers/events_controller.dart';
+// import 'package:boramarcarapp/controllers/notifications.dart';
 import 'package:boramarcarapp/widgets/empty_message_widget.dart';
 import 'package:boramarcarapp/widgets/event/event_item.dart';
 
@@ -22,7 +22,8 @@ class _EventGridState extends State<EventGrid> {
     super.initState();
 
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      _allEventsData = Provider.of<Events>(context, listen: false).eventsList;
+      _allEventsData =
+          Provider.of<EventController>(context, listen: false).eventsList;
       setState(() {
         _eventsData = _allEventsData;
       });

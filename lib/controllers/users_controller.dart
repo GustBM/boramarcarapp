@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:boramarcarapp/models/user.dart';
 
-class Users extends ChangeNotifier {
+class UserController extends ChangeNotifier {
   CollectionReference _users = FirebaseFirestore.instance.collection('user');
 
   Future<DocumentSnapshot<AppUser>> getAppUserInfo(String uid) async {

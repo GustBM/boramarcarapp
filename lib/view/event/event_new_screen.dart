@@ -9,9 +9,9 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
+import 'package:boramarcarapp/controllers/events_controller.dart';
 import 'package:boramarcarapp/models/event.dart';
 import 'package:boramarcarapp/models/http_exception.dart';
-import 'package:boramarcarapp/providers/events.dart';
 import 'package:boramarcarapp/widgets/event/event_invite_modal.dart';
 import 'package:boramarcarapp/widgets/group/group_invite_modal.dart';
 import 'package:boramarcarapp/utils.dart' as utils;
@@ -110,7 +110,7 @@ class _EventFormState extends State<EventFormScreen> {
         });
       }
       invitedList.add(userEmail!);
-      await Provider.of<Events>(context, listen: false).addEvent(
+      await Provider.of<EventController>(context, listen: false).addEvent(
         eventName,
         userName!,
         userId,
@@ -236,8 +236,8 @@ class _EventFormState extends State<EventFormScreen> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: FutureBuilder(
-            future:
-                Provider.of<Events>(context, listen: false).getEvent(eventId),
+            future: Provider.of<EventController>(context, listen: false)
+                .getEvent(eventId),
             builder: (BuildContext context,
                 AsyncSnapshot<DocumentSnapshot<Event>?> snapshot) {
               if (snapshot.hasError) {

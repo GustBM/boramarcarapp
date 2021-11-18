@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-import 'package:boramarcarapp/screens/event/event_new_screen.dart';
-import 'package:boramarcarapp/providers/events.dart';
+import 'package:boramarcarapp/view/event/event_new_screen.dart';
+import 'package:boramarcarapp/controllers/events_controller.dart';
 import 'package:boramarcarapp/models/event.dart';
 import 'package:boramarcarapp/utils.dart';
 import 'package:boramarcarapp/widgets/event/event_invited_chip.dart';
@@ -27,7 +27,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
     return Scaffold(
       body: FutureBuilder(
-        future: Provider.of<Events>(context, listen: false).getEvent(eventId),
+        future: Provider.of<EventController>(context, listen: false)
+            .getEvent(eventId),
         builder: (BuildContext context,
             AsyncSnapshot<DocumentSnapshot<Event>?> snapshot) {
           if (snapshot.hasError) {

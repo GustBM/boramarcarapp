@@ -1,7 +1,7 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:boramarcarapp/models/http_exception.dart';
-import 'package:boramarcarapp/providers/events.dart';
-import 'package:boramarcarapp/screens/event/event_detail_screen.dart';
+import 'package:boramarcarapp/controllers/events_controller.dart';
+import 'package:boramarcarapp/view/event/event_detail_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,10 +12,10 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 import 'package:boramarcarapp/models/notification.dart';
-import 'package:boramarcarapp/screens/home_screen.dart';
+import 'package:boramarcarapp/view/home_screen.dart';
 import 'package:provider/provider.dart';
 
-class AppNotifications extends ChangeNotifier {
+class AppNotificationController extends ChangeNotifier {
   CollectionReference _users = FirebaseFirestore.instance.collection('user');
   final _uid = FirebaseAuth.instance.currentUser!.uid;
 
@@ -78,7 +78,7 @@ class AppNotifications extends ChangeNotifier {
       bool response, String invitedUserId) async {
     try {
       if (response) {
-        await Provider.of<Events>(context, listen: false)
+        await Provider.of<EventController>(context, listen: false)
             .addInvited(notification.redirectUrl, invitedUserId)
             .then((value) => Navigator.of(context).pushNamed(
                   EventDetailScreen.routeName,

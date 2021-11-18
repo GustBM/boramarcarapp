@@ -1,9 +1,9 @@
-import 'package:boramarcarapp/providers/schedules.dart';
+import 'package:boramarcarapp/controllers/schedules_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/auth.dart';
+import '../../controllers/auth_controller.dart';
 import '../../utils.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -83,7 +83,8 @@ class SettingsScreen extends StatelessWidget {
                         () {
                       Navigator.of(context).pop();
                       Navigator.of(context).pushReplacementNamed('/');
-                      Provider.of<Auth>(context, listen: false).logout();
+                      Provider.of<AuthController>(context, listen: false)
+                          .logout();
                     });
                   },
                 ),

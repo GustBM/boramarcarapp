@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:boramarcarapp/models/schedule.dart';
 
-class Schedules extends ChangeNotifier {
+class ScheduleController extends ChangeNotifier {
   CollectionReference _schedules =
       FirebaseFirestore.instance.collection('schedule');
 

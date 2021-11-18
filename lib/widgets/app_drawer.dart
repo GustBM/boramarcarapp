@@ -1,13 +1,13 @@
-import 'package:boramarcarapp/screens/event/event_new_screen.dart';
-import 'package:boramarcarapp/screens/group/groups_screen.dart';
-import 'package:boramarcarapp/screens/home_screen.dart';
-import 'package:boramarcarapp/screens/schedule/schedule_screen.dart';
-import 'package:boramarcarapp/screens/settings/settings_screen.dart';
+import 'package:boramarcarapp/view/event/event_new_screen.dart';
+import 'package:boramarcarapp/view/group/groups_screen.dart';
+import 'package:boramarcarapp/view/home_screen.dart';
+import 'package:boramarcarapp/view/schedule/schedule_screen.dart';
+import 'package:boramarcarapp/view/settings/settings_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/auth.dart';
+import '../controllers/auth_controller.dart';
 import '../utils.dart' as utils;
 
 class AppDrawer extends StatelessWidget {
@@ -98,7 +98,7 @@ class AppDrawer extends StatelessWidget {
                   () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pushReplacementNamed('/');
-                Provider.of<Auth>(context, listen: false).logout();
+                Provider.of<AuthController>(context, listen: false).logout();
               });
             },
           ),

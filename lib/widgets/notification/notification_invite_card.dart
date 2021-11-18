@@ -1,5 +1,5 @@
 import 'package:boramarcarapp/models/notification.dart';
-import 'package:boramarcarapp/providers/notifications.dart';
+import 'package:boramarcarapp/controllers/notifications_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -32,7 +32,7 @@ class NotificationInviteCard extends StatelessWidget {
           IconButton(
               onPressed: () {
                 try {
-                  Provider.of<AppNotifications>(context, listen: false)
+                  Provider.of<AppNotificationController>(context, listen: false)
                       .confirmInvite(
                           context, notification, false, _userInfo!.uid);
                 } catch (e) {
@@ -48,7 +48,7 @@ class NotificationInviteCard extends StatelessWidget {
               )),
           IconButton(
               onPressed: () {
-                Provider.of<AppNotifications>(context, listen: false)
+                Provider.of<AppNotificationController>(context, listen: false)
                     .confirmInvite(context, notification, true, _userInfo!.uid);
               },
               icon: Container(

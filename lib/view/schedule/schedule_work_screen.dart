@@ -1,6 +1,6 @@
 import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:boramarcarapp/models/schedule.dart';
-import 'package:boramarcarapp/providers/schedules.dart';
+import 'package:boramarcarapp/controllers/schedules_controller.dart';
 import 'package:boramarcarapp/widgets/schedule/schedule_form_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -61,7 +61,7 @@ class _ScheduleWorkScreenState extends State<ScheduleWorkScreen> {
       });
 
       try {
-        await Provider.of<Schedules>(context, listen: false).addSchedule(
+        await Provider.of<ScheduleController>(context, listen: false).addSchedule(
             _userInfo!.uid,
             new Schedule(
                 sundayIni: _parseFormInput(_schedueleFormKey
@@ -165,10 +165,10 @@ class _ScheduleWorkScreenState extends State<ScheduleWorkScreen> {
 
     return Scaffold(
       body: FutureBuilder(
-        future: Provider.of<Schedules>(context, listen: false)
+        future: Provider.of<ScheduleController>(context, listen: false)
             .getUserSchedule(_userInfo!.uid)
             .catchError((onError) {
-          Schedules.addNewUserSchedule(_userInfo.uid);
+          ScheduleController.addNewUserSchedule(_userInfo.uid);
           showErrorDialog(context,
               'Houve um erro no cadastro do horário e ele deverá ser resetado.');
         }),
@@ -185,7 +185,7 @@ class _ScheduleWorkScreenState extends State<ScheduleWorkScreen> {
               sch = snapshot.data!.data();
             }
             if (sch == null) {
-              Schedules.addNewUserSchedule(_userInfo.uid);
+              ScheduleController.addNewUserSchedule(_userInfo.uid);
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(

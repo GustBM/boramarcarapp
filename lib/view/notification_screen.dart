@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/models/notification.dart';
-import 'package:boramarcarapp/providers/notifications.dart';
+import 'package:boramarcarapp/controllers/notifications_controller.dart';
 import 'package:boramarcarapp/widgets/empty_message_widget.dart';
 import 'package:boramarcarapp/widgets/notification/notification_card.dart';
 
@@ -12,7 +12,7 @@ import '../utils.dart';
 class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Provider.of<AppNotifications>(context).addUserNotifications(
+    // Provider.of<AppNotificationController>(context).addUserNotifications(
     //     'VUjOHQ6XIKYXokTe7mhElJYFaEB2',
     //     new AppNotification(
     //         message: 'Gustavo convidou para o evento; EVENTO 2',
@@ -23,7 +23,8 @@ class NotificationScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body: FutureBuilder<List<AppNotification>>(
-          future: Provider.of<AppNotifications>(context).getUserNotifications,
+          future: Provider.of<AppNotificationController>(context)
+              .getUserNotifications,
           builder: (BuildContext context,
               AsyncSnapshot<List<AppNotification>> snapshot) {
             if (snapshot.hasError) {

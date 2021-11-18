@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:boramarcarapp/providers/groups.dart';
+import 'package:boramarcarapp/controllers/groups_controller.dart';
 import 'package:boramarcarapp/widgets/event/event_invite_modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -119,7 +119,7 @@ class _NewGroupScreenState extends State<NewGroupScreen> {
     final String groupDescription = _formKey.currentState!.value['description'];
 
     try {
-      Provider.of<Groups>(context, listen: false).addNewGroup(
+      Provider.of<GroupController>(context, listen: false).addNewGroup(
           context,
           Group(
               groupId: getRandomString(20),

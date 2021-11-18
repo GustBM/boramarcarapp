@@ -2,7 +2,7 @@ import 'package:auth_buttons/auth_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:boramarcarapp/providers/auth.dart';
+import 'package:boramarcarapp/controllers/auth_controller.dart';
 
 class GoogleIconLoginButton extends StatelessWidget {
   @override
@@ -10,7 +10,8 @@ class GoogleIconLoginButton extends StatelessWidget {
     return GoogleAuthButton(
       onPressed: () async {
         try {
-          await Provider.of<Auth>(context, listen: false).signInWithGoogle();
+          await Provider.of<AuthController>(context, listen: false)
+              .signInWithGoogle();
         } catch (e) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(e.toString()),
@@ -32,7 +33,8 @@ class FacebookIconLoginButton extends StatelessWidget {
     return FacebookAuthButton(
       onPressed: () async {
         try {
-          await Provider.of<Auth>(context, listen: false).signInWithFacebook();
+          await Provider.of<AuthController>(context, listen: false)
+              .signInWithFacebook();
         } catch (e) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(e.toString()),

@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/models/group.dart';
-import 'package:boramarcarapp/providers/groups.dart';
-import 'package:boramarcarapp/screens/group/group_new_screen.dart';
+import 'package:boramarcarapp/controllers/groups_controller.dart';
+import 'package:boramarcarapp/view/group/group_new_screen.dart';
 import 'package:boramarcarapp/widgets/empty_message_widget.dart';
 
 import '../../utils.dart';
@@ -38,7 +38,7 @@ class _GroupInviteModalState extends State<GroupInviteModal> {
                 content: Container(
                   width: double.maxFinite,
                   child: FutureBuilder<QuerySnapshot<Group>>(
-                    future: Provider.of<Groups>(context, listen: false)
+                    future: Provider.of<GroupController>(context, listen: false)
                         .getUserGroups(_userInfo!.email!),
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot<Group>> snapshot) {

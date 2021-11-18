@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:boramarcarapp/screens/schedule/schedule_leisure_screen.dart';
-import 'package:boramarcarapp/screens/schedule/schedule_work_screen.dart';
+import 'package:boramarcarapp/view/schedule/schedule_leisure_screen.dart';
+import 'package:boramarcarapp/view/schedule/schedule_work_screen.dart';
 
 class SchedueleScreen extends StatefulWidget {
   static const routeName = '/schedule';

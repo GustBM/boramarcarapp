@@ -1,13 +1,13 @@
-import 'package:boramarcarapp/screens/event/event_new_screen.dart';
-import 'package:boramarcarapp/screens/schedule/schedule_screen.dart';
-import 'package:boramarcarapp/screens/settings/settings_screen.dart';
+import 'package:boramarcarapp/view/event/event_new_screen.dart';
+import 'package:boramarcarapp/view/schedule/schedule_screen.dart';
+import 'package:boramarcarapp/view/settings/settings_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
-import 'package:boramarcarapp/providers/events.dart';
+import 'package:boramarcarapp/controllers/events_controller.dart';
 import 'package:boramarcarapp/widgets/event/event_grid.dart';
 import 'package:boramarcarapp/widgets/notification/notification_badge.dart';
 
@@ -137,10 +137,10 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: () =>
-          Provider.of<Events>(context, listen: false).refresh(context, userId),
+      onRefresh: () => Provider.of<EventController>(context, listen: false)
+          .refresh(context, userId),
       child: FutureBuilder(
-        future: Provider.of<Events>(context, listen: false)
+        future: Provider.of<EventController>(context, listen: false)
             .refresh(context, userId),
         builder: (ctx, dataSnapshot) {
           if (dataSnapshot.connectionState == ConnectionState.waiting) {
@@ -164,7 +164,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                 ElevatedButton(
                   child: Text('Recarregar'),
                   onPressed: () => {
-                    Provider.of<Events>(context, listen: false)
+                    Provider.of<EventController>(context, listen: false)
                         .refresh(context, userId)
                   },
                   style: ElevatedButton.styleFrom(

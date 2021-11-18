@@ -1,11 +1,11 @@
-import 'package:boramarcarapp/screens/group/group_details_screen.dart';
+import 'package:boramarcarapp/view/group/group_details_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:boramarcarapp/models/group.dart';
 import 'package:boramarcarapp/models/http_exception.dart';
 
-class Groups extends ChangeNotifier {
+class GroupController extends ChangeNotifier {
   CollectionReference _groups = FirebaseFirestore.instance.collection('group');
 
   void _goToGroup(BuildContext context, String groupId) {

@@ -1,4 +1,3 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -6,23 +5,23 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:provider/provider.dart';
 
-import 'package:boramarcarapp/providers/auth.dart';
-import 'package:boramarcarapp/providers/events.dart';
-import 'package:boramarcarapp/providers/groups.dart';
-import 'package:boramarcarapp/providers/notifications.dart';
-import 'package:boramarcarapp/providers/schedules.dart';
-import 'package:boramarcarapp/providers/users.dart';
-import 'package:boramarcarapp/screens/home_screen.dart';
-import 'package:boramarcarapp/screens/splash_screen.dart';
-import 'package:boramarcarapp/screens/auth_screen.dart';
-import 'package:boramarcarapp/screens/event/event_detail_screen.dart';
-import 'package:boramarcarapp/screens/event/event_new_screen.dart';
-import 'package:boramarcarapp/screens/settings/settings_screen.dart';
-import 'package:boramarcarapp/screens/schedule/schedule_screen.dart';
-import 'package:boramarcarapp/screens/settings/edit_user_info_screen.dart';
-import 'package:boramarcarapp/screens/group/group_details_screen.dart';
-import 'package:boramarcarapp/screens/group/groups_screen.dart';
-import 'package:boramarcarapp/screens/group/group_new_screen.dart';
+import 'package:boramarcarapp/controllers/auth_controller.dart';
+import 'package:boramarcarapp/controllers/events_controller.dart';
+import 'package:boramarcarapp/controllers/groups_controller.dart';
+import 'package:boramarcarapp/controllers/notifications_controller.dart';
+import 'package:boramarcarapp/controllers/schedules_controller.dart';
+import 'package:boramarcarapp/controllers/users_controller.dart';
+import 'package:boramarcarapp/view/auth_screen.dart';
+import 'package:boramarcarapp/view/home_screen.dart';
+import 'package:boramarcarapp/view/splash_screen.dart';
+import 'package:boramarcarapp/view/event/event_detail_screen.dart';
+import 'package:boramarcarapp/view/event/event_new_screen.dart';
+import 'package:boramarcarapp/view/settings/settings_screen.dart';
+import 'package:boramarcarapp/view/schedule/schedule_screen.dart';
+import 'package:boramarcarapp/view/settings/edit_user_info_screen.dart';
+import 'package:boramarcarapp/view/group/group_details_screen.dart';
+import 'package:boramarcarapp/view/group/groups_screen.dart';
+import 'package:boramarcarapp/view/group/group_new_screen.dart';
 
 import 'package:boramarcarapp/theme_data.dart';
 
@@ -45,25 +44,25 @@ class BoraMarcarApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
-          value: Auth(),
+          value: AuthController(),
         ),
-        ChangeNotifierProvider<Events>(
-          create: (_) => Events(),
+        ChangeNotifierProvider<EventController>(
+          create: (_) => EventController(),
         ),
-        ChangeNotifierProvider<Schedules>(
-          create: (_) => Schedules(),
+        ChangeNotifierProvider<ScheduleController>(
+          create: (_) => ScheduleController(),
         ),
-        ChangeNotifierProvider<Users>(
-          create: (_) => Users(),
+        ChangeNotifierProvider<UserController>(
+          create: (_) => UserController(),
         ),
-        ChangeNotifierProvider<Groups>(
-          create: (_) => Groups(),
+        ChangeNotifierProvider<GroupController>(
+          create: (_) => GroupController(),
         ),
-        ChangeNotifierProvider<AppNotifications>(
-          create: (_) => AppNotifications(),
+        ChangeNotifierProvider<AppNotificationController>(
+          create: (_) => AppNotificationController(),
         ),
       ],
-      child: Consumer<Auth>(
+      child: Consumer<AuthController>(
         builder: (ctx, auth, _) => GetMaterialApp(
           initialBinding: ControllerBindings(),
           title: 'BoraMarcar',
