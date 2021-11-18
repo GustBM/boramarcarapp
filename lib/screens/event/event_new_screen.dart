@@ -38,21 +38,28 @@ class _EventFormState extends State<EventFormScreen> {
 
   var errorText = '';
 
-  late FocusNode myFocusNode;
+  int _typeOfEvent = 0;
 
-  @override
-  void initState() {
-    super.initState();
+  // late FocusNode? myFocusNode;
+  // late bool cvcHasFocus;
+  // void _onCvcFormFieldFocusChanged() {
+  //   setState(() => cvcHasFocus = myFocusNode?.hasFocus ?? false);
+  // }
 
-    myFocusNode = FocusNode();
-  }
+  // @override
+  // void initState() {
+  //   myFocusNode = FocusNode();
+  //   myFocusNode?.addListener(_onCvcFormFieldFocusChanged);
+  //   super.initState();
+  // }
 
-  @override
-  void dispose() {
-    myFocusNode.dispose();
-
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   myFocusNode?.removeListener(_onCvcFormFieldFocusChanged);
+  //   myFocusNode?.dispose();
+  //   myFocusNode = null;
+  //   super.dispose();
+  // }
 
   void _showErrorDialog(String message) {
     showDialog(
@@ -141,7 +148,9 @@ class _EventFormState extends State<EventFormScreen> {
       children: [
         Container(
           child: _imgFile == null
-              ? Image.asset('assets/images/baloes.jpg')
+              ? _typeOfEvent == 0
+                  ? Image.asset('assets/images/baloes.jpg')
+                  : Image.asset('assets/images/tabuleiro.png')
               : Image.file(File(_imgFile!.path)),
           height: 150.0,
         ),
@@ -253,9 +262,26 @@ class _EventFormState extends State<EventFormScreen> {
                       child: Column(
                         children: <Widget>[
                           _eventImageBanner(),
+                          // SizedBox(height: 10),
+                          // FormBuilderChoiceChip<int>(
+                          //   decoration: InputDecoration(
+                          //     labelText: 'Selecione uma opção',
+                          //   ),
+                          //   name: 'test_name',
+                          //   initialValue: 0,
+                          //   options: [
+                          //     FormBuilderFieldOption(
+                          //         value: 0, child: Text('Trabalho')),
+                          //     FormBuilderFieldOption(
+                          //         value: 1, child: Text('Lazer')),
+                          //   ],
+                          //   onChanged: (value) {
+                          //     _typeOfEvent = value!;
+                          //   },
+                          // ),
                           SizedBox(height: 10),
                           FormBuilderTextField(
-                            focusNode: myFocusNode,
+                            // focusNode: myFocusNode,
                             name: 'name',
                             decoration: InputDecoration(
                               labelText: 'Nome do Evento',
