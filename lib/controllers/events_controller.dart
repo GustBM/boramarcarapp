@@ -87,7 +87,7 @@ class EventController extends ChangeNotifier {
     });
   }
 
-  Future<void> updateEventUserList(String userId, String id) async {
+  Future<void> _updateEventUserList(String userId, String eventId) async {
     var snapshot =
         await FirebaseFirestore.instance.collection('user').doc(userId).get();
     var data = snapshot.data();
@@ -96,7 +96,7 @@ class EventController extends ChangeNotifier {
     if (data!['invited'] != null)
       invitedList = new List<String>.from(data['invited']);
 
-    invitedList.add(id);
+    invitedList.add(eventId);
 
     await FirebaseFirestore.instance
         .collection('user')
@@ -104,18 +104,17 @@ class EventController extends ChangeNotifier {
         .update({'invited': invitedList});
   }
 
-  void goToEvent(
-      BuildContext context, String id, String userId, List<String> invited) {
-    updateEventUserList(userId, id);
+  void goToEvent(BuildContext context, String eventId, String userId,
+      List<String> invited) {
+    _updateEventUserList(userId, eventId);
     Navigator.of(context).pushNamed(
       EventDetailScreen.routeName,
-      arguments: id,
+      arguments: eventId,
     );
   }
 
   Future<void> refresh(BuildContext context, String userId) async {
     try {
-      // await getAllEvents(userId);
       await _getAndFetchEvents(userId);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

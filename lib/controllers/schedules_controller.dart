@@ -9,7 +9,7 @@ class ScheduleController extends ChangeNotifier {
       FirebaseFirestore.instance.collection('schedule');
 
   Future<DocumentSnapshot<Schedule>> getUserSchedule(String userId,
-      {scheduleType = ''}) {
+      {String scheduleType = ''}) {
     return _schedules
         .doc(scheduleType + userId)
         .withConverter<Schedule>(
@@ -18,30 +18,8 @@ class ScheduleController extends ChangeNotifier {
         .get();
   }
 
-  Future<Schedule?> getAndSetUserSchedule(String userId) async {
-    await _schedules.doc(userId).get().then((value) {
-      return new Schedule(
-        sundayIni: value['sundayIni'],
-        sundayEnd: value['sundayEnd'],
-        mondayIni: value['mondayIni'],
-        mondayEnd: value['mondayEnd'],
-        tuesdayIni: value['tuesdayIni'],
-        tuesdayEnd: value['tuesdayEnd'],
-        wednesdayIni: value['wednesdayIni'],
-        wednesdayEnd: value['wednesdayEnd'],
-        thursdayIni: value['thursdayIni'],
-        thursdayEnd: value['thursdayEnd'],
-        fridayIni: value['fridayIni'],
-        fridayEnd: value['fridayEnd'],
-        saturdayIni: value['saturdayIni'],
-        saturdayEnd: value['saturdayEnd'],
-      );
-    }).catchError(
-        (e) => throw HttpException("Houve um Erro!" + e.code.toString()));
-  }
-
   Future<void> addSchedule(String userId, Schedule schedule,
-      {scheduleType = ''}) async {
+      {String scheduleType = ''}) async {
     _checkSchedule(schedule);
     _schedules.doc(scheduleType + userId).set({
       'sundayIni': schedule.sundayIni,
@@ -131,34 +109,8 @@ class ScheduleController extends ChangeNotifier {
     });
   }
 
-  List<int> _iniList() {
-    return [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ];
-  }
+  List<int> get _iniList =>
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
   /// Retorna um `int` com o valor da posição com o maior valor do array [arr]
   int _indexOfMax(List<int> arr) {
@@ -184,13 +136,13 @@ class ScheduleController extends ChangeNotifier {
     List<DateTime> avaliableDaysList = [];
     List<DateTime> bestDates = [];
 
-    List<int> sundayList = _iniList();
-    List<int> mondayList = _iniList();
-    List<int> tuesdayList = _iniList();
-    List<int> wednesdayList = _iniList();
-    List<int> thursdayList = _iniList();
-    List<int> fridayList = _iniList();
-    List<int> saturdayList = _iniList();
+    List<int> sundayList = _iniList;
+    List<int> mondayList = _iniList;
+    List<int> tuesdayList = _iniList;
+    List<int> wednesdayList = _iniList;
+    List<int> thursdayList = _iniList;
+    List<int> fridayList = _iniList;
+    List<int> saturdayList = _iniList;
 
     List<int> bestHours = [0, 0, 0, 0, 0, 0, 0];
     int bestDay = 0;
