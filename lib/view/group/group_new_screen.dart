@@ -118,6 +118,8 @@ class _NewGroupScreenState extends State<NewGroupScreen> {
     final String groupName = _formKey.currentState!.value['name'];
     final String groupDescription = _formKey.currentState!.value['description'];
 
+    invitedList.add(_user!.email!);
+
     try {
       Provider.of<GroupController>(context, listen: false).addNewGroup(
           context,

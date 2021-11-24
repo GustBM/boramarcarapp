@@ -186,67 +186,84 @@ class _ScheduleWorkScreenState extends State<ScheduleWorkScreen> {
             }
             if (sch == null) {
               ScheduleController.addNewUserSchedule(_userInfo.uid);
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => super.widget));
-              return Center(child: CircularProgressIndicator());
-            } else {
-              disableDayCheck(0, sch.sundayCheck);
-              disableDayCheck(1, sch.mondayCheck);
-              disableDayCheck(2, sch.tuesdayCheck);
-              disableDayCheck(3, sch.wednesdayCheck);
-              disableDayCheck(4, sch.thursdayCheck);
-              disableDayCheck(5, sch.fridayCheck);
-              disableDayCheck(6, sch.saturdayCheck);
-
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 8.0, right: 8.0, bottom: 8.0, top: 0.0),
-                  child: FormBuilder(
-                    key: _schedueleFormKey,
-                    child: Column(
-                      children: [
-                        SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
-                            hourOptionsEnd, 0),
-                        SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
-                            hourOptionsEnd, 1),
-                        SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
-                            hourOptionsEnd, 2),
-                        SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
-                            hourOptionsEnd, 3),
-                        SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
-                            hourOptionsEnd, 4),
-                        SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
-                            hourOptionsEnd, 5),
-                        SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
-                            hourOptionsEnd, 6),
-                        SizedBox(width: 10),
-                        if (_isLoading)
-                          CircularProgressIndicator()
-                        else
-                          ElevatedButton(
-                            child: Text("Enviar"),
-                            onPressed: () {
-                              _schedueleFormKey.currentState!.save();
-                              if (_schedueleFormKey.currentState!.validate()) {
-                                _submit();
-                              } else {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                  content: Text(
-                                      "Houve um Erro nas Informações. Verifique os dados."),
-                                ));
-                              }
-                            },
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
+              sch = new Schedule(
+                sundayIni: 6,
+                sundayEnd: 18,
+                sundayCheck: false,
+                mondayIni: 6,
+                mondayEnd: 18,
+                mondayCheck: true,
+                tuesdayIni: 6,
+                tuesdayEnd: 18,
+                tuesdayCheck: true,
+                wednesdayIni: 6,
+                wednesdayEnd: 18,
+                wednesdayCheck: true,
+                thursdayIni: 6,
+                thursdayEnd: 18,
+                thursdayCheck: true,
+                fridayIni: 6,
+                fridayEnd: 18,
+                fridayCheck: true,
+                saturdayIni: 6,
+                saturdayEnd: 18,
+                saturdayCheck: false,
               );
             }
+            disableDayCheck(0, sch.sundayCheck);
+            disableDayCheck(1, sch.mondayCheck);
+            disableDayCheck(2, sch.tuesdayCheck);
+            disableDayCheck(3, sch.wednesdayCheck);
+            disableDayCheck(4, sch.thursdayCheck);
+            disableDayCheck(5, sch.fridayCheck);
+            disableDayCheck(6, sch.saturdayCheck);
+
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    left: 8.0, right: 8.0, bottom: 8.0, top: 0.0),
+                child: FormBuilder(
+                  key: _schedueleFormKey,
+                  child: Column(
+                    children: [
+                      SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
+                          hourOptionsEnd, 0),
+                      SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
+                          hourOptionsEnd, 1),
+                      SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
+                          hourOptionsEnd, 2),
+                      SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
+                          hourOptionsEnd, 3),
+                      SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
+                          hourOptionsEnd, 4),
+                      SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
+                          hourOptionsEnd, 5),
+                      SchedueleFormField(sch, disableDayCheck, hourOptionsIni,
+                          hourOptionsEnd, 6),
+                      SizedBox(width: 10),
+                      if (_isLoading)
+                        CircularProgressIndicator()
+                      else
+                        ElevatedButton(
+                          child: Text("Enviar"),
+                          onPressed: () {
+                            _schedueleFormKey.currentState!.save();
+                            if (_schedueleFormKey.currentState!.validate()) {
+                              _submit();
+                            } else {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text(
+                                    "Houve um Erro nas Informações. Verifique os dados."),
+                              ));
+                            }
+                          },
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            );
           }
           return Center(child: CircularProgressIndicator());
         },

@@ -4,7 +4,6 @@ import 'package:boramarcarapp/view/settings/settings_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/controllers/events_controller.dart';
@@ -42,14 +41,14 @@ class _HomeScreenState extends State<HomeScreen> {
     // _messaging.getToken().then((value) {
     //   print(value);
     // });
-    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-      showSimpleNotification(Text(event.notification!.title!),
-          leading: NotificationBadge(),
-          subtitle: Text(event.notification!.body!),
-          background: Theme.of(context).primaryColor,
-          duration: Duration(seconds: 120),
-          slideDismissDirection: DismissDirection.vertical);
-    });
+    // FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+    //   showSimpleNotification(Text(event.notification!.title!),
+    //       leading: NotificationBadge(),
+    //       subtitle: Text(event.notification!.body!),
+    //       background: Theme.of(context).primaryColor,
+    //       duration: Duration(seconds: 120),
+    //       slideDismissDirection: DismissDirection.vertical);
+    // });
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       print('Message clicked!');
     });

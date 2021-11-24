@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/controllers/auth_controller.dart';
@@ -63,8 +62,7 @@ class BoraMarcarApp extends StatelessWidget {
         ),
       ],
       child: Consumer<AuthController>(
-        builder: (ctx, auth, _) => GetMaterialApp(
-          initialBinding: ControllerBindings(),
+        builder: (ctx, auth, _) => MaterialApp(
           title: 'BoraMarcar',
           supportedLocales: [const Locale('pt', 'BR')],
           localizationsDelegates: [

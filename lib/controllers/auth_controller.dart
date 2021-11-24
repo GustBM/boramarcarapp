@@ -6,7 +6,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:boramarcarapp/models/user.dart';
+
 import 'package:boramarcarapp/controllers/schedules_controller.dart' as sch;
+import 'package:boramarcarapp/controllers/users_controller.dart' as usr;
 
 class AuthController with ChangeNotifier {
   late User _userData;
@@ -82,12 +84,14 @@ class AuthController with ChangeNotifier {
         .collection('user')
         .doc(userResult.uid)
         .set({
+      'uid': userResult.uid,
       'firstName': name,
       'lastName': lastname,
       'bthDate': date,
       'email': email,
       'invited': null,
       'imageUrl': userResult.photoURL,
+      'notifications': [],
     }).then((value) {
       _authenticate(email, password);
     }).catchError(
@@ -118,6 +122,7 @@ class AuthController with ChangeNotifier {
     } catch (e) {
       return false;
     }
+    usr.UserController.setDeviceToken(uid);
     return true;
   }
 
@@ -132,20 +137,24 @@ class AuthController with ChangeNotifier {
   void _registerUserInfo(String userId, String? name, String? lastname,
       String? date, String? email, String? profileImageUrl) async {
     var userRef = FirebaseFirestore.instance.collection('user').doc(userId);
-    userRef.get().then((docSnapshot) => {
-          if (!docSnapshot.exists)
-            {
-              userRef.set({
-                'firstName': name,
-                'lastName': lastname,
-                'bthDate': date,
-                'email': email,
-                'invited': null,
-                'imageUrl': profileImageUrl,
-                'notifications': [],
-              })
-            }
-        });
+    userRef
+        .get()
+        .then((docSnapshot) => {
+              if (!docSnapshot.exists)
+                {
+                  userRef.set({
+                    'uid': userId,
+                    'firstName': name,
+                    'lastName': lastname,
+                    'bthDate': date,
+                    'email': email,
+                    'invited': null,
+                    'imageUrl': profileImageUrl,
+                    'notifications': [],
+                  })
+                }
+            })
+        .then((value) => usr.UserController.setDeviceToken(userId));
   }
 
   Future<void> signInWithGoogle() async {

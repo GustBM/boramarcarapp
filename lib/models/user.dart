@@ -6,9 +6,10 @@ class AppUser {
   final String? lastName;
   final String email;
   final String? bthDate;
-  final List<String> invited;
+  final List<String>? invited;
   final String? imageUrl;
   final List<AppNotification> notifications;
+  final String? deviceToken;
 
   AppUser({
     required this.uid,
@@ -19,6 +20,7 @@ class AppUser {
     this.bthDate,
     this.invited = const [],
     this.notifications = const [],
+    this.deviceToken,
   });
 
   AppUser.fromJson(Map<String, Object?> json)
@@ -28,11 +30,12 @@ class AppUser {
           lastName: json['lastName'] as String?,
           email: json['email']! as String,
           bthDate: json['bthDate'] as String?,
-          invited: (json['invited']! as List<dynamic>).cast<String>(),
+          invited: (json['invited'] as List<dynamic>?)?.cast<String>(),
           imageUrl: json['imageUrl'] as String?,
           notifications: (json['notifications'] as List)
               .map((e) => AppNotification.fromJson(e))
               .toList(),
+          deviceToken: json['deviceToken'] as String?,
         );
 
   Map<String, Object?> toJson() {
@@ -45,6 +48,7 @@ class AppUser {
       'invited': invited,
       'imageUrl': imageUrl,
       'notifications': notifications,
+      'deviceToken': deviceToken,
     };
   }
 }

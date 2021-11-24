@@ -1,19 +1,12 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:boramarcarapp/models/http_exception.dart';
-import 'package:boramarcarapp/controllers/events_controller.dart';
-import 'package:boramarcarapp/view/event/event_detail_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/src/bindings_interface.dart';
-import 'package:get/get_instance/src/extension_instance.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-
-import 'package:boramarcarapp/models/notification.dart';
-import 'package:boramarcarapp/view/home_screen.dart';
 import 'package:provider/provider.dart';
+
+import 'package:boramarcarapp/controllers/events_controller.dart';
+import 'package:boramarcarapp/models/http_exception.dart';
+import 'package:boramarcarapp/models/notification.dart';
+import 'package:boramarcarapp/view/event/event_detail_screen.dart';
 
 class AppNotificationController extends ChangeNotifier {
   CollectionReference _users = FirebaseFirestore.instance.collection('user');
@@ -39,13 +32,17 @@ class AppNotificationController extends ChangeNotifier {
 
   Future<int> get getUnreadNotificationsNumber async {
     int unreadNum = 0;
-    await _users.doc(_uid).get().then((docSnapshot) {
-      (docSnapshot['notifications'] as List<dynamic>).forEach((notification) {
-        if (!notification['hasSeen']) {
-          unreadNum++;
-        }
+    try {
+      await _users.doc(_uid).get().then((docSnapshot) {
+        (docSnapshot['notifications'] as List<dynamic>).forEach((notification) {
+          if (!notification['hasSeen']) {
+            unreadNum++;
+          }
+        });
       });
-    });
+    } catch (e) {
+      return 0;
+    }
     return unreadNum;
   }
 
@@ -91,34 +88,5 @@ class AppNotificationController extends ChangeNotifier {
       throw HttpException(
           'Houve um erro ao confirmar o convite. Tente novamente mais tarde.');
     }
-  }
-}
-
-class Controller extends GetxController {
-  void sendNotification() {
-    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-      if (!isAllowed) {
-        AwesomeNotifications().requestPermissionToSendNotifications();
-      }
-    });
-
-    AwesomeNotifications().createNotification(
-      content: NotificationContent(
-          id: 1,
-          channelKey: 'test_channel',
-          title: 'Title of the notification.',
-          body: 'Hello! This is the body of the notification.'),
-    );
-
-    AwesomeNotifications().actionStream.listen((event) {
-      Get.to(HomeScreen());
-    });
-  }
-}
-
-class ControllerBindings extends Bindings {
-  @override
-  void dependencies() {
-    Get.put<Controller>(Controller());
   }
 }

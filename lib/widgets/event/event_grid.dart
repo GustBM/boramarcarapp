@@ -48,13 +48,8 @@ class _EventGridState extends State<EventGrid> {
 
   @override
   Widget build(BuildContext context) {
-    // final _controller = Get.find<Controller>();
     return Column(
       children: [
-        // ElevatedButton(
-        //   onPressed: () => _controller.sendNotification(),
-        //   child: const Text('Send Notification'),
-        // ),
         SizedBox(height: 10),
         Padding(
           padding: const EdgeInsets.all(8.0),

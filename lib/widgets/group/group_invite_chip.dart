@@ -84,7 +84,7 @@ class _InvitedAppUserChipListGroupState
         builder: (context, AsyncSnapshot<QuerySnapshot<AppUser>> snapshot) {
           if (snapshot.hasError) {
             return SnapshotErroMsg(
-                'Houve um erro ao buscar o Evento.\nTente novamente mais tarde.');
+                'Houve um erro ao buscar os membros deste Grupo.\nTente novamente mais tarde.');
           }
 
           if (snapshot.hasData && snapshot.data!.size == 0) {

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:boramarcarapp/models/user.dart';
@@ -88,5 +89,13 @@ class UserController extends ChangeNotifier {
             toFirestore: (schedule, _) => schedule.toJson())
         .where('uid', whereIn: invitedIds)
         .get();
+  }
+
+  static Future setDeviceToken(String uid) async {
+    String? token = await FirebaseMessaging.instance.getToken();
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(uid)
+        .update({'deviceToken': token});
   }
 }

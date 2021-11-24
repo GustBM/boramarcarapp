@@ -276,7 +276,7 @@ class _EditUserInfoScreenState extends State<EditUserInfoScreen> {
                                     _schedueleFormKey.currentState!.save();
                                     if (_schedueleFormKey.currentState!
                                         .validate()) {
-                                      _submit(userInfo!.invited);
+                                      _submit(userInfo!.invited!);
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
