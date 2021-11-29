@@ -4,13 +4,15 @@ class EmptyMessage extends StatelessWidget {
   final IconData icon;
   final String messageText;
   final String buttonText;
+  final String? subMessage;
   final void Function()? buttonFunction;
 
   EmptyMessage(
       {required this.icon,
       required this.messageText,
       required this.buttonText,
-      required this.buttonFunction});
+      required this.buttonFunction,
+      this.subMessage});
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +39,25 @@ class EmptyMessage extends StatelessWidget {
           SizedBox(height: 10),
           Text(
             messageText,
+            textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 18,
               fontFamily: 'Lato',
             ),
           ),
+          subMessage != null
+              ? Container(
+                  padding: const EdgeInsets.fromLTRB(50, 10, 50, 0),
+                  child: Text(
+                    subMessage!,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontFamily: 'Lato',
+                    ),
+                  ),
+                )
+              : SizedBox(),
           SizedBox(height: 10),
           ElevatedButton(onPressed: buttonFunction, child: Text(buttonText)),
         ],

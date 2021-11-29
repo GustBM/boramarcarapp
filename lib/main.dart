@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/controllers/auth_controller.dart';
@@ -35,8 +36,20 @@ Future<void> _messageHandler(RemoteMessage message) async {
   print('background message ${message.notification!.body}');
 }
 
-class BoraMarcarApp extends StatelessWidget {
+class BoraMarcarApp extends StatefulWidget {
+  @override
+  State<BoraMarcarApp> createState() => _BoraMarcarAppState();
+}
+
+class _BoraMarcarAppState extends State<BoraMarcarApp> {
   final Future<FirebaseApp> _fbApp = Firebase.initializeApp();
+
+  @override
+  void initState() {
+    super.initState();
+
+    OneSignal.shared.setAppId("79aeea64-0c6c-4601-86ca-ae73a307251d");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +76,7 @@ class BoraMarcarApp extends StatelessWidget {
       ],
       child: Consumer<AuthController>(
         builder: (ctx, auth, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'BoraMarcar',
           supportedLocales: [const Locale('pt', 'BR')],
           localizationsDelegates: [

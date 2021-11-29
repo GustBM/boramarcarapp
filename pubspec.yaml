@@ -55,6 +55,7 @@ dependencies:
   # Notifications
   awesome_notifications: ^0.6.17
   flutter_local_notifications: ^9.1.4
+  onesignal_flutter: ^3.2.7
 dev_dependencies:
   flutter_lints: ^1.0.4
   flutter_test:
@@ -72,6 +73,7 @@ flutter_icons:
 flutter:
   assets:
     - assets/images/
+    - assets/icon/
   fonts:
     - family: Lato
       fonts:

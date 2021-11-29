@@ -109,11 +109,11 @@ class ScheduleController extends ChangeNotifier {
     });
   }
 
-  List<int> get _iniList =>
+  static List<int> get _iniList =>
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
   /// Retorna um `int` com o valor da posição com o maior valor do array [arr]
-  int _indexOfMax(List<int> arr) {
+  static int _indexOfMax(List<int> arr) {
     var max = arr[0];
     var maxIndex = 0;
 
@@ -131,10 +131,13 @@ class ScheduleController extends ChangeNotifier {
   /// e uma lista de usuários [usersId]. A função verifica a disponibilidade
   /// dos usuários no intervalo.
   /// TODO: Usuários prioritários e Dias bloqueados.
-  Future<List<DateTime>> getIdealDate(
+  static Future<List<DateTime>> getIdealDate(
       DateTimeRange dateTimeRange, List<String> usersId) async {
     List<DateTime> avaliableDaysList = [];
     List<DateTime> bestDates = [];
+
+    CollectionReference schedules =
+        FirebaseFirestore.instance.collection('schedule');
 
     List<int> sundayList = _iniList;
     List<int> mondayList = _iniList;
@@ -148,7 +151,7 @@ class ScheduleController extends ChangeNotifier {
     int bestDay = 0;
 
     await Future.forEach(usersId, (element) async {
-      await _schedules.doc(element as String).get().then((value) {
+      await schedules.doc(element as String).get().then((value) {
         return new Schedule(
           sundayIni: value['sundayIni'],
           sundayEnd: value['sundayEnd'],
@@ -218,7 +221,7 @@ class ScheduleController extends ChangeNotifier {
     return bestDates;
   }
 
-  List<DateTime> _calculateDaysInterval(DateTimeRange dateTimeRange) {
+  static List<DateTime> _calculateDaysInterval(DateTimeRange dateTimeRange) {
     DateTime startDate = dateTimeRange.start;
     DateTime endDate = dateTimeRange.end;
     List<DateTime> days = [];

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/controllers/events_controller.dart';
@@ -87,6 +88,23 @@ class AppNotificationController extends ChangeNotifier {
     } catch (e) {
       throw HttpException(
           'Houve um erro ao confirmar o convite. Tente novamente mais tarde.');
+    }
+  }
+
+  Future notifyUsers(
+      List<String> playerIds, String title, String message) async {
+    try {
+      await OneSignal.shared.postNotification(
+        OSCreateNotification(
+            playerIds: playerIds,
+            content: message,
+            heading: title,
+            buttons: [
+              OSActionButton(text: "Ver Notificações", id: "id1"),
+            ]),
+      );
+    } catch (e) {
+      print(e.toString());
     }
   }
 }

@@ -99,8 +99,10 @@ class _EventGridState extends State<EventGrid> {
                   icon: Icons.event,
                   buttonText: 'Novo Evento',
                   messageText: 'Você não está convidado a nenhum evento.',
+                  subMessage:
+                      'Lembrete: Mantenha o seu horário atualizado antes de criar ou entrar em eventos.',
                 ),
-              )
+              ),
       ],
     );
   }

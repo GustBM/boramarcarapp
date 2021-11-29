@@ -62,8 +62,7 @@ class EventController extends ChangeNotifier {
       usersId.add(user);
     }).then((value) async {
       var dateRange = new DateTimeRange(start: dateIni, end: dateEnd);
-      bestDates = await Provider.of<ScheduleController>(context, listen: false)
-          .getIdealDate(dateRange, usersId);
+      bestDates = await ScheduleController.getIdealDate(dateRange, usersId);
     }).then((dates) {
       final eventId = getRandomString(20);
       return _events
@@ -179,6 +178,18 @@ class EventController extends ChangeNotifier {
     } catch (e) {
       throw HttpException(
           'Houve um erro ao confirmar o convite. Tente novamente mais tarde.');
+    }
+  }
+
+  static Future<void> updateEventDate(
+      String eventId, DateTime idealDate) async {
+    try {
+      FirebaseFirestore.instance
+          .collection('event')
+          .doc(eventId)
+          .update({'date': idealDate});
+    } catch (e) {
+      throw HttpException('Houve um erro na atualização do evento');
     }
   }
 }

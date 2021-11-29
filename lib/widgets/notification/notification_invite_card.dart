@@ -20,7 +20,7 @@ class NotificationInviteCard extends StatelessWidget {
         child: Icon(Icons.group_add),
       ),
       title: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Flexible(
             child: Text(
@@ -29,32 +29,55 @@ class NotificationInviteCard extends StatelessWidget {
             ),
           ),
           // Icon(Icons.arrow_forward),
-          IconButton(
-              onPressed: () {
-                try {
-                  Provider.of<AppNotificationController>(context, listen: false)
-                      .confirmInvite(
-                          context, notification, false, _userInfo!.uid);
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(e.toString()),
-                  ));
-                }
-              },
-              icon: Container(
-                height: double.infinity,
-                child: Icon(Icons.details),
-                color: Colors.red,
-              )),
-          IconButton(
-              onPressed: () {
-                Provider.of<AppNotificationController>(context, listen: false)
-                    .confirmInvite(context, notification, true, _userInfo!.uid);
-              },
-              icon: Container(
-                child: Icon(Icons.check),
-                color: Colors.green,
-              )),
+          // IconButton(
+          //     onPressed: () {
+          //       try {
+          //         Provider.of<AppNotificationController>(context, listen: false)
+          //             .confirmInvite(
+          //                 context, notification, false, _userInfo!.uid);
+          //       } catch (e) {
+          //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          //           content: Text(e.toString()),
+          //         ));
+          //       }
+          //     },
+          //     icon: Container(
+          //       height: double.infinity,
+          //       child: Icon(Icons.details),
+          //       color: Colors.red,
+          //     )),
+          Flexible(
+              child: Column(
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    elevation: 2, primary: Colors.green),
+                onPressed: () {},
+                child: Text(
+                  ' Aceitar ',
+                  style: TextStyle(color: Colors.white, fontSize: 10),
+                ),
+              ),
+              ElevatedButton(
+                style:
+                    ElevatedButton.styleFrom(elevation: 2, primary: Colors.red),
+                onPressed: () {},
+                child: Text(
+                  'Recusar',
+                  style: TextStyle(color: Colors.white, fontSize: 10),
+                ),
+              ),
+            ],
+          )),
+          // IconButton(
+          //     onPressed: () {
+          //       Provider.of<AppNotificationController>(context, listen: false)
+          //           .confirmInvite(context, notification, true, _userInfo!.uid);
+          //     },
+          //     icon: Container(
+          //       child: Icon(Icons.check),
+          //       color: Colors.green,
+          //     )),
         ],
       ),
       subtitle: Container(

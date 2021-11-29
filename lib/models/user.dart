@@ -9,7 +9,7 @@ class AppUser {
   final List<String>? invited;
   final String? imageUrl;
   final List<AppNotification> notifications;
-  final String? deviceToken;
+  final String? playerId;
 
   AppUser({
     required this.uid,
@@ -20,7 +20,7 @@ class AppUser {
     this.bthDate,
     this.invited = const [],
     this.notifications = const [],
-    this.deviceToken,
+    this.playerId,
   });
 
   AppUser.fromJson(Map<String, Object?> json)
@@ -35,7 +35,7 @@ class AppUser {
           notifications: (json['notifications'] as List)
               .map((e) => AppNotification.fromJson(e))
               .toList(),
-          deviceToken: json['deviceToken'] as String?,
+          playerId: json['playerId'] as String?,
         );
 
   Map<String, Object?> toJson() {
@@ -48,7 +48,7 @@ class AppUser {
       'invited': invited,
       'imageUrl': imageUrl,
       'notifications': notifications,
-      'deviceToken': deviceToken,
+      'playerId': playerId,
     };
   }
 }

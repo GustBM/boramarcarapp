@@ -37,7 +37,9 @@ class _InvitedAppUserChipListEventState
           child: Column(
             children: [
               Text(
-                user.firstName,
+                user.firstName +
+                    ' ' +
+                    (user.lastName != null ? user.lastName! : ''),
                 textAlign: TextAlign.left,
                 style: TextStyle(
                   fontSize: 16,
@@ -101,6 +103,7 @@ class _InvitedAppUserChipListEventState
                 .map((user) => AppUser(
                     uid: user.data().uid,
                     firstName: user.data().firstName,
+                    lastName: user.data().lastName,
                     email: user.data().email,
                     imageUrl: user.data().imageUrl))
                 .toList();

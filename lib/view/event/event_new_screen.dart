@@ -40,26 +40,29 @@ class _EventFormState extends State<EventFormScreen> {
 
   int _typeOfEvent = 0;
 
-  // late FocusNode? myFocusNode;
-  // late bool cvcHasFocus;
-  // void _onCvcFormFieldFocusChanged() {
-  //   setState(() => cvcHasFocus = myFocusNode?.hasFocus ?? false);
-  // }
+  late FocusNode nameFocusNode;
+  late FocusNode adressFocusNode;
+  late FocusNode dateIntervalFocusNode;
+  late FocusNode descriptionFocusNode;
 
-  // @override
-  // void initState() {
-  //   myFocusNode = FocusNode();
-  //   myFocusNode?.addListener(_onCvcFormFieldFocusChanged);
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    super.initState();
 
-  // @override
-  // void dispose() {
-  //   myFocusNode?.removeListener(_onCvcFormFieldFocusChanged);
-  //   myFocusNode?.dispose();
-  //   myFocusNode = null;
-  //   super.dispose();
-  // }
+    nameFocusNode = FocusNode();
+    adressFocusNode = FocusNode();
+    dateIntervalFocusNode = FocusNode();
+    descriptionFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    nameFocusNode.dispose();
+    adressFocusNode.dispose();
+    dateIntervalFocusNode.dispose();
+    descriptionFocusNode.dispose();
+    super.dispose();
+  }
 
   void _showErrorDialog(String message) {
     showDialog(
@@ -281,7 +284,7 @@ class _EventFormState extends State<EventFormScreen> {
                           // ),
                           SizedBox(height: 10),
                           FormBuilderTextField(
-                            // focusNode: myFocusNode,
+                            focusNode: nameFocusNode,
                             name: 'name',
                             decoration: InputDecoration(
                               labelText: 'Nome do Evento',
@@ -292,68 +295,73 @@ class _EventFormState extends State<EventFormScreen> {
                                 errorText: 'Campo Obrigatório'),
                             initialValue:
                                 thisEvent == null ? null : thisEvent.name,
+                            textInputAction: TextInputAction.next,
                           ),
                           SizedBox(height: 10),
                           FormBuilderTextField(
-                            name: 'local',
-                            decoration: InputDecoration(
-                              labelText: 'Endereço',
-                              prefixIcon: Icon(Icons.location_on_sharp),
-                              border: OutlineInputBorder(),
-                            ),
-                            validator: FormBuilderValidators.required(context,
-                                errorText: 'Campo Obrigatório'),
-                            initialValue:
-                                thisEvent == null ? null : thisEvent.location,
-                          ),
-                          SizedBox(height: 10),
-                          SafeArea(
-                            child: FormBuilderDateRangePicker(
-                              name: 'date_range',
-                              firstDate: DateTime.now(),
-                              lastDate: DateTime(DateTime.now().year + 1),
-                              format: DateFormat('dd-MM-yyyy'),
-                              onChanged: _onChanged,
+                              focusNode: adressFocusNode,
+                              name: 'local',
                               decoration: InputDecoration(
-                                labelText: 'Intervalo de Data',
-                                helperText: '*Intervalo máximo de 6 meses',
-                                prefixIcon: Icon(Icons.date_range),
-                                hintText: 'Selecione o período',
+                                labelText: 'Endereço',
+                                prefixIcon: Icon(Icons.location_on_sharp),
                                 border: OutlineInputBorder(),
                               ),
                               validator: FormBuilderValidators.required(context,
                                   errorText: 'Campo Obrigatório'),
-                              initialValue: thisEvent == null
-                                  ? null
-                                  : DateTimeRange(
-                                      start: thisEvent.dateIni,
-                                      end: thisEvent.dateEnd),
-                            ),
+                              initialValue:
+                                  thisEvent == null ? null : thisEvent.location,
+                              textInputAction: TextInputAction.next),
+                          SizedBox(height: 10),
+                          SafeArea(
+                            child: FormBuilderDateRangePicker(
+                                focusNode: dateIntervalFocusNode,
+                                name: 'date_range',
+                                firstDate: DateTime.now(),
+                                lastDate: DateTime(DateTime.now().year + 1),
+                                format: DateFormat('dd-MM-yyyy'),
+                                onChanged: _onChanged,
+                                decoration: InputDecoration(
+                                  labelText: 'Intervalo de Data',
+                                  helperText: '*Intervalo máximo de 6 meses',
+                                  prefixIcon: Icon(Icons.date_range),
+                                  hintText: 'Selecione o período',
+                                  border: OutlineInputBorder(),
+                                ),
+                                validator: FormBuilderValidators.required(
+                                    context,
+                                    errorText: 'Campo Obrigatório'),
+                                initialValue: thisEvent == null
+                                    ? null
+                                    : DateTimeRange(
+                                        start: thisEvent.dateIni,
+                                        end: thisEvent.dateEnd),
+                                textInputAction: TextInputAction.next),
                           ),
                           SizedBox(height: 10),
                           FormBuilderTextField(
-                            keyboardType: TextInputType.multiline,
-                            maxLines: null,
-                            name: 'description',
-                            decoration: const InputDecoration(
-                              labelText: 'Descrição',
-                              prefixIcon: Icon(Icons.short_text_outlined),
-                              contentPadding:
-                                  const EdgeInsets.symmetric(vertical: 30.0),
-                              border: OutlineInputBorder(),
-                              helperText: '*máximo de 500 caracteres',
-                            ),
-                            onChanged: _onChanged,
-                            validator: FormBuilderValidators.compose([
-                              FormBuilderValidators.required(context,
-                                  errorText: 'Campo Obrigatório'),
-                              FormBuilderValidators.max(context, 500,
-                                  errorText: 'Máximo de 500 caracteres'),
-                            ]),
-                            initialValue: thisEvent == null
-                                ? null
-                                : thisEvent.description,
-                          ),
+                              focusNode: descriptionFocusNode,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: null,
+                              name: 'description',
+                              decoration: const InputDecoration(
+                                labelText: 'Descrição',
+                                prefixIcon: Icon(Icons.short_text_outlined),
+                                contentPadding:
+                                    const EdgeInsets.symmetric(vertical: 30.0),
+                                border: OutlineInputBorder(),
+                                helperText: '*máximo de 500 caracteres',
+                              ),
+                              onChanged: _onChanged,
+                              validator: FormBuilderValidators.compose([
+                                FormBuilderValidators.required(context,
+                                    errorText: 'Campo Obrigatório'),
+                                FormBuilderValidators.max(context, 500,
+                                    errorText: 'Máximo de 500 caracteres'),
+                              ]),
+                              initialValue: thisEvent == null
+                                  ? null
+                                  : thisEvent.description,
+                              textInputAction: TextInputAction.next),
                           GroupInviteModal(invitedList),
                           SizedBox(height: 10),
                           EventInviteModal(invitedList),

@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:boramarcarapp/models/user.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class UserController extends ChangeNotifier {
   CollectionReference _users = FirebaseFirestore.instance.collection('user');
@@ -91,11 +93,28 @@ class UserController extends ChangeNotifier {
         .get();
   }
 
-  static Future setDeviceToken(String uid) async {
-    String? token = await FirebaseMessaging.instance.getToken();
-    await FirebaseFirestore.instance
-        .collection('user')
+  static Future setPlayerId(String uid) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    OneSignal.shared.setExternalUserId(uid).then((results) async {
+      OSDeviceState? status = await OneSignal.shared.getDeviceState();
+      final String? osUserID = status?.userId;
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(uid)
+          .update({'playerId': osUserID});
+    });
+  }
+
+  Future<String?> getPlayerIdfromUserId(String uid) async {
+    await _users
         .doc(uid)
-        .update({'deviceToken': token});
+        .withConverter<AppUser>(
+            fromFirestore: (snapshot, _) => AppUser.fromJson(snapshot.data()!),
+            toFirestore: (schedule, _) => schedule.toJson())
+        .get()
+        .then((value) async {
+      return value.data()!.playerId;
+    });
+    return null;
   }
 }

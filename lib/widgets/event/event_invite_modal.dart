@@ -78,9 +78,9 @@ class _EventInviteModalState extends State<EventInviteModal> {
                               leading: CircleAvatar(
                                 foregroundColor: Theme.of(context).primaryColor,
                                 backgroundColor: Colors.grey,
-                                // backgroundImage: appUser.
-                                //     Image.asset('assets/images/standard_user_photo.png')
-                                //         .image,
+                                backgroundImage: appUser.imageUrl != null
+                                    ? Image.network(appUser.imageUrl!).image
+                                    : null,
                                 child: Text('${appUser.firstName[0]}'),
                               ),
                               title: Text(appUser.firstName),
@@ -190,15 +190,6 @@ class _InvitedChipListState extends State<InvitedChipList> {
   @override
   Widget build(BuildContext context) {
     final List<String> _invitedList = widget.invitedList;
-
-    // return GridView.count(
-    //   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-    //   crossAxisCount: 2,
-    //   children: _invitedList.map((e) {
-    //     return _buildChip(e);
-    //   }).toList(),
-    //   shrinkWrap: true,
-    // );
     return Wrap(
       spacing: 6.0,
       runSpacing: 6.0,

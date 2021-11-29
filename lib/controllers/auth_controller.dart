@@ -122,7 +122,7 @@ class AuthController with ChangeNotifier {
     } catch (e) {
       return false;
     }
-    usr.UserController.setDeviceToken(uid);
+    usr.UserController.setPlayerId(uid);
     return true;
   }
 
@@ -154,7 +154,7 @@ class AuthController with ChangeNotifier {
                   })
                 }
             })
-        .then((value) => usr.UserController.setDeviceToken(userId));
+        .then((value) => usr.UserController.setPlayerId(userId));
   }
 
   Future<void> signInWithGoogle() async {
