@@ -1,3 +1,5 @@
+import 'package:boramarcarapp/controllers/notifications_controller.dart';
+import 'package:boramarcarapp/models/notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -6,7 +8,6 @@ import 'package:boramarcarapp/view/event/event_detail_screen.dart';
 import 'package:boramarcarapp/models/event.dart';
 import 'package:boramarcarapp/models/http_exception.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../utils.dart';
 
@@ -80,10 +81,82 @@ class EventController extends ChangeNotifier {
             'description': description,
             'invited': usersId,
           })
-          .then((value) => goToEvent(context, eventId, managerId, invited))
+          .then((value) => goToEvent(context, eventId, managerId))
           .catchError(
               (e) => throw HttpException("Houve um Erro!" + e.code.toString()));
     });
+  }
+
+  Future newEvent(
+      String name,
+      String manager,
+      String managerId,
+      DateTime dateIni,
+      DateTime dateEnd,
+      String location,
+      String description,
+      BuildContext context,
+      List<String> invited,
+      String? imageUrl) async {
+    final eventId = getRandomString(20);
+    var dateRange = new DateTimeRange(start: dateIni, end: dateEnd);
+    List<DateTime> bestDates =
+        await ScheduleController.getIdealDate(dateRange, [managerId]);
+    Event event = new Event(
+        eventId: eventId,
+        name: name,
+        manager: manager,
+        managerId: managerId,
+        date: bestDates[0],
+        dateIni: dateIni,
+        dateEnd: dateEnd,
+        location: location,
+        description: description,
+        invited: [managerId]);
+
+    String message = manager + ' convidou você para o evento; ' + name + '.';
+
+    _events
+        .doc(event.eventId)
+        .set(event.toJson())
+        .then((_) {
+          Future.forEach(invited, (element) async {
+            var snapshot = await FirebaseFirestore.instance
+                .collection('user')
+                .where('email', isEqualTo: element)
+                .get();
+            var userId = snapshot.docs[0].id;
+
+            AppNotificationController.addUserNotifications(
+                userId,
+                new AppNotification(
+                    message: message,
+                    date: DateTime.now(),
+                    redirectUrl: event.eventId,
+                    notificationType: NotificationType.invite),
+                'Novo Evento');
+          });
+        })
+        .then((value) => goToEvent(context, eventId, managerId))
+        .catchError(
+            (e) => throw HttpException("Houve um Erro!" + e.code.toString()));
+
+    // invited.forEach((element) {
+    //   AppNotificationController.addUserNotifications(
+    //       element,
+    //       new AppNotification(
+    //           message: message,
+    //           date: DateTime.now(),
+    //           redirectUrl: event.eventId,
+    //           notificationType: NotificationType.invite),
+    //       'Novo Evento');
+    // });
+    // _events
+    //     .doc(event.eventId)
+    //     .set(event.toJson())
+    //     .then((value) => goToEvent(context, eventId, managerId))
+    //     .catchError(
+    //         (e) => throw HttpException("Houve um Erro!" + e.code.toString()));
   }
 
   Future<void> _updateEventUserList(String userId, String eventId) async {
@@ -103,8 +176,7 @@ class EventController extends ChangeNotifier {
         .update({'invited': invitedList});
   }
 
-  void goToEvent(BuildContext context, String eventId, String userId,
-      List<String> invited) {
+  void goToEvent(BuildContext context, String eventId, String userId) {
     _updateEventUserList(userId, eventId);
     Navigator.of(context).pushNamed(
       EventDetailScreen.routeName,
@@ -169,27 +241,29 @@ class EventController extends ChangeNotifier {
   }
 
   Future<void> addInvited(String eventId, String invitedUserId) async {
+    DocumentSnapshot<Event>? snap = await getEvent(eventId);
+    Event? thisEvent = snap!.data();
+
+    if (thisEvent == null)
+      throw HttpException(
+          'Houve um erro ao confirmar o convite. Tente novamente mais tarde.');
+
+    thisEvent.invited.add(invitedUserId);
+
+    var dateRange =
+        new DateTimeRange(start: thisEvent.dateIni, end: thisEvent.dateEnd);
+    var bestDates =
+        await ScheduleController.getIdealDate(dateRange, thisEvent.invited);
+    var bestDate = Timestamp.fromDate(bestDates[0]);
+
     try {
-      _events.doc(eventId).update(
-        {
-          'invited': FieldValue.arrayUnion([invitedUserId])
-        },
-      );
+      _events.doc(eventId).update({
+        'invited': FieldValue.arrayUnion([invitedUserId]),
+        'date': bestDate,
+      });
     } catch (e) {
       throw HttpException(
           'Houve um erro ao confirmar o convite. Tente novamente mais tarde.');
-    }
-  }
-
-  static Future<void> updateEventDate(
-      String eventId, DateTime idealDate) async {
-    try {
-      FirebaseFirestore.instance
-          .collection('event')
-          .doc(eventId)
-          .update({'date': idealDate});
-    } catch (e) {
-      throw HttpException('Houve um erro na atualização do evento');
     }
   }
 }

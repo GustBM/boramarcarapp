@@ -11,14 +11,6 @@ import '../utils.dart';
 class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Provider.of<AppNotificationController>(context).addUserNotifications(
-    //     "3eeJ2HsIhxRby4VCEVTkrrBiz4e2",
-    //     new AppNotification(
-    //         message:
-    //             'Usuário A convidou você para o evento; Reunião Super Importante',
-    //         date: DateTime.now(),
-    //         redirectUrl: 'redirectUrl',
-    //         notificationType: NotificationType.invite));
     return Scaffold(
       appBar: AppBar(),
       body: FutureBuilder<List<AppNotification>>(
@@ -38,16 +30,6 @@ class NotificationScreen extends StatelessWidget {
                 buttonFunction: () => Navigator.of(context).pop(),
                 buttonText: 'Voltar',
               );
-              // return ElevatedButton(
-              //     onPressed: () {
-              //       Provider.of<AppNotificationController>(context,
-              //               listen: false)
-              //           .notifyUsers(
-              //               ["a5e2ddf9-53a7-4225-81f4-6a68563a160f"],
-              //               'Novo Convite',
-              //               'Você recebeu um novo convite para um evento!');
-              //     },
-              //     child: Text('asdf'));
             }
             if (snapshot.connectionState == ConnectionState.done) {
               List<AppNotification> notifications = snapshot.data!;

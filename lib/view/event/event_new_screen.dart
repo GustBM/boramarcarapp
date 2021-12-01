@@ -113,11 +113,10 @@ class _EventFormState extends State<EventFormScreen> {
         });
       }
       invitedList.add(userEmail!);
-      await Provider.of<EventController>(context, listen: false).addEvent(
+      await Provider.of<EventController>(context, listen: false).newEvent(
         eventName,
         userName!,
         userId,
-        eventDaterange.start,
         eventDaterange.start,
         eventDaterange.end,
         eventLocal,

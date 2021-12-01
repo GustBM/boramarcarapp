@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:boramarcarapp/widgets/auth/auth_buttons.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:flutter/material.dart';

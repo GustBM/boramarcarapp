@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -127,100 +129,6 @@ class ScheduleController extends ChangeNotifier {
     return maxIndex;
   }
 
-  /// Retorna uma `List<DateTime>` com os melhores dias entre um intervalo [dateTimeRange]
-  /// e uma lista de usuários [usersId]. A função verifica a disponibilidade
-  /// dos usuários no intervalo.
-  /// TODO: Usuários prioritários e Dias bloqueados.
-  static Future<List<DateTime>> getIdealDate(
-      DateTimeRange dateTimeRange, List<String> usersId) async {
-    List<DateTime> avaliableDaysList = [];
-    List<DateTime> bestDates = [];
-
-    CollectionReference schedules =
-        FirebaseFirestore.instance.collection('schedule');
-
-    List<int> sundayList = _iniList;
-    List<int> mondayList = _iniList;
-    List<int> tuesdayList = _iniList;
-    List<int> wednesdayList = _iniList;
-    List<int> thursdayList = _iniList;
-    List<int> fridayList = _iniList;
-    List<int> saturdayList = _iniList;
-
-    List<int> bestHours = [0, 0, 0, 0, 0, 0, 0];
-    int bestDay = 0;
-
-    await Future.forEach(usersId, (element) async {
-      await schedules.doc(element as String).get().then((value) {
-        return new Schedule(
-          sundayIni: value['sundayIni'],
-          sundayEnd: value['sundayEnd'],
-          mondayIni: value['mondayIni'],
-          mondayEnd: value['mondayEnd'],
-          tuesdayIni: value['tuesdayIni'],
-          tuesdayEnd: value['tuesdayEnd'],
-          wednesdayIni: value['wednesdayIni'],
-          wednesdayEnd: value['wednesdayEnd'],
-          thursdayIni: value['thursdayIni'],
-          thursdayEnd: value['thursdayEnd'],
-          fridayIni: value['fridayIni'],
-          fridayEnd: value['fridayEnd'],
-          saturdayIni: value['saturdayIni'],
-          saturdayEnd: value['saturdayEnd'],
-        );
-      }).then((schedule) {
-        for (var i = schedule.sundayIni; i <= schedule.sundayEnd; i++)
-          sundayList[i]++;
-        for (var i = schedule.mondayIni; i <= schedule.mondayEnd; i++)
-          mondayList[i]++;
-        for (var i = schedule.tuesdayIni; i <= schedule.tuesdayEnd; i++)
-          tuesdayList[i]++;
-        for (var i = schedule.wednesdayIni; i <= schedule.wednesdayEnd; i++)
-          wednesdayList[i]++;
-        for (var i = schedule.thursdayIni; i <= schedule.thursdayEnd; i++)
-          thursdayList[i]++;
-        for (var i = schedule.fridayIni; i <= schedule.fridayEnd; i++)
-          fridayList[i]++;
-        for (var i = schedule.saturdayIni; i <= schedule.saturdayEnd; i++)
-          saturdayList[i]++;
-
-        sundayList.forEach((element) {
-          if (bestHours[0] < element) bestHours[0] = element;
-        });
-        mondayList.forEach((element) {
-          if (bestHours[1] < element) bestHours[1] = element;
-        });
-        tuesdayList.forEach((element) {
-          if (bestHours[2] < element) bestHours[2] = element;
-        });
-        wednesdayList.forEach((element) {
-          if (bestHours[3] < element) bestHours[3] = element;
-        });
-        thursdayList.forEach((element) {
-          if (bestHours[4] < element) bestHours[4] = element;
-        });
-        fridayList.forEach((element) {
-          if (bestHours[5] < element) bestHours[5] = element;
-        });
-        saturdayList.forEach((element) {
-          if (bestHours[6] < element) bestHours[6] = element;
-        });
-
-        bestDay = _indexOfMax(bestHours);
-      });
-    }).whenComplete(() {
-      avaliableDaysList = _calculateDaysInterval(dateTimeRange);
-      avaliableDaysList.forEach((element) {
-        var tmpVal = bestDay;
-        if (bestDay == 0) tmpVal = 7;
-        if (element.weekday == tmpVal) bestDates.add(element);
-      });
-    });
-    // print(bestHours);
-    bestDates.add(dateTimeRange.start);
-    return bestDates;
-  }
-
   static List<DateTime> _calculateDaysInterval(DateTimeRange dateTimeRange) {
     DateTime startDate = dateTimeRange.start;
     DateTime endDate = dateTimeRange.end;
@@ -231,17 +139,105 @@ class ScheduleController extends ChangeNotifier {
     return days;
   }
 
-  Future<List<DateTime>> getIdealDateV2(
+  static Future<List<DateTime>> getIdealDate(
       DateTimeRange dateTimeRange, List<String> usersId) async {
+    List<DateTime> avaliableDaysList = [];
     List<DateTime> bestDates = [];
-    Map<DateTime, int> dates = Map();
-    DateTime startDate = dateTimeRange.start;
-    DateTime endDate = dateTimeRange.end;
+    List<Schedule> listSch = [];
 
-    for (int i = 0; i <= endDate.difference(startDate).inDays; i++) {
-      dates.putIfAbsent(startDate.add(Duration(days: i)), () => 0);
-    }
+    List<List<int>> allDaysOffWeek = [
+      _iniList,
+      _iniList,
+      _iniList,
+      _iniList,
+      _iniList,
+      _iniList,
+      _iniList,
+    ];
+
+    List<int> dayScore = [0, 0, 0, 0, 0, 0, 0];
+    List<int> bestHours = [0, 0, 0, 0, 0, 0, 0];
+
+    await Future.forEach(usersId, (uid) async {
+      Schedule sch = await _returnUserSchedule(uid as String);
+      listSch.add(sch);
+    }).then((_) {
+      listSch.forEach((sch) {
+        // Domingo
+        if (sch.sundayCheck) {
+          for (var i = sch.saturdayIni; i <= sch.sundayEnd; i++) {
+            allDaysOffWeek[0][i]++;
+          }
+        }
+        // Segunda
+        if (sch.mondayCheck) {
+          for (var i = sch.mondayIni; i <= sch.mondayEnd; i++) {
+            allDaysOffWeek[1][i]++;
+          }
+        }
+        // Terça
+        if (sch.tuesdayCheck) {
+          for (var i = sch.tuesdayIni; i <= sch.tuesdayEnd; i++) {
+            allDaysOffWeek[2][i]++;
+          }
+        }
+        // Quarta
+        if (sch.wednesdayCheck) {
+          for (var i = sch.wednesdayIni; i <= sch.wednesdayEnd; i++) {
+            allDaysOffWeek[3][i]++;
+          }
+        }
+        // Quinta
+        if (sch.thursdayCheck) {
+          for (var i = sch.thursdayIni; i <= sch.thursdayEnd; i++) {
+            allDaysOffWeek[4][i]++;
+          }
+        }
+        // Sexta
+        if (sch.fridayCheck) {
+          for (var i = sch.fridayIni; i <= sch.fridayEnd; i++) {
+            allDaysOffWeek[5][i]++;
+          }
+        }
+        // Sábado
+        if (sch.saturdayCheck) {
+          for (var i = sch.saturdayIni; i <= sch.saturdayEnd; i++) {
+            allDaysOffWeek[6][i]++;
+          }
+        }
+      });
+    });
+
+    for (var i = 0; i < 7; i++) bestHours[i] = _indexOfMax(allDaysOffWeek[i]);
+
+    for (var i = 0; i < 7; i++) dayScore[i] = allDaysOffWeek[i].reduce(max);
+
+    int greatestDayScore = dayScore.reduce(max);
+
+    avaliableDaysList = _calculateDaysInterval(dateTimeRange);
+    avaliableDaysList.forEach((day) {
+      var tmpDay = day.weekday;
+      if (day.weekday == 7) tmpDay = 0;
+      if (dayScore[tmpDay] == greatestDayScore) {
+        DateTime bestDate =
+            new DateTime(day.year, day.month, day.day, bestHours[tmpDay]);
+        bestDates.add(bestDate);
+      }
+    });
+
+    if (bestDates.isEmpty) bestDates.add(dateTimeRange.start);
 
     return bestDates;
+  }
+
+  static Future<Schedule> _returnUserSchedule(String userId) async {
+    var snapshot = await FirebaseFirestore.instance
+        .collection('schedule')
+        .doc(userId)
+        .withConverter<Schedule>(
+            fromFirestore: (snapshot, _) => Schedule.fromJson(snapshot.data()!),
+            toFirestore: (schedule, _) => schedule.toJson())
+        .get();
+    return snapshot.data()!;
   }
 }

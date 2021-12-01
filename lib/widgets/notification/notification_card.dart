@@ -23,9 +23,11 @@ class NotificationCard extends StatelessWidget {
                 title: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Text(
-                      notification.message,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    Flexible(
+                      child: Text(
+                        notification.message,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                     // Icon(Icons.arrow_forward),
                   ],

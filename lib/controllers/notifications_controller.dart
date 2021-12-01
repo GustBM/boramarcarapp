@@ -1,3 +1,4 @@
+import 'package:boramarcarapp/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -47,13 +48,36 @@ class AppNotificationController extends ChangeNotifier {
     return unreadNum;
   }
 
-  Future<void> addUserNotifications(
-      String userId, AppNotification notification) async {
-    await _users.doc(_uid).update(
-      {
-        'notifications': FieldValue.arrayUnion([notification.toJson()])
-      },
-    );
+  static Future<void> addUserNotifications(
+      String userId, AppNotification notification, String title) async {
+    try {
+      await FirebaseFirestore.instance.collection('user').doc(userId).update(
+        {
+          'notifications': FieldValue.arrayUnion([notification.toJson()])
+        },
+      );
+
+      var snapshot = await FirebaseFirestore.instance
+          .collection('user')
+          .doc(userId)
+          .withConverter<AppUser>(
+              fromFirestore: (snapshot, _) =>
+                  AppUser.fromJson(snapshot.data()!),
+              toFirestore: (schedule, _) => schedule.toJson())
+          .get();
+      AppUser appUser = snapshot.data()!;
+      await OneSignal.shared.postNotification(
+        OSCreateNotification(
+            playerIds: [appUser.playerId!],
+            content: notification.message,
+            heading: title,
+            buttons: [
+              OSActionButton(text: "Ver Notificações", id: "id1"),
+            ]),
+      );
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   Future _removeNotification(AppNotification notification) async {
@@ -78,12 +102,13 @@ class AppNotificationController extends ChangeNotifier {
       if (response) {
         await Provider.of<EventController>(context, listen: false)
             .addInvited(notification.redirectUrl, invitedUserId)
-            .then((value) => Navigator.of(context).pushNamed(
+            .then((_) => Navigator.of(context).pushNamed(
                   EventDetailScreen.routeName,
                   arguments: notification.redirectUrl,
                 ));
       } else {
         _removeNotification(notification);
+        Navigator.of(context).pop();
       }
     } catch (e) {
       throw HttpException(
@@ -91,12 +116,19 @@ class AppNotificationController extends ChangeNotifier {
     }
   }
 
-  Future notifyUsers(
-      List<String> playerIds, String title, String message) async {
+  Future notifyUser(String uid, String title, String message) async {
+    var snapshot = await _users
+        .doc(uid)
+        .withConverter<AppUser>(
+            fromFirestore: (snapshot, _) => AppUser.fromJson(snapshot.data()!),
+            toFirestore: (schedule, _) => schedule.toJson())
+        .get();
+    AppUser appUser = snapshot.data()!;
+
     try {
       await OneSignal.shared.postNotification(
         OSCreateNotification(
-            playerIds: playerIds,
+            playerIds: [appUser.playerId!],
             content: message,
             heading: title,
             buttons: [
