@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:boramarcarapp/controllers/users_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -28,7 +29,7 @@ class EventFormScreen extends StatefulWidget {
 class _EventFormState extends State<EventFormScreen> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   final User? _userInfo = FirebaseAuth.instance.currentUser;
-  final List<String> invitedList = [];
+  List<String> invitedList = [];
   XFile? _imgFile;
   final ImagePicker _imgPicker = ImagePicker();
 
@@ -40,7 +41,10 @@ class _EventFormState extends State<EventFormScreen> {
 
   int _typeOfEvent = 0;
 
+  String? updateEventId;
+
   late FocusNode nameFocusNode;
+  late FocusNode eventTypeFocusNode;
   late FocusNode adressFocusNode;
   late FocusNode dateIntervalFocusNode;
   late FocusNode descriptionFocusNode;
@@ -50,6 +54,7 @@ class _EventFormState extends State<EventFormScreen> {
     super.initState();
 
     nameFocusNode = FocusNode();
+    eventTypeFocusNode = FocusNode();
     adressFocusNode = FocusNode();
     dateIntervalFocusNode = FocusNode();
     descriptionFocusNode = FocusNode();
@@ -58,6 +63,7 @@ class _EventFormState extends State<EventFormScreen> {
   @override
   void dispose() {
     nameFocusNode.dispose();
+    eventTypeFocusNode.dispose();
     adressFocusNode.dispose();
     dateIntervalFocusNode.dispose();
     descriptionFocusNode.dispose();
@@ -112,19 +118,36 @@ class _EventFormState extends State<EventFormScreen> {
           link = await storageTask.ref.getDownloadURL();
         });
       }
-      invitedList.add(userEmail!);
-      await Provider.of<EventController>(context, listen: false).newEvent(
-        eventName,
-        userName!,
-        userId,
-        eventDaterange.start,
-        eventDaterange.end,
-        eventLocal,
-        eventDescription,
-        context,
-        invitedList,
-        link,
-      );
+
+      if (updateEventId != null) {
+        await Provider.of<EventController>(context, listen: false).newEvent(
+          eventName,
+          userName!,
+          userId,
+          eventDaterange.start,
+          eventDaterange.end,
+          eventLocal,
+          eventDescription,
+          context,
+          invitedList,
+          link,
+          updateEventId: updateEventId,
+        );
+      } else {
+        invitedList.add(userEmail!);
+        await Provider.of<EventController>(context, listen: false).newEvent(
+          eventName,
+          userName!,
+          userId,
+          eventDaterange.start,
+          eventDaterange.end,
+          eventLocal,
+          eventDescription,
+          context,
+          invitedList,
+          link,
+        );
+      }
     } on HttpException catch (e) {
       var errMessage = "Erro no novo evento.\n${e.toString()}";
       _showErrorDialog(errMessage);
@@ -228,12 +251,12 @@ class _EventFormState extends State<EventFormScreen> {
   @override
   Widget build(BuildContext context) {
     final eventId = ModalRoute.of(context)!.settings.arguments as String?;
+    final bool isEdit = eventId == null;
 
     return Scaffold(
       appBar: AppBar(
           automaticallyImplyLeading: !(eventId == null),
           title: eventId == null ? Text('Novo Evento') : Text('Editar Evento')),
-      // drawer: AppDrawer(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -255,6 +278,13 @@ class _EventFormState extends State<EventFormScreen> {
                 if (!(snapshot.hasData && !snapshot.data!.exists) &&
                     snapshot.data != null) {
                   thisEvent = snapshot.data!.data();
+                  updateEventId = thisEvent!.eventId;
+                  thisEvent.invited.forEach((uid) async {
+                    var userInfo = await Provider.of<UserController>(context,
+                            listen: false)
+                        .getAppUserInfo(uid);
+                    invitedList.add(userInfo.data()!.email);
+                  });
                 }
                 return Column(
                   children: <Widget>[
@@ -264,23 +294,49 @@ class _EventFormState extends State<EventFormScreen> {
                       child: Column(
                         children: <Widget>[
                           _eventImageBanner(),
-                          // SizedBox(height: 10),
-                          // FormBuilderChoiceChip<int>(
-                          //   decoration: InputDecoration(
-                          //     labelText: 'Selecione uma opção',
-                          //   ),
-                          //   name: 'test_name',
-                          //   initialValue: 0,
-                          //   options: [
-                          //     FormBuilderFieldOption(
-                          //         value: 0, child: Text('Trabalho')),
-                          //     FormBuilderFieldOption(
-                          //         value: 1, child: Text('Lazer')),
-                          //   ],
-                          //   onChanged: (value) {
-                          //     _typeOfEvent = value!;
-                          //   },
-                          // ),
+                          SizedBox(height: 10),
+                          isEdit
+                              ? FormBuilderChoiceChip<int>(
+                                  decoration: InputDecoration(
+                                    labelText: 'Selecione uma opção',
+                                  ),
+                                  name: 'event_type',
+                                  alignment: WrapAlignment.spaceEvenly,
+                                  initialValue: 0,
+                                  selectedColor: Theme.of(context).primaryColor,
+                                  options: [
+                                    FormBuilderFieldOption(
+                                        value: 0,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(Icons.work),
+                                            Text(
+                                              '  Trabalho',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18),
+                                            )
+                                          ],
+                                        )),
+                                    FormBuilderFieldOption(
+                                        value: 1,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(Icons.beach_access),
+                                            Text(
+                                              '  Lazer',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18),
+                                            )
+                                          ],
+                                        )),
+                                  ],
+                                  focusNode: eventTypeFocusNode,
+                                )
+                              : SizedBox(),
                           SizedBox(height: 10),
                           FormBuilderTextField(
                             focusNode: nameFocusNode,
@@ -319,6 +375,7 @@ class _EventFormState extends State<EventFormScreen> {
                                 lastDate: DateTime(DateTime.now().year + 1),
                                 format: DateFormat('dd-MM-yyyy'),
                                 onChanged: _onChanged,
+                                enabled: isEdit,
                                 decoration: InputDecoration(
                                   labelText: 'Intervalo de Data',
                                   helperText: '*Intervalo máximo de 6 meses',
@@ -375,32 +432,50 @@ class _EventFormState extends State<EventFormScreen> {
                         children: <Widget>[
                           SizedBox(width: 10),
                           Expanded(
-                            child: ElevatedButton(
-                              child: Text("Enviar"),
-                              onPressed: () {
-                                _formKey.currentState!.save();
-                                if (_formKey.currentState!.validate()) {
-                                  _submit();
-                                } else {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                    content: Text(
-                                        "Houve um erro ao enviar o formulário. Tente novamente mais tarde."),
-                                  ));
-                                }
-                              },
-                            ),
+                            child: isEdit
+                                ? ElevatedButton(
+                                    child: Text("Enviar"),
+                                    onPressed: () {
+                                      _formKey.currentState!.save();
+                                      if (_formKey.currentState!.validate()) {
+                                        _submit();
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content: Text(
+                                              "Houve um erro ao enviar o formulário. Tente novamente mais tarde."),
+                                        ));
+                                      }
+                                    },
+                                  )
+                                : ElevatedButton(
+                                    child: Text("Salvar Alterações"),
+                                    onPressed: () {
+                                      _formKey.currentState!.save();
+                                      if (_formKey.currentState!.validate()) {
+                                        _submit();
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content: Text(
+                                              "Houve um erro ao enviar o formulário. Tente novamente mais tarde."),
+                                        ));
+                                      }
+                                    },
+                                  ),
                           ),
                           SizedBox(width: 20),
-                          Expanded(
-                            child: OutlinedButton(
-                              child: Text("Limpar"),
-                              onPressed: () {
-                                _formKey.currentState!.reset();
-                              },
-                            ),
-                          ),
-                          SizedBox(width: 10),
+                          isEdit
+                              ? Expanded(
+                                  child: OutlinedButton(
+                                    child: Text("Limpar"),
+                                    onPressed: () {
+                                      _formKey.currentState!.reset();
+                                    },
+                                  ),
+                                )
+                              : SizedBox(),
+                          isEdit ? SizedBox(width: 10) : SizedBox(),
                         ],
                       )
                   ],

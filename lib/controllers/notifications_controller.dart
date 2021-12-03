@@ -23,10 +23,10 @@ class AppNotificationController extends ChangeNotifier {
             message: notification['message'],
             redirectUrl: notification['redirectUrl'],
             hasResponded: notification['hasResponded'],
-            hasSeen: true,
+            hasSeen: false,
             notificationType: NotificationType.values
                 .elementAt(notification['notificationType'])));
-        _updateAsReadNotification(notifications);
+        // _updateAsReadNotification(notifications);
       });
     });
     return notifications;
@@ -80,7 +80,7 @@ class AppNotificationController extends ChangeNotifier {
     }
   }
 
-  Future _removeNotification(AppNotification notification) async {
+  Future removeNotification(AppNotification notification) async {
     await _users.doc(_uid).update(
       {
         'notifications': FieldValue.arrayRemove([notification.toJson()])
@@ -88,13 +88,13 @@ class AppNotificationController extends ChangeNotifier {
     );
   }
 
-  Future _updateAsReadNotification(List<AppNotification> notification) async {
-    late var list;
-    notification.forEach((element) {
-      list = FieldValue.arrayUnion([element.toJson()]);
-    });
-    await _users.doc(_uid).update({'notifications': list});
-  }
+  // Future _updateAsReadNotification(List<AppNotification> notification) async {
+  //   late var list;
+  //   notification.forEach((element) {
+  //     list = FieldValue.arrayUnion([element.toJson()]);
+  //   });
+  //   await _users.doc(_uid).update({'notifications': list});
+  // }
 
   Future<void> confirmInvite(BuildContext context, AppNotification notification,
       bool response, String invitedUserId) async {
@@ -107,7 +107,7 @@ class AppNotificationController extends ChangeNotifier {
                   arguments: notification.redirectUrl,
                 ));
       } else {
-        _removeNotification(notification);
+        removeNotification(notification);
         Navigator.of(context).pop();
       }
     } catch (e) {
@@ -132,7 +132,7 @@ class AppNotificationController extends ChangeNotifier {
             content: message,
             heading: title,
             buttons: [
-              OSActionButton(text: "Ver Notificações", id: "id1"),
+              OSActionButton(text: "Abrir", id: "id1"),
             ]),
       );
     } catch (e) {

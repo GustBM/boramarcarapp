@@ -1,3 +1,5 @@
+import 'package:boramarcarapp/controllers/notifications_controller.dart';
+import 'package:boramarcarapp/models/notification.dart';
 import 'package:boramarcarapp/view/group/group_details_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,8 +33,19 @@ class GroupController extends ChangeNotifier {
             toFirestore: (schedule, _) => schedule.toJson())
         .doc(newGroup.groupId)
         .set(newGroup)
-        .then((group) => _goToGroup(context, newGroup.groupId))
-        .catchError((e) => throw HttpException(e.toString()));
+        .then((group) {
+      newGroup.groupMembers.forEach((userId) {
+        AppNotificationController.addUserNotifications(
+            userId,
+            new AppNotification(
+                message: "Você foi convidado para o grupo " + newGroup.name,
+                date: DateTime.now(),
+                redirectUrl: newGroup.groupId,
+                notificationType: NotificationType.group),
+            'Novo Evento');
+        _goToGroup(context, newGroup.groupId);
+      });
+    }).catchError((e) => throw HttpException(e.toString()));
   }
 
   Future<void> updateGroup(String groupId, Group group) async {

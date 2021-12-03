@@ -1,7 +1,11 @@
-import 'package:boramarcarapp/models/notification.dart';
-import 'package:boramarcarapp/widgets/notification/notification_invite_card.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+import 'package:boramarcarapp/controllers/notifications_controller.dart';
+import 'package:boramarcarapp/models/notification.dart';
+import 'package:boramarcarapp/view/event/event_detail_screen.dart';
+import 'package:boramarcarapp/widgets/notification/notification_invite_card.dart';
 
 class NotificationCard extends StatelessWidget {
   final AppNotification notification;
@@ -37,6 +41,14 @@ class NotificationCard extends StatelessWidget {
                   child: Text(DateFormat('HH:mm - dd/MM/yyyy')
                       .format(notification.date)),
                 ),
+                onTap: () {
+                  Navigator.of(context).pushNamed(
+                    EventDetailScreen.routeName,
+                    arguments: notification.redirectUrl,
+                  );
+                  Provider.of<AppNotificationController>(context, listen: false)
+                      .removeNotification(notification);
+                },
               )
             : NotificationInviteCard(notification),
         Divider(height: 10.0),

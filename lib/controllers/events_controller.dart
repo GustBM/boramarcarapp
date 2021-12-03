@@ -97,8 +97,10 @@ class EventController extends ChangeNotifier {
       String description,
       BuildContext context,
       List<String> invited,
-      String? imageUrl) async {
-    final eventId = getRandomString(20);
+      String? imageUrl,
+      {String? updateEventId}) async {
+    var eventId = getRandomString(20);
+    if (updateEventId != null) eventId = updateEventId;
     var dateRange = new DateTimeRange(start: dateIni, end: dateEnd);
     List<DateTime> bestDates =
         await ScheduleController.getIdealDate(dateRange, [managerId]);
@@ -126,15 +128,15 @@ class EventController extends ChangeNotifier {
                 .where('email', isEqualTo: element)
                 .get();
             var userId = snapshot.docs[0].id;
-
-            AppNotificationController.addUserNotifications(
-                userId,
-                new AppNotification(
-                    message: message,
-                    date: DateTime.now(),
-                    redirectUrl: event.eventId,
-                    notificationType: NotificationType.invite),
-                'Novo Evento');
+            if (userId != managerId)
+              AppNotificationController.addUserNotifications(
+                  userId,
+                  new AppNotification(
+                      message: message,
+                      date: DateTime.now(),
+                      redirectUrl: event.eventId,
+                      notificationType: NotificationType.invite),
+                  'Novo Evento');
           });
         })
         .then((value) => goToEvent(context, eventId, managerId))
@@ -260,6 +262,14 @@ class EventController extends ChangeNotifier {
       _events.doc(eventId).update({
         'invited': FieldValue.arrayUnion([invitedUserId]),
         'date': bestDate,
+      }).then((_) {
+        AppNotificationController.addUserNotifications(
+            thisEvent.managerId,
+            new AppNotification(
+                message: 'Um convite foi aceito no evento ' + thisEvent.name,
+                date: DateTime.now(),
+                redirectUrl: thisEvent.eventId),
+            'Convite Aceito');
       });
     } catch (e) {
       throw HttpException(
