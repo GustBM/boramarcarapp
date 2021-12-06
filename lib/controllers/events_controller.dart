@@ -98,12 +98,14 @@ class EventController extends ChangeNotifier {
       BuildContext context,
       List<String> invited,
       String? imageUrl,
-      {String? updateEventId}) async {
+      {String? updateEventId,
+      int eventType = 0}) async {
     var eventId = getRandomString(20);
     if (updateEventId != null) eventId = updateEventId;
     var dateRange = new DateTimeRange(start: dateIni, end: dateEnd);
-    List<DateTime> bestDates =
-        await ScheduleController.getIdealDate(dateRange, [managerId]);
+    List<DateTime> bestDates = await ScheduleController.getIdealDate(
+        dateRange, [managerId],
+        eventType: eventType);
     Event event = new Event(
         eventId: eventId,
         name: name,
@@ -142,23 +144,6 @@ class EventController extends ChangeNotifier {
         .then((value) => goToEvent(context, eventId, managerId))
         .catchError(
             (e) => throw HttpException("Houve um Erro!" + e.code.toString()));
-
-    // invited.forEach((element) {
-    //   AppNotificationController.addUserNotifications(
-    //       element,
-    //       new AppNotification(
-    //           message: message,
-    //           date: DateTime.now(),
-    //           redirectUrl: event.eventId,
-    //           notificationType: NotificationType.invite),
-    //       'Novo Evento');
-    // });
-    // _events
-    //     .doc(event.eventId)
-    //     .set(event.toJson())
-    //     .then((value) => goToEvent(context, eventId, managerId))
-    //     .catchError(
-    //         (e) => throw HttpException("Houve um Erro!" + e.code.toString()));
   }
 
   Future<void> _updateEventUserList(String userId, String eventId) async {

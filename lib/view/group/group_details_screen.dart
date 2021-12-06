@@ -124,8 +124,40 @@ class GroupDetailsScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Text("Convidados", textScaleFactor: 1.5),
+                    Text("Membros", textScaleFactor: 1.5),
                     InvitedAppUserChipListGroup(thisGroup.groupMembers, false),
+                    SizedBox(height: 30),
+                    managerPermission
+                        ? OutlinedButton(
+                            child: Text("Deletar Grupo"),
+                            onPressed: () {
+                              showConfirmDialog(
+                                  context,
+                                  'Deletar Grupo ' + thisGroup!.name,
+                                  'Tem certeza que deseja deletar o grupo?',
+                                  () {
+                                Provider.of<GroupController>(context,
+                                        listen: false)
+                                    .deleteGroup(groupId);
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pop();
+                              });
+                            },
+                          )
+                        : OutlinedButton(
+                            child: Text("Sair do Grupo"),
+                            onPressed: () {
+                              showConfirmDialog(
+                                  context,
+                                  'Sair de ' + thisGroup!.name,
+                                  'Tem certeza que deseja sair do grupo?', () {
+                                Provider.of<GroupController>(context,
+                                        listen: false)
+                                    .leaveGroup(groupId, _userInfo.email!);
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pop();
+                              });
+                            }),
                   ],
                 ),
               ),

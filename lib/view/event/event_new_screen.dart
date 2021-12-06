@@ -103,6 +103,7 @@ class _EventFormState extends State<EventFormScreen> {
     final String eventDescription = _formKey.currentState!.value['description'];
     final DateTimeRange eventDaterange =
         _formKey.currentState!.value['date_range'];
+    final int eventType = _formKey.currentState!.value['event_type'];
     var userId = _userInfo!.uid;
     var userEmail = _userInfo!.email;
     var userName = _userInfo!.displayName;
@@ -146,6 +147,7 @@ class _EventFormState extends State<EventFormScreen> {
           context,
           invitedList,
           link,
+          eventType: eventType,
         );
       }
     } on HttpException catch (e) {

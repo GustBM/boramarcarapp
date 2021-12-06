@@ -140,11 +140,13 @@ class ScheduleController extends ChangeNotifier {
   }
 
   static Future<List<DateTime>> getIdealDate(
-      DateTimeRange dateTimeRange, List<String> usersId) async {
+      DateTimeRange dateTimeRange, List<String> usersId,
+      {int eventType = 0}) async {
     List<DateTime> avaliableDaysList = [];
     List<DateTime> bestDates = [];
     List<Schedule> listSch = [];
-
+    String scheduleType = '';
+    if (eventType == 1) scheduleType = 'L';
     List<List<int>> allDaysOffWeek = [
       _iniList,
       _iniList,
@@ -159,7 +161,8 @@ class ScheduleController extends ChangeNotifier {
     List<int> bestHours = [0, 0, 0, 0, 0, 0, 0];
 
     await Future.forEach(usersId, (uid) async {
-      Schedule sch = await _returnUserSchedule(uid as String);
+      Schedule sch =
+          await _returnUserSchedule(uid as String, scheduleType: scheduleType);
       listSch.add(sch);
     }).then((_) {
       listSch.forEach((sch) {
@@ -230,10 +233,11 @@ class ScheduleController extends ChangeNotifier {
     return bestDates;
   }
 
-  static Future<Schedule> _returnUserSchedule(String userId) async {
+  static Future<Schedule> _returnUserSchedule(String userId,
+      {String scheduleType = ''}) async {
     var snapshot = await FirebaseFirestore.instance
         .collection('schedule')
-        .doc(userId)
+        .doc(scheduleType + userId)
         .withConverter<Schedule>(
             fromFirestore: (snapshot, _) => Schedule.fromJson(snapshot.data()!),
             toFirestore: (schedule, _) => schedule.toJson())

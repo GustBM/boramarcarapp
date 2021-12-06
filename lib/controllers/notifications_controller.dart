@@ -26,7 +26,6 @@ class AppNotificationController extends ChangeNotifier {
             hasSeen: false,
             notificationType: NotificationType.values
                 .elementAt(notification['notificationType'])));
-        // _updateAsReadNotification(notifications);
       });
     });
     return notifications;
@@ -87,14 +86,6 @@ class AppNotificationController extends ChangeNotifier {
       },
     );
   }
-
-  // Future _updateAsReadNotification(List<AppNotification> notification) async {
-  //   late var list;
-  //   notification.forEach((element) {
-  //     list = FieldValue.arrayUnion([element.toJson()]);
-  //   });
-  //   await _users.doc(_uid).update({'notifications': list});
-  // }
 
   Future<void> confirmInvite(BuildContext context, AppNotification notification,
       bool response, String invitedUserId) async {
