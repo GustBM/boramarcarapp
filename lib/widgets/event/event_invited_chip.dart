@@ -1,10 +1,10 @@
-import 'package:boramarcarapp/widgets/empty_message_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/models/user.dart';
 import 'package:boramarcarapp/controllers/users_controller.dart';
+import 'package:boramarcarapp/widgets/empty_message_widget.dart';
 
 import '../../utils.dart';
 

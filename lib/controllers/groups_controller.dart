@@ -78,6 +78,7 @@ class GroupController extends ChangeNotifier {
           'groupMembers': FieldValue.arrayRemove([userEmail])
         },
       );
+      notifyListeners();
     } catch (e) {
       throw HttpException('Erro ao sair grupo. Tente novamente mais tarde.');
     }
@@ -86,6 +87,7 @@ class GroupController extends ChangeNotifier {
   Future<void> deleteGroup(String groupId) async {
     try {
       await _groups.doc(groupId).delete();
+      notifyListeners();
     } catch (e) {
       throw HttpException('Erro ao apagar grupo. Tente novamente mais tarde.');
     }

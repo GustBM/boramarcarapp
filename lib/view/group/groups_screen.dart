@@ -1,13 +1,13 @@
-import 'package:boramarcarapp/controllers/groups_controller.dart';
-import 'package:boramarcarapp/widgets/empty_message_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'package:boramarcarapp/controllers/groups_controller.dart';
 import 'package:boramarcarapp/models/group.dart';
 import 'package:boramarcarapp/view/group/group_details_screen.dart';
 import 'package:boramarcarapp/view/group/group_new_screen.dart';
-import 'package:provider/provider.dart';
+import 'package:boramarcarapp/widgets/empty_message_widget.dart';
 
 import '../../utils.dart';
 

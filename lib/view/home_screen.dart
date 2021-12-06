@@ -1,11 +1,11 @@
-import 'package:boramarcarapp/view/event/event_new_screen.dart';
-import 'package:boramarcarapp/view/schedule/schedule_screen.dart';
-import 'package:boramarcarapp/view/settings/settings_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:boramarcarapp/controllers/events_controller.dart';
+import 'package:boramarcarapp/view/event/event_new_screen.dart';
+import 'package:boramarcarapp/view/schedule/schedule_screen.dart';
+import 'package:boramarcarapp/view/settings/settings_screen.dart';
 import 'package:boramarcarapp/widgets/event/event_grid.dart';
 import 'package:boramarcarapp/widgets/notification/notification_badge.dart';
 

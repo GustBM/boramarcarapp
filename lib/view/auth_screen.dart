@@ -44,10 +44,6 @@ class AuthScreen extends StatelessWidget {
                     child: Container(
                       margin:
                           EdgeInsets.only(bottom: 15.0, left: 15, right: 15),
-                      // padding:
-                      //     EdgeInsets.symmetric(vertical: 8.0, horizontal: 54.0),
-                      // transform: Matrix4.rotationZ(-8 * pi / 180)
-                      //   ..translate(-6.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         color: Theme.of(context).primaryColor,
@@ -59,15 +55,6 @@ class AuthScreen extends StatelessWidget {
                           )
                         ],
                       ),
-                      // child: Text(
-                      //   'BoraMarcar',
-                      //   style: TextStyle(
-                      //     color: Colors.white,
-                      //     fontSize: 40,
-                      //     fontFamily: 'Anton',
-                      //     fontWeight: FontWeight.bold,
-                      //   ),
-                      // ),
                       child: Image.asset('assets/icon/app_banner.png'),
                     ),
                   ),
@@ -374,7 +361,6 @@ class _AuthCardState extends State<AuthCard> {
                               GoogleIconLoginButton(),
                               SizedBox(width: 40),
                               FacebookIconLoginButton(),
-                              // SizedBox(width: deviceSize.width / 5),
                             ],
                           ),
                         ],

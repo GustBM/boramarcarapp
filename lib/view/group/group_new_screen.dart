@@ -1,14 +1,15 @@
 import 'dart:io';
 
-import 'package:boramarcarapp/controllers/groups_controller.dart';
-import 'package:boramarcarapp/widgets/event/event_invite_modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-
-import 'package:boramarcarapp/models/group.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+
+import 'package:boramarcarapp/controllers/groups_controller.dart';
+import 'package:boramarcarapp/models/group.dart';
+import 'package:boramarcarapp/widgets/event/event_invite_modal.dart';
+
 import '../../utils.dart';
 
 class NewGroupScreen extends StatefulWidget {

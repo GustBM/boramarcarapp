@@ -1,13 +1,13 @@
-import 'package:boramarcarapp/controllers/notifications_controller.dart';
-import 'package:boramarcarapp/models/notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
+import 'package:boramarcarapp/controllers/notifications_controller.dart';
 import 'package:boramarcarapp/controllers/schedules_controller.dart';
-import 'package:boramarcarapp/view/event/event_detail_screen.dart';
 import 'package:boramarcarapp/models/event.dart';
 import 'package:boramarcarapp/models/http_exception.dart';
-import 'package:flutter/material.dart';
+import 'package:boramarcarapp/models/notification.dart';
+import 'package:boramarcarapp/view/event/event_detail_screen.dart';
 
 import '../utils.dart';
 

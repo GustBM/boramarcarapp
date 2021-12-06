@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import 'package:boramarcarapp/models/user.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class UserController extends ChangeNotifier {
   CollectionReference _users = FirebaseFirestore.instance.collection('user');

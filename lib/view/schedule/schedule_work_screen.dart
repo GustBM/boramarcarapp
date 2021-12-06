@@ -1,12 +1,13 @@
-import 'package:boramarcarapp/models/http_exception.dart';
-import 'package:boramarcarapp/models/schedule.dart';
-import 'package:boramarcarapp/controllers/schedules_controller.dart';
-import 'package:boramarcarapp/widgets/schedule/schedule_form_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
+
+import 'package:boramarcarapp/controllers/schedules_controller.dart';
+import 'package:boramarcarapp/models/http_exception.dart';
+import 'package:boramarcarapp/models/schedule.dart';
+import 'package:boramarcarapp/widgets/schedule/schedule_form_field.dart';
 
 import '../../utils.dart';
 

@@ -1,7 +1,8 @@
-import 'package:boramarcarapp/controllers/notifications_controller.dart';
-import 'package:boramarcarapp/view/notification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:boramarcarapp/controllers/notifications_controller.dart';
+import 'package:boramarcarapp/view/notification_screen.dart';
 
 class NotificationBadge extends StatelessWidget {
   @override

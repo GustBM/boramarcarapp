@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// import 'package:get/instance_manager.dart';
 
-import 'package:boramarcarapp/models/event.dart';
 import 'package:boramarcarapp/controllers/events_controller.dart';
-// import 'package:boramarcarapp/controllers/notifications.dart';
+import 'package:boramarcarapp/models/event.dart';
 import 'package:boramarcarapp/widgets/empty_message_widget.dart';
 import 'package:boramarcarapp/widgets/event/event_item.dart';
 
