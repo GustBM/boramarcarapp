@@ -71,7 +71,7 @@ class AppNotificationController extends ChangeNotifier {
             content: notification.message,
             heading: title,
             buttons: [
-              OSActionButton(text: "Ver Notificações", id: "id1"),
+              OSActionButton(text: "Abrir", id: "id1"),
             ]),
       );
     } catch (e) {
