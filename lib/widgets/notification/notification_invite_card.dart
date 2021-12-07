@@ -86,12 +86,6 @@ class _NotificationInviteCardState extends State<NotificationInviteCard> {
         child: Text(
             DateFormat('HH:mm - dd/MM/yyyy').format(widget.notification.date)),
       ),
-      onTap: () {
-        // Navigator.of(context).pushNamed(
-        //   GroupDetailsScreen.routeName,
-        //   arguments: groupsList[i].groupId,
-        // );
-      },
     );
   }
 }

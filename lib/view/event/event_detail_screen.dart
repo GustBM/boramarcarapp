@@ -18,8 +18,6 @@ class EventDetailScreen extends StatefulWidget {
 }
 
 class _EventDetailScreenState extends State<EventDetailScreen> {
-  // void setInvitedList(Future<DocumentSnapshot<Object?>>? loadedEvent) {}
-
   @override
   Widget build(BuildContext context) {
     final eventId = ModalRoute.of(context)!.settings.arguments as String;
@@ -179,8 +177,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       ),
                     ),
                     Text("Convidados", textScaleFactor: 1.5),
-                    // InvitedChipListWithButton(thisEvent.invited, () {},
-                    //     managerPermission, thisEvent.eventId),
                     InvitedAppUserChipListEvent(thisEvent.invited, false),
                   ],
                 ),
