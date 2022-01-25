@@ -25,6 +25,8 @@ import 'package:boramarcarapp/view/group/group_new_screen.dart';
 
 import 'package:boramarcarapp/theme_data.dart';
 
+import 'key.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -48,7 +50,7 @@ class _BoraMarcarAppState extends State<BoraMarcarApp> {
   void initState() {
     super.initState();
 
-    OneSignal.shared.setAppId("79aeea64-0c6c-4601-86ca-ae73a307251d");
+    OneSignal.shared.setAppId(ApiKeys.ONE_SIGNAL_KEY);
   }
 
   @override

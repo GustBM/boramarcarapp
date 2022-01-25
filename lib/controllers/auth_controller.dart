@@ -12,7 +12,6 @@ import 'package:boramarcarapp/controllers/users_controller.dart' as usr;
 
 class AuthController with ChangeNotifier {
   late User _userData;
-  // ignore: unused_field
   late AppUser _userInfo;
 
   final _auth = FirebaseAuth.instance;
@@ -28,6 +27,10 @@ class AuthController with ChangeNotifier {
     return _userData;
   }
 
+  AppUser get getUserData {
+    return _userInfo;
+  }
+
   Future<void> _authenticate(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(
@@ -37,13 +40,16 @@ class AuthController with ChangeNotifier {
     } on FirebaseAuthException catch (error) {
       switch (error.code) {
         case "invalid-email":
-          throw HttpException("E-mail inválido.");
+          throw HttpException(
+              "Erro de Autenticação. Verifique os dados e tente novamente.");
 
         case "wrong-password":
-          throw HttpException("Senha Incorreta");
+          throw HttpException(
+              "Erro de Autenticação. Verifique os dados e tente novamente.");
 
         case "user-not-found":
-          throw HttpException("E-mail não encontrado.");
+          throw HttpException(
+              "Erro de Autenticação. Verifique os dados e tente novamente.");
 
         case "user-disabled":
           throw HttpException("Usuário desabilitado.");
@@ -218,7 +224,6 @@ class AuthController with ChangeNotifier {
   Future<void> signInWithFacebook() async {
     try {
       final fbLoginResult = await FacebookAuth.instance.login();
-      // final userData = await FacebookAuth.instance.getUserData();
 
       final fbAuthCredential =
           FacebookAuthProvider.credential(fbLoginResult.accessToken!.token);

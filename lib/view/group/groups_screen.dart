@@ -36,7 +36,6 @@ class _GroupsScreenState extends State<GroupsScreen> {
           ),
         ],
       ),
-      // drawer: AppDrawer(),
       body: FutureBuilder<QuerySnapshot<Group>>(
         future: Provider.of<GroupController>(context, listen: false)
             .getUserGroups(_userInfo!.email!),

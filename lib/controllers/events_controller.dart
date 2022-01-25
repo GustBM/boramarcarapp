@@ -59,7 +59,6 @@ class EventController extends ChangeNotifier {
           .where('email', isEqualTo: element)
           .get();
       var user = snapshot.docs[0].id;
-      // print(user);
       usersId.add(user);
     }).then((value) async {
       var dateRange = new DateTimeRange(start: dateIni, end: dateEnd);

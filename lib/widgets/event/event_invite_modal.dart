@@ -130,9 +130,6 @@ class _EventInviteModalState extends State<EventInviteModal> {
           ),
         ),
         InvitedChipList(_invitedList),
-        // _invitedList == []
-        //     ? InvitedAppUserChipListGroup(_invitedList, true)
-        //     : SizedBox(),
       ],
     );
   }
@@ -170,7 +167,6 @@ class _InvitedChipListState extends State<InvitedChipList> {
       backgroundColor: Color(0xFF5f65d3),
       elevation: 6.0,
       shadowColor: Colors.grey[60],
-      // padding: EdgeInsets.all(8.0),
       deleteIcon: Icon(Icons.cancel),
       onDeleted: () {
         removeChip(label);

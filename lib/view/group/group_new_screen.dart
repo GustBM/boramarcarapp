@@ -182,7 +182,6 @@ class _NewGroupScreenState extends State<NewGroupScreen> {
                         ),
                         validator: FormBuilderValidators.required(context,
                             errorText: 'Campo Obrigatório'),
-                        // initialValue: _userInfo!.displayName,
                       ),
                       SizedBox(height: 10),
                       FormBuilderTextField(

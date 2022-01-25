@@ -92,7 +92,6 @@ class _AuthCardState extends State<AuthCard> {
 
   Future<void> _forgotPwd() async {
     if (!_formKey.currentState!.validate()) {
-      // Invalid!
       return;
     }
 
@@ -115,7 +114,6 @@ class _AuthCardState extends State<AuthCard> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
-      // Invalid!
       return;
     }
     _formKey.currentState!.save();
@@ -206,7 +204,6 @@ class _AuthCardState extends State<AuthCard> {
                     decoration: InputDecoration(labelText: 'Senha'),
                     obscureText: true,
                     controller: _passwordController,
-                    // ignore: missing_return
                     validator: (value) {
                       if (value!.isEmpty || value.length < 6) {
                         return 'Senha muito curta. Minimo 6 letras!';
@@ -222,7 +219,6 @@ class _AuthCardState extends State<AuthCard> {
                     decoration: InputDecoration(labelText: 'Confirmar Senha'),
                     obscureText: true,
                     validator: _authMode == AuthMode.Signup
-                        // ignore: missing_return
                         ? (value) {
                             if (value != _passwordController.text) {
                               return 'Senha e confirmação não estão diferentes.';
@@ -235,7 +231,6 @@ class _AuthCardState extends State<AuthCard> {
                     enabled: _authMode == AuthMode.Signup,
                     decoration: InputDecoration(labelText: 'Nome'),
                     validator: _authMode == AuthMode.Signup
-                        // ignore: missing_return
                         ? (value) {
                             if (value!.isEmpty) {
                               return 'Nome é Obrigatório';
@@ -251,7 +246,6 @@ class _AuthCardState extends State<AuthCard> {
                     enabled: _authMode == AuthMode.Signup,
                     decoration: InputDecoration(labelText: 'Sobrenome'),
                     validator: _authMode == AuthMode.Signup
-                        // ignore: missing_return
                         ? (value) {
                             if (value!.isEmpty) {
                               return 'Sobrenome é Obrigatório';
@@ -270,7 +264,6 @@ class _AuthCardState extends State<AuthCard> {
                     decoration:
                         InputDecoration(labelText: 'Data de Nascimento'),
                     validator: _authMode == AuthMode.Signup
-                        // ignore: missing_return
                         ? (value) {
                             if (value!.isEmpty) {
                               return 'Data de Nascimento é Obrigatório';

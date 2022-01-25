@@ -45,7 +45,6 @@ void showErrorDialog(BuildContext context, String message) {
   showDialog(
     context: context,
     builder: (ctx) => AlertDialog(
-      // title: Text("ERRO!"),
       content: Text(message),
       actions: <Widget>[
         TextButton(
@@ -57,10 +56,6 @@ void showErrorDialog(BuildContext context, String message) {
     ),
   );
 }
-
-// dynamic setValueIfNull(dynamic variable, dynamic valueIfNull) {
-//   var len = foo?.length ?? 0; // Provide a default value if foo was null.
-// }
 
 class SnapshotEmptyMsg extends StatelessWidget {
   final String msg;

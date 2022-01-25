@@ -51,7 +51,7 @@ class GroupDetailsScreen extends StatelessWidget {
                       ? IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: () {
-                            // Navigator.of(context).pushNamed(EditProductScreen.routeName);
+                            // TODO: Edit group info
                           },
                         )
                       : Text(''),

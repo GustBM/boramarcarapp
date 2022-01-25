@@ -23,7 +23,6 @@ class _InvitedAppUserChipListGroupState
     extends State<InvitedAppUserChipListGroup> {
   Widget _buildChip(AppUser user) {
     return Chip(
-      // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       labelPadding: EdgeInsets.all(2.0),
       avatar: CircleAvatar(
         backgroundImage: Image.asset(
@@ -57,7 +56,6 @@ class _InvitedAppUserChipListGroupState
       backgroundColor: Color(0xFF5f65d3),
       elevation: 6.0,
       shadowColor: Colors.grey[60],
-      // padding: EdgeInsets.all(8.0),
       deleteIcon: widget.canEdit ? Icon(Icons.cancel) : Icon(null),
       onDeleted: () {
         if (widget.canEdit) {

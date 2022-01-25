@@ -148,7 +148,6 @@ class _GroupInviteModalState extends State<GroupInviteModal> {
                 TextStyle(decoration: TextDecoration.underline, fontSize: 22),
           ),
         ),
-        // InvitedChipList(_invitedList),
       ],
     );
   }

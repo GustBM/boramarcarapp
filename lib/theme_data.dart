@@ -17,7 +17,7 @@ ThemeData get appThemeData => ThemeData(
           .copyWith(primary: mainColor, secondary: secondaryColor),
       cardColor: Color.lerp(Colors.white, Colors.white, 0.2),
       cardTheme: base.cardTheme.copyWith(
-        color: Colors.white, // Color.lerp(Colors.white, Colors.black, 0.1),
+        color: Colors.white,
         margin: EdgeInsets.all(20.0),
         elevation: 0.0,
         shape: BeveledRectangleBorder(
